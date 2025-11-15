@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
 	title?: string | undefined;
@@ -7,8 +8,8 @@ interface Props {
 }
 
 const {
-	title = 'Jeanine White: Personal Site',
-	description = 'The personal site of Jeanine White',
+	title = 'Pavlo Hrab',
+	description = '(Marine) Microbiome Bioinformatics Researcher | Ph.D. Candidate',
 } = Astro.props;
 ---
 
@@ -18,11 +19,14 @@ const {
 <meta name="generator" content={Astro.generator} />
 <title>{title}</title>
 
+<!-- OPTIONAL: View Transitions - Comment out to disable smooth page transitions -->
+<ViewTransitions />
+
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-	href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400&family=Rubik:wght@500;600&display=swap"
+	href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,400;0,700;1,400&family=Fira+Code:wght@400;500;600&display=swap"
 	rel="stylesheet"
 />
 <script is:inline>
@@ -33,15 +37,15 @@ const {
 		}
 		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 	};
-	const isDark = getThemePreference() === 'dark';
-	document.documentElement.classList[isDark ? 'add' : 'remove']('theme-dark');
 
-	if (typeof localStorage !== 'undefined') {
-		// Watch the document element and persist user preference when it changes.
-		const observer = new MutationObserver(() => {
-			const isDark = document.documentElement.classList.contains('theme-dark');
-			localStorage.setItem('theme', isDark ? 'dark' : 'light');
-		});
-		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-	}
+	const setTheme = () => {
+		const isDark = getThemePreference() === 'dark';
+		document.documentElement.classList[isDark ? 'add' : 'remove']('theme-dark');
+	};
+
+	// Set theme on initial load
+	setTheme();
+
+	// Restore theme after ViewTransitions swap (before content is visible)
+	document.addEventListener('astro:after-swap', setTheme);
 </script>

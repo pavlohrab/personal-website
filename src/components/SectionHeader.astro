@@ -1,0 +1,48 @@
+---
+interface Props {
+	title: string;
+	viewAllLink?: string;
+}
+
+const { title, viewAllLink } = Astro.props;
+---
+
+<div class="section-header-wrapper">
+	<h2 class="section-title">{title}</h2>
+	{viewAllLink && (
+		<a href={viewAllLink} class="view-all-link">View All →</a>
+	)}
+</div>
+
+<style>
+	.section-header-wrapper {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 2rem;
+	}
+
+	.section-title {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.view-all-link {
+		color: var(--accent-regular);
+		text-decoration: none;
+		font-size: var(--text-base);
+		font-weight: 500;
+		transition: color var(--theme-transition);
+	}
+
+	.view-all-link:hover {
+		color: var(--accent-dark);
+	}
+
+	@media (min-width: 50em) {
+		.section-title {
+			font-size: var(--text-3xl);
+		}
+	}
+</style>

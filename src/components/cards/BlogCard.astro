@@ -1,0 +1,37 @@
+---
+/**
+ * BlogCard Component
+ * Reusable card for blog posts and thoughts
+ * Can be clickable or placeholder for coming soon posts
+ */
+
+interface Props {
+	date: string;
+	title: string;
+	excerpt: string;
+	href?: string; // If provided, makes the card clickable
+	comingSoon?: boolean;
+}
+
+const { date, title, excerpt, href, comingSoon = false } = Astro.props;
+
+const isClickable = !!href && !comingSoon;
+---
+
+{isClickable ? (
+	<a href={href} class="blog-card-link">
+		<article class="blog-card">
+			<span class="blog-date">{date}</span>
+			<h3 class="blog-title">{title}</h3>
+			<p class="blog-excerpt">{excerpt}</p>
+			<span class="read-more">Read more →</span>
+		</article>
+	</a>
+) : (
+	<article class:list={['blog-card', { 'blog-card-placeholder': comingSoon }]}>
+		<span class="blog-date">{date}</span>
+		<h3 class="blog-title">{title}</h3>
+		<p class="blog-excerpt">{excerpt}</p>
+		{comingSoon && <span class="coming-soon">Coming soon</span>}
+	</article>
+)}

@@ -1,0 +1,72 @@
+---
+/**
+ * ProjectCard Component
+ * Reusable card for displaying project information
+ * Can be used as a standalone card or as a clickable link
+ */
+
+interface Props {
+	title: string;
+	status: 'ongoing' | 'complete' | 'released';
+	meta: string;
+	description: string;
+	tags: string[];
+	links?: Array<{ label: string; href: string }>;
+	href?: string; // If provided, makes the entire card clickable
+	featured?: boolean;
+	compact?: boolean;
+}
+
+const {
+	title,
+	status,
+	meta,
+	description,
+	tags,
+	links,
+	href,
+	featured = false,
+	compact = false
+} = Astro.props;
+
+const statusLabel = status === 'ongoing' ? 'Ongoing' : status === 'released' ? 'Released' : 'Complete';
+
+// If href is provided, wrap in link, otherwise use article
+const isClickable = !!href;
+---
+
+{isClickable ? (
+	<a href={href} class="project-card-link">
+		<article class:list={['project-card', { featured, compact }]}>
+			<div class="project-header">
+				<h3 class="project-title">{title}</h3>
+				<span class={`project-status ${status}`}>{statusLabel}</span>
+			</div>
+			<p class="project-meta">{meta}</p>
+			<p class="project-description">{description}</p>
+			<div class="project-tags">
+				{tags.map(tag => <span class="tag">{tag}</span>)}
+			</div>
+			<span class="read-more">Read more →</span>
+		</article>
+	</a>
+) : (
+	<article class:list={['project-card', { featured, compact }]}>
+		<div class="project-header">
+			<h3 class="project-title">{title}</h3>
+			<span class={`project-status ${status}`}>{statusLabel}</span>
+		</div>
+		<p class="project-meta">{meta}</p>
+		<p class="project-description">{description}</p>
+		<div class="project-tags">
+			{tags.map(tag => <span class="tag">{tag}</span>)}
+		</div>
+		{links && links.length > 0 && (
+			<div class="project-links">
+				{links.map(link => (
+					<a href={link.href} class="project-link">{link.label}</a>
+				))}
+			</div>
+		)}
+	</article>
+)}

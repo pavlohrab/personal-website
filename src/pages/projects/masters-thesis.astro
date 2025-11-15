@@ -1,0 +1,388 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Master's Thesis Project | Pavlo Hrab" description="Computational analysis of marine bacterial communities">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="project-header">
+				<div class="breadcrumb">
+					<a href="/projects/archive/">← Back to Past Projects</a>
+				</div>
+				<span class="project-date">2019 - 2020</span>
+				<h1 class="project-title">Master's Thesis Project</h1>
+				<p class="project-subtitle">Computational analysis of marine bacterial communities using metagenomic approaches</p>
+			</header>
+
+			<main class="project-content">
+				<section class="content-section">
+					<h2>Overview</h2>
+					<p>
+						My master's thesis focused on developing computational methods to analyze complex marine bacterial
+						communities using metagenomic sequencing data. The project combined wet-lab work, bioinformatics,
+						and statistical analysis to understand how bacterial diversity varies across different marine
+						environments.
+					</p>
+
+					<h2>Research Questions</h2>
+					<p>
+						The thesis addressed several key questions:
+					</p>
+					<ul>
+						<li>How do bacterial community compositions differ between coastal and open ocean environments?</li>
+						<li>What environmental factors most strongly correlate with changes in bacterial diversity?</li>
+						<li>Can we identify novel bacterial taxa that are characteristic of specific marine habitats?</li>
+						<li>What computational approaches are most effective for analyzing large metagenomic datasets?</li>
+					</ul>
+
+					<h2>Methodology</h2>
+					<p>
+						The research involved multiple phases:
+					</p>
+
+					<p>
+						<strong>Sample Collection:</strong> Water samples were collected from 15 locations across a salinity
+						gradient, from freshwater river mouths to open ocean sites. Environmental parameters (temperature,
+						salinity, pH, nutrient concentrations) were measured at each site.
+					</p>
+
+					<p>
+						<strong>Laboratory Work:</strong> DNA extraction, quality assessment, and library preparation for
+						Illumina sequencing. This phase took approximately 3 months and involved optimization of extraction
+						protocols for different sample types.
+					</p>
+
+					<p>
+						<strong>Bioinformatics Analysis:</strong> Development of a custom analysis pipeline combining existing
+						tools (QIIME2, mothur) with custom Python scripts. The pipeline handled quality filtering, taxonomic
+						assignment, diversity analysis, and statistical testing.
+					</p>
+
+					<p>
+						<strong>Statistical Analysis:</strong> Multivariate statistics (PERMANOVA, NMDS ordination) to
+						identify relationships between environmental variables and bacterial community structure. Machine
+						learning approaches to predict community composition from environmental parameters.
+					</p>
+
+					<h2>Key Findings</h2>
+					<p>
+						The research yielded several significant findings:
+					</p>
+
+					<p>
+						<strong>1. Salinity as a primary driver:</strong> Salinity emerged as the single strongest predictor
+						of bacterial community composition, explaining approximately 45% of the observed variation. This
+						confirmed previous studies but with higher resolution data.
+					</p>
+
+					<p>
+						<strong>2. Novel bacterial lineages:</strong> We identified 8 previously undescribed bacterial operational
+						taxonomic units (OTUs) that were consistently present across multiple sampling sites. These represent
+						potentially novel species adapted to estuarine environments.
+					</p>
+
+					<p>
+						<strong>3. Functional redundancy:</strong> Despite taxonomic differences, communities from similar
+						environmental conditions showed similar predicted metabolic capabilities, suggesting functional
+						redundancy in bacterial ecosystems.
+					</p>
+
+					<p>
+						<strong>4. Seasonal stability:</strong> Follow-up sampling at 5 sites over 4 seasons showed that
+						core community members (representing ~30% of reads) remained stable, while rare taxa showed high
+						temporal variability.
+					</p>
+
+					<h2>Technical Contributions</h2>
+					<p>
+						Beyond the biological findings, the thesis made several technical contributions:
+					</p>
+
+					<ul>
+						<li>A reproducible analysis pipeline (available on GitHub) that has been used by other lab members</li>
+						<li>Custom visualization tools for displaying community composition across environmental gradients</li>
+						<li>A database of marine bacterial sequences from the study region</li>
+						<li>Documentation and tutorials for future students working with metagenomic data</li>
+					</ul>
+
+					<h2>Challenges and Solutions</h2>
+					<p>
+						The project faced several challenges that required creative solutions:
+					</p>
+
+					<p>
+						<strong>Challenge 1: Computational resources.</strong> Initial analyses on a local workstation
+						were impractically slow. Solution: Migrated pipeline to university HPC cluster, reducing analysis
+						time from weeks to days.
+					</p>
+
+					<p>
+						<strong>Challenge 2: DNA extraction from low-biomass samples.</strong> Open ocean samples had very
+						low bacterial concentrations. Solution: Optimized extraction protocol and increased filtration
+						volumes, though this required additional fieldwork.
+					</p>
+
+					<p>
+						<strong>Challenge 3: Contamination detection.</strong> Some samples showed signs of kit contamination.
+						Solution: Implemented rigorous negative controls and developed statistical methods to identify and
+						remove contaminant sequences.
+					</p>
+
+					<h2>Publications and Presentations</h2>
+					<p>
+						The thesis research resulted in:
+					</p>
+
+					<ul>
+						<li>One first-author publication in a peer-reviewed journal</li>
+						<li>Two presentations at international conferences</li>
+						<li>Contributions to a collaborative paper on marine microbial diversity</li>
+						<li>Open-source code repository with 50+ stars on GitHub</li>
+					</ul>
+
+					<h2>What I Learned</h2>
+					<p>
+						This project was transformative for my development as a researcher. Beyond the technical skills
+						in bioinformatics and molecular biology, I learned:
+					</p>
+
+					<ul>
+						<li>The importance of reproducible research practices</li>
+						<li>How to manage a long-term project with multiple interconnected components</li>
+						<li>The value of open science and sharing methods and data</li>
+						<li>How to communicate complex computational methods to biologists and vice versa</li>
+						<li>The necessity of flexibility when experiments don't go as planned</li>
+					</ul>
+
+					<h2>Future Directions</h2>
+					<p>
+						The thesis opened several avenues for future research:
+					</p>
+
+					<ul>
+						<li>Deeper investigation of the novel bacterial lineages we identified</li>
+						<li>Metatranscriptomic analysis to understand active metabolic processes</li>
+						<li>Expansion to more geographic locations to test generalizability</li>
+						<li>Integration with oceanographic models to predict bacterial distributions</li>
+					</ul>
+
+					<p>
+						Some of these directions have been pursued in my current research, building directly on the
+						foundations established in this thesis work.
+					</p>
+				</section>
+
+				<section class="meta-section">
+					<div class="project-info">
+						<div class="info-item">
+							<strong>Supervisor:</strong> Prof. [Name], Marine Microbiology Lab
+						</div>
+						<div class="info-item">
+							<strong>Institution:</strong> [University Name]
+						</div>
+						<div class="info-item">
+							<strong>Defense Date:</strong> June 2020
+						</div>
+						<div class="info-item">
+							<strong>Grade:</strong> Excellent (equivalent to A)
+						</div>
+					</div>
+
+					<div class="tags">
+						<span class="tag">Metagenomics</span>
+						<span class="tag">Bioinformatics</span>
+						<span class="tag">Marine Biology</span>
+						<span class="tag">Python</span>
+						<span class="tag">Statistical Analysis</span>
+						<span class="tag">HPC</span>
+					</div>
+
+					<div class="project-links">
+						<a href="#" class="project-link-btn">Download Thesis PDF</a>
+						<a href="#" class="project-link-btn">View GitHub Repository</a>
+						<a href="#" class="project-link-btn">Read Publication</a>
+					</div>
+				</section>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.project-header {
+		padding-block: 2rem;
+		max-width: 50rem;
+		margin-inline: auto;
+	}
+
+	.breadcrumb {
+		margin-bottom: 1.5rem;
+	}
+
+	.breadcrumb a {
+		color: var(--accent-regular);
+		text-decoration: none;
+		font-size: var(--text-sm);
+		transition: color var(--theme-transition);
+	}
+
+	.breadcrumb a:hover {
+		color: var(--accent-dark);
+	}
+
+	.project-date {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--accent-regular);
+		font-weight: 600;
+		font-family: var(--font-brand);
+		margin-bottom: 1rem;
+	}
+
+	.project-title {
+		font-size: var(--text-4xl);
+		color: var(--gray-0);
+		margin: 0 0 1rem;
+		line-height: 1.2;
+	}
+
+	.project-subtitle {
+		font-size: var(--text-lg);
+		color: var(--gray-300);
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	.project-content {
+		max-width: 50rem;
+		margin-inline: auto;
+	}
+
+	.content-section {
+		margin-bottom: 3rem;
+	}
+
+	.content-section p {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.8;
+		margin-bottom: 1.5rem;
+	}
+
+	.content-section h2 {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+		margin: 2.5rem 0 1rem;
+		border-bottom: 2px solid var(--accent-regular);
+		padding-bottom: 0.5rem;
+	}
+
+	.content-section ul {
+		margin: 1.5rem 0 1.5rem 2rem;
+		color: var(--gray-300);
+		line-height: 1.8;
+	}
+
+	.content-section li {
+		margin-bottom: 0.75rem;
+	}
+
+	.content-section strong {
+		color: var(--gray-0);
+		font-weight: 600;
+	}
+
+	.meta-section {
+		padding-top: 2rem;
+		border-top: 1px solid var(--gray-800);
+	}
+
+	.project-info {
+		margin-bottom: 2rem;
+		padding: 1.5rem;
+		background: var(--gray-999);
+		border-left: 3px solid var(--accent-regular);
+		border-radius: 0.25rem;
+	}
+
+	.info-item {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		margin-bottom: 0.75rem;
+	}
+
+	.info-item:last-child {
+		margin-bottom: 0;
+	}
+
+	.info-item strong {
+		color: var(--gray-0);
+	}
+
+	.tags {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+	}
+
+	.tag {
+		padding: 0.5rem 1rem;
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		font-size: var(--text-sm);
+		border-radius: 0;
+		font-weight: 500;
+	}
+
+	.project-links {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.project-link-btn {
+		display: inline-block;
+		padding: 0.75rem 1.5rem;
+		background: transparent;
+		color: var(--accent-regular);
+		text-decoration: none;
+		border: 2px solid var(--accent-regular);
+		border-radius: 0;
+		font-size: var(--text-base);
+		font-weight: 600;
+		transition: all var(--theme-transition);
+		text-align: center;
+		flex: 1;
+		min-width: 200px;
+	}
+
+	.project-link-btn:hover {
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+	}
+
+	@media (max-width: 50em) {
+		.project-title {
+			font-size: var(--text-3xl);
+		}
+
+		.project-subtitle {
+			font-size: var(--text-base);
+		}
+
+		.content-section h2 {
+			font-size: var(--text-xl);
+		}
+
+		.project-links {
+			flex-direction: column;
+		}
+
+		.project-link-btn {
+			min-width: 100%;
+		}
+	}
+</style>

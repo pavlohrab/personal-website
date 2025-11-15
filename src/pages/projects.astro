@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/cards/ProjectCard.astro';
+import Section from '../components/Section.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Grid from '../components/Grid.astro';
+
+// Get all projects and sort by order
+const allProjects = await getCollection('projects');
+
+// Filter projects by category
+const featuredProjects = allProjects
+	.filter(p => p.data.featured && p.data.category === 'research')
+	.sort((a, b) => a.data.order - b.data.order);
+
+const softwareProjects = allProjects
+	.filter(p => p.data.category === 'software')
+	.sort((a, b) => a.data.order - b.data.order)
+	.slice(0, 3); // Show only first 3
+
+const archiveProjects = allProjects
+	.filter(p => p.data.category === 'archive')
+	.sort((a, b) => a.data.order - b.data.order)
+	.slice(0, 2); // Show only first 2
+---
+
+<BaseLayout title="Research Projects" description="Current and past research projects">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<h1 class="page-title">Research Projects</h1>
+				<p class="page-subtitle">Current research, collaborations, and open-source contributions</p>
+			</header>
+
+			<main class="projects-content stack gap-15 lg:gap-20">
+				<!-- Featured Projects -->
+				<Section>
+					<SectionHeader title="Featured Projects" />
+					<Grid variant="projects">
+						{featuredProjects.map(project => (
+							<ProjectCard
+								title={project.data.title}
+								status={project.data.status}
+								meta={project.data.meta}
+								description={project.data.description}
+								tags={project.data.tags}
+								links={project.data.links}
+								href={`/projects/${project.id}/`}
+								featured={project.data.featured}
+							/>
+						))}
+					</Grid>
+				</Section>
+
+				<!-- Software & Tools -->
+				<Section>
+					<SectionHeader title="Software & Tools" viewAllLink="/projects/software/" />
+					<Grid variant="projects">
+						{softwareProjects.map(project => (
+							<ProjectCard
+								title={project.data.title}
+								status={project.data.status}
+								meta={project.data.meta}
+								description={project.data.description}
+								tags={project.data.tags}
+								links={project.data.links}
+								href={`/projects/${project.id}/`}
+							/>
+						))}
+					</Grid>
+				</Section>
+
+				<!-- Past Projects -->
+				<Section>
+					<SectionHeader title="Past Projects" viewAllLink="/projects/archive/" />
+					<Grid variant="projects-compact">
+						{archiveProjects.map(project => (
+							<ProjectCard
+								title={project.data.title}
+								status={project.data.status}
+								meta={project.data.meta}
+								description={project.data.description}
+								tags={project.data.tags}
+								links={project.data.links}
+								href={`/projects/${project.id}/`}
+								compact={project.data.compact}
+							/>
+						))}
+					</Grid>
+				</Section>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	/* Page-specific: Projects content width */
+	.projects-content {
+		max-width: 75rem;
+		margin-inline: auto;
+	}
+</style>

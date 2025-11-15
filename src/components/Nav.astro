@@ -6,18 +6,21 @@ import ThemeToggle from './ThemeToggle.astro';
 /** Main menu items */
 const textLinks: { label: string; href: string }[] = [
 	{ label: 'Home', href: '/' },
-	{ label: 'Work', href: '/work/' },
-	{ label: 'About', href: '/about/' },
+	{ label: 'CV', href: '/cv/' },
+	{ label: 'Publications', href: '/publications/' },
+	{ label: 'Outreach', href: '/outreach/' },
+	{ label: 'Projects', href: '/projects/' },
+	{ label: 'Beyond Research', href: '/beyond/' },
+	{ label: 'Contact', href: '/contact/' },
 ];
 
 /** Icon links to social media — edit these with links to your profiles! */
 const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
-	{ label: 'Twitter', href: 'https://twitter.com/me', icon: 'twitter-logo' },
-	{ label: 'Twitch', href: 'https://twitch.tv/me', icon: 'twitch-logo' },
-	{ label: 'GitHub', href: 'https://github.com/me', icon: 'github-logo' },
-	{ label: 'CodePen', href: 'https://codepen.io/me', icon: 'codepen-logo' },
-	{ label: 'dribbble', href: 'https://dribbble.com/me', icon: 'dribbble-logo' },
-	{ label: 'YouTube', href: 'https://www.youtube.com/@me/', icon: 'youtube-logo' },
+	{ label: 'GitHub', href: 'https://github.com/pavlohrab', icon: 'github-logo' },
+	{ label: 'LinkedIn', href: 'https://linkedin.com/in/phrab', icon: 'linkedin-logo' },
+	{ label: 'Google Scholar', href: 'https://scholar.google.com/citations?user=VKJQl6UAAAAJ', icon: 'scholar-logo' },
+	{ label: 'ResearchGate', href: 'https://researchgate.net/profile/Pavlo-Hrab-2', icon: 'researchgate-logo' },
+	{ label: 'ORCID', href: 'https://orcid.org/0000-0002-0742-8478', icon: 'orcid-logo' },
 ];
 
 /** Test if a link is pointing to the current page. */
@@ -32,8 +35,7 @@ const isCurrentPage = (href: string) => {
 <nav>
 	<div class="menu-header">
 		<a href="/" class="site-title">
-			<Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient />
-			Jeanine White
+			Pavlo Hrab
 		</a>
 		<menu-button>
 			<template>

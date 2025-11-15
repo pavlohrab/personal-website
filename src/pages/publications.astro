@@ -1,0 +1,286 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Get all publications, filter drafts, and sort by date (newest first)
+const allPublications = (await getCollection('publications'))
+	.filter(p => !p.data.draft)
+	.sort((a, b) => b.data.publishedDate.valueOf() - a.data.publishedDate.valueOf());
+
+// Group publications by type
+const journalArticles = allPublications.filter(p => p.data.type === 'journal');
+const conferencePapers = allPublications.filter(p => p.data.type === 'conference');
+const preprints = allPublications.filter(p => p.data.type === 'preprint');
+---
+
+<BaseLayout title="Publications" description="Research publications and academic papers">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<h1 class="page-title">Publications</h1>
+				<p class="page-subtitle">Peer-reviewed research articles and conference papers</p>
+			</header>
+
+			<main class="publications-content stack gap-10 lg:gap-15">
+				<!-- Journal Articles Section -->
+				{journalArticles.length > 0 && (
+					<section class="pub-section">
+						<h2 class="section-title">Journal Articles</h2>
+						<div class="publications-list stack gap-6">
+							{journalArticles.map(pub => (
+								<article class="publication-card">
+									<h3 class="pub-title">
+										{pub.data.title}
+									</h3>
+									<p class="pub-authors" set:html={pub.data.authors} />
+									<p class="pub-venue">
+										<em>{pub.data.venue}</em>, {pub.data.year}
+									</p>
+									{pub.body && (
+										<p class="pub-description">
+											{pub.body}
+										</p>
+									)}
+									{(pub.data.url || pub.data.doi || pub.data.links) && (
+										<div class="pub-links">
+											{pub.data.url && (
+												<a href={pub.data.url} class="pub-link" target="_blank" rel="noopener">Paper</a>
+											)}
+											{pub.data.doi && (
+												<a href={`https://doi.org/${pub.data.doi}`} class="pub-link" target="_blank" rel="noopener">DOI</a>
+											)}
+											{pub.data.links && pub.data.links.map(link => (
+												<a href={link.href} class="pub-link" target="_blank" rel="noopener">{link.label}</a>
+											))}
+										</div>
+									)}
+								</article>
+							))}
+						</div>
+					</section>
+				)}
+
+				<!-- Conference Papers Section -->
+				{conferencePapers.length > 0 && (
+					<section class="pub-section">
+						<h2 class="section-title">Conference Papers</h2>
+						<div class="publications-list stack gap-6">
+							{conferencePapers.map(pub => (
+								<article class="publication-card">
+									<h3 class="pub-title">
+										{pub.data.title}
+									</h3>
+									<p class="pub-authors" set:html={pub.data.authors} />
+									<p class="pub-venue">
+										<em>{pub.data.venue}</em>, {pub.data.year}
+									</p>
+									{pub.body && (
+										<p class="pub-description">
+											{pub.body}
+										</p>
+									)}
+									{(pub.data.url || pub.data.doi || pub.data.links) && (
+										<div class="pub-links">
+											{pub.data.url && (
+												<a href={pub.data.url} class="pub-link" target="_blank" rel="noopener">Paper</a>
+											)}
+											{pub.data.doi && (
+												<a href={`https://doi.org/${pub.data.doi}`} class="pub-link" target="_blank" rel="noopener">DOI</a>
+											)}
+											{pub.data.links && pub.data.links.map(link => (
+												<a href={link.href} class="pub-link" target="_blank" rel="noopener">{link.label}</a>
+											))}
+										</div>
+									)}
+								</article>
+							))}
+						</div>
+					</section>
+				)}
+
+				<!-- Preprints Section -->
+				{preprints.length > 0 && (
+					<section class="pub-section">
+						<h2 class="section-title">Preprints</h2>
+						<div class="publications-list stack gap-6">
+							{preprints.map(pub => (
+								<article class="publication-card preprint">
+									<h3 class="pub-title">
+										{pub.data.title}
+									</h3>
+									<p class="pub-authors" set:html={pub.data.authors} />
+									<p class="pub-venue">
+										<em>{pub.data.venue}</em>, {pub.data.year}
+									</p>
+									{pub.body && (
+										<p class="pub-description">
+											{pub.body}
+										</p>
+									)}
+									{(pub.data.url || pub.data.links) && (
+										<div class="pub-links">
+											{pub.data.url && (
+												<a href={pub.data.url} class="pub-link" target="_blank" rel="noopener">Preprint</a>
+											)}
+											{pub.data.links && pub.data.links.map(link => (
+												<a href={link.href} class="pub-link" target="_blank" rel="noopener">{link.label}</a>
+											))}
+										</div>
+									)}
+								</article>
+							))}
+						</div>
+					</section>
+				)}
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.page-header {
+		padding-block: 2.5rem;
+		text-align: center;
+		max-width: 50rem;
+		margin-inline: auto;
+	}
+
+	.page-title {
+		font-size: var(--text-4xl);
+		color: var(--gray-0);
+		margin: 0 0 0.5rem;
+	}
+
+	.page-subtitle {
+		font-size: var(--text-lg);
+		color: var(--gray-300);
+		margin: 0;
+	}
+
+	.publications-content {
+		max-width: 65rem;
+		margin-inline: auto;
+	}
+
+	.pub-section {
+		padding-block: 1rem;
+	}
+
+	.section-title {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+		margin-bottom: 1.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid var(--accent-regular);
+	}
+
+	.publications-list {
+		padding-left: 0.5rem;
+	}
+
+	.publication-card {
+		padding: 2rem;
+		background: var(--gray-999);
+		border-radius: 0.75rem;
+		border-left: 4px solid var(--accent-regular);
+		box-shadow: var(--shadow-sm);
+		transition: all var(--theme-transition);
+	}
+
+	.publication-card:hover {
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-lg);
+		border-left-width: 6px;
+	}
+
+	.publication-card.preprint {
+		border-left-color: var(--gray-400);
+		opacity: 0.9;
+	}
+
+	.pub-title {
+		font-size: var(--text-lg);
+		color: var(--gray-0);
+		margin: 0 0 0.75rem;
+		line-height: 1.4;
+	}
+
+	.pub-authors {
+		font-size: var(--text-base);
+		color: var(--gray-200);
+		margin: 0 0 0.5rem;
+		line-height: 1.5;
+	}
+
+	.pub-authors :global(strong) {
+		color: var(--gray-0);
+		font-weight: 600;
+	}
+
+	.pub-venue {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		margin: 0 0 1rem;
+	}
+
+	.pub-venue em {
+		color: var(--accent-regular);
+		font-style: normal;
+		font-weight: 500;
+	}
+
+	.pub-description {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.6;
+		margin: 0 0 1.25rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--gray-800);
+	}
+
+	.pub-links {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.pub-link {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		text-decoration: none;
+		border-radius: 0;
+		border: 1px solid var(--accent-regular);
+		font-size: var(--text-sm);
+		font-weight: 500;
+		transition: all var(--theme-transition);
+	}
+
+	.pub-link:hover {
+		background: var(--accent-dark);
+		opacity: 0.9;
+	}
+
+	@media (max-width: 50em) {
+		.page-title {
+			font-size: var(--text-3xl);
+		}
+
+		.page-subtitle {
+			font-size: var(--text-base);
+		}
+
+		.section-title {
+			font-size: var(--text-xl);
+		}
+
+		.publication-card {
+			padding: 1.5rem;
+		}
+
+		.pub-title {
+			font-size: var(--text-md);
+		}
+	}
+</style>

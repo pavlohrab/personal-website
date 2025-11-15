@@ -1,0 +1,658 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Curriculum Vitae" description="Academic CV and professional experience">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<h1 class="page-title">Curriculum Vitae</h1>
+				<a href="/cv-short.pdf" download class="cv-download-btn">Download CV (PDF)</a>
+			</header>
+
+			<div class="cv-layout">
+				<!-- Table of Contents - Mobile Toggle -->
+				<button class="toc-toggle" id="toc-toggle">
+					<span>Jump to Section</span>
+					<span class="toggle-icon">▼</span>
+				</button>
+
+				<!-- Table of Contents - Sidebar -->
+				<nav class="toc-nav" id="toc-nav">
+					<h2 class="toc-title">Contents</h2>
+					<ul class="toc-list">
+						<li><a href="#work-experience" class="toc-link">Work Experience</a></li>
+						<li><a href="#teaching-experience" class="toc-link">Teaching Experience</a></li>
+						<li><a href="#education" class="toc-link">Education</a></li>
+						<li><a href="#awards" class="toc-link">Awards & Honors</a></li>
+						<li><a href="#skills" class="toc-link">Technical Skills</a></li>
+					</ul>
+				</nav>
+
+				<main class="cv-content stack gap-15 lg:gap-20">
+					<!-- Work Experience Section -->
+					<section id="work-experience" class="cv-section">
+					<h2 class="section-title">Work Experience</h2>
+					<div class="timeline">
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">Postdoctoral researcher</h3>
+								<span class="entry-date">2026 - Present</span>
+							</div>
+							<p class="entry-location">Medema group, Bioinformatics group, Wageningen University & Research</p>
+							<ul class="entry-list">
+								<li>Search for biosynthetic gene clusters in marine sponges and seaweed for downstream heterologous expression</li>
+								<li>Marine microbiome metagenomics</li>
+							</ul>
+						</div>
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">PhD Candidate</h3>
+								<span class="entry-date">2022 - 2026</span>
+							</div>
+							<p class="entry-location">Medema group & Detmer sipkema lab, Bioinformatics group & Molecular ecology group, Wageningen University & Research</p>
+							<ul class="entry-list">
+								<li>Performed large-scale metagenomic and metatranscriptomic analyses</li>
+								<li>Executed functional annotation and targeted marine bacteria from marine sponges</li>
+								<li>Searched for novel biosynthetic gene clusters with unconventional techniques within undercharacterized phyla (Acidobacteriota)</li>
+								<li>Supervised 2 Msc and 1 BSc students for both: computational and molecular laboratory techniques</li>
+								<li>Communicated work in 8 cross-disciplinary international conferences</li>
+							</ul>
+						</div>
+
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">Technical Support Specialist</h3>
+								<span class="entry-date">May 2021 - Oct 2021</span>
+							</div>
+							<p class="entry-location">Information System Development</p>
+							<ul class="entry-list">
+								<li>The position was focused on replicating and addressing bug cases within testing servers. Proficiency in SQL, familiarity with LIMS, and a basic understanding of networking were requirements. Additionally, the role entailed compliance with HIPAA regulations.</li>
+							</ul>
+						</div>
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">Laboratory Technician</h3>
+								<span class="entry-date">May 2020 - Dec 2020</span>
+							</div>
+							<p class="entry-location">Ivan Franko National University of Lviv</p>
+							<ul class="entry-list">
+								<li>During my work in the Lab, I was mainly responsible for: Genomics data analysis, phylogenetics, BGC mining, Software development and  Manuscript writing</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- Teaching Experience Section -->
+				<section id="teaching-experience" class="cv-section">
+					<h2 class="section-title">Teaching Experience</h2>
+					<div class="timeline">
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">Practical Computing for Biologists - Teaching Assistant</h3>
+								<span class="entry-date">Fall 2024</span>
+							</div>
+							<p class="entry-location">Wageningen University & Research</p>
+							<ul class="entry-list">
+								<li>Assisted with providing practical advice for students during the assignments</li>
+							</ul>
+						</div>
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">Research methods in microbiology - Teaching Assistant</h3>
+								<span class="entry-date">Winter 2024</span>
+							</div>
+							<p class="entry-location">Wageningen University & Research</p>
+							<ul class="entry-list">
+								<li>Developed course materials for computational part of the course</li>
+								<li>Assisted with teaching and practicals for the part of the course</li>
+								<li>Graded assignments and provided detailed feedback</li>
+							</ul>
+						</div>
+
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">Practical Computing for Biologists - Teaching Assistant</h3>
+								<span class="entry-date">Fall 2023</span>
+							</div>
+							<p class="entry-location">Wageningen University & Research</p>
+							<ul class="entry-list">
+								<li>Assisted with providing practical advice for students during the assignments</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- Education Section -->
+				<section id="education" class="cv-section">
+					<h2 class="section-title">Education</h2>
+					<div class="timeline">
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">M.Sc. in Genetics and Biotechnology</h3>
+								<span class="entry-date">Sep 2019 - Dec 2020</span>
+							</div>
+							<p class="entry-location">Ivan Franko National University of Lviv</p>
+							<p class="entry-description">Thesis: Genome of S.cyanogenus S136: secondary metabolism potential</p>
+							<ul class="entry-list">
+								<li>Performed biosynthetic gene cluster mining in S.cyanogenus S136 genome</li>
+								<li>Developed software to support the analysis</li>
+							</ul>
+						</div>
+
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">B.Sc. in Biology</h3>
+								<span class="entry-date">2015 - 2019</span>
+							</div>
+							<p class="entry-location">Ivan Franko National University of Lviv</p>
+							<p class="entry-description">Thesis: Genetical control of morphogenesis in S.cyanogenus S136</p>
+							<ul class="entry-list">
+								<li>Performed heterologous expression of selected gene clusters</li>
+								<li>Analysed phylogeny of rodlins and chaplins in Streptomycetaceae</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- Awards & Honors Section -->
+				<section id="awards" class="cv-section">
+					<h2 class="section-title">Awards & Honors</h2>
+					<div class="awards-list stack gap-4">
+						<div class="cv-entry compact">
+							<div class="entry-header">
+								<h3 class="entry-title">Invited speaker</h3>
+								<span class="entry-date">2025</span>
+							</div>
+							<p class="entry-description">Summer School for Natural Products research 2025</p>
+						</div>
+
+						<div class="cv-entry compact">
+							<div class="entry-header">
+								<h3 class="entry-title">Grant</h3>
+								<span class="entry-date">2020</span>
+							</div>
+							<p class="entry-description">19th European Conference on Computational Biology  participation grant, Barcelona, Spain</p>
+						</div>
+						<div class="cv-entry compact">
+							<div class="entry-header">
+								<h3 class="entry-title">Top 3 projects</h3>
+								<span class="entry-date">2020</span>
+							</div>
+							<p class="entry-description">Data Engineering and Security winter school (DES 2020), project was rated within the top 3 (no specific places within the top 3), Lviv, Ukraine</p>
+						</div>
+						<div class="cv-entry compact">
+							<div class="entry-header">
+								<h3 class="entry-title">1st place</h3>
+								<span class="entry-date">2019</span>
+							</div>
+							<p class="entry-description">4th Advanced in silico Drug design workshop/hackaton 2019, Olomouc, Czech Republic</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- Skills Section -->
+				<section id="skills" class="cv-section">
+					<h2 class="section-title">Technical Skills</h2>
+					<div class="skills-grid">
+						<div class="skill-category">
+							<h3 class="skill-category-title">Programming</h3>
+							<p class="skill-items">Python, R, Bash</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Bioinformatics techniques</h3>
+							<p class="skill-items">BGC mining (antismash), Phylogenomics, Large-scale metagenomics and metatranscriptomics</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Data Analysis</h3>
+							<p class="skill-items">Statistical analysis (in R and Python), Workflow management (Nextflow), Machine learning (Random Forest), Data cleaning and exploration</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Laboratory</h3>
+							<p class="skill-items">E.coli and Streptomyces cultivation, Marine bacteria isolation, Heterologous expression, (q)PCR</p>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+		</div>
+	</div>
+</BaseLayout>
+
+<script>
+	// Mobile TOC toggle
+	const tocToggle = document.getElementById('toc-toggle');
+	const tocNav = document.getElementById('toc-nav');
+
+	if (tocToggle && tocNav) {
+		tocToggle.addEventListener('click', () => {
+			tocNav.classList.toggle('toc-expanded');
+			const icon = tocToggle.querySelector('.toggle-icon');
+			if (icon) {
+				icon.textContent = tocNav.classList.contains('toc-expanded') ? '▲' : '▼';
+			}
+		});
+	}
+
+	// Smooth scrolling for TOC links
+	document.querySelectorAll('.toc-link').forEach(link => {
+		link.addEventListener('click', (e) => {
+			e.preventDefault();
+			const targetId = link.getAttribute('href');
+			const targetSection = document.querySelector(targetId);
+			if (targetSection) {
+				// Close mobile menu after clicking
+				if (tocNav) tocNav.classList.remove('toc-expanded');
+				if (tocToggle) {
+					const icon = tocToggle.querySelector('.toggle-icon');
+					if (icon) icon.textContent = '▼';
+				}
+				targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+			}
+		});
+	});
+
+	// Scroll spy - highlight active section
+	const sections = document.querySelectorAll('.cv-section');
+	const tocLinks = document.querySelectorAll('.toc-link');
+
+	function highlightActiveSection() {
+		let currentSection = '';
+
+		sections.forEach(section => {
+			const sectionTop = section.offsetTop;
+			if (window.pageYOffset >= sectionTop - 150) {
+				currentSection = section.getAttribute('id');
+			}
+		});
+
+		tocLinks.forEach(link => {
+			link.classList.remove('active');
+			if (link.getAttribute('href') === `#${currentSection}`) {
+				link.classList.add('active');
+			}
+		});
+	}
+
+	window.addEventListener('scroll', highlightActiveSection);
+	window.addEventListener('load', highlightActiveSection);
+
+	// Dynamic TOC positioning: starts at Work Experience level, then sticks to top on scroll
+	function positionTOC() {
+		const tocNav = document.getElementById('toc-nav');
+		const cvLayout = document.querySelector('.cv-layout');
+		const workSection = document.getElementById('work-experience');
+
+		if (!tocNav || !cvLayout || !workSection) return;
+
+		const isDesktop = window.innerWidth > 800;
+
+		if (isDesktop) {
+			// Horizontal positioning: align with layout left edge
+			const layoutRect = cvLayout.getBoundingClientRect();
+			const wrapperPadding = parseFloat(getComputedStyle(document.querySelector('.wrapper')).paddingLeft);
+			tocNav.style.left = `${layoutRect.left + wrapperPadding}px`;
+
+			// Vertical positioning: follow Work Experience section until it scrolls past
+			const workSectionTop = workSection.getBoundingClientRect().top;
+			const SCROLL_THRESHOLD = 100;
+			const MIN_TOP_POSITION = 32;
+
+			if (workSectionTop > SCROLL_THRESHOLD) {
+				// Work section visible: align TOC with it
+				tocNav.style.top = `${Math.max(workSectionTop, MIN_TOP_POSITION)}px`;
+			} else {
+				// Work section scrolled past: stick TOC to top
+				tocNav.style.top = '2rem';
+			}
+		} else {
+			// Mobile: reset inline styles (CSS handles mobile layout)
+			tocNav.style.left = '';
+			tocNav.style.top = '';
+		}
+	}
+
+	// Update position on scroll, resize, and load
+	window.addEventListener('scroll', positionTOC);
+	window.addEventListener('resize', positionTOC);
+	window.addEventListener('load', positionTOC);
+	positionTOC();
+</script>
+
+<style>
+	.page-header {
+		padding-block: 2.5rem;
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.page-title {
+		font-size: var(--text-4xl);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.cv-download-btn {
+		display: inline-block;
+		padding: 0.75rem 2rem;
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		text-decoration: none;
+		border: 1px solid var(--accent-regular);
+		border-radius: 0;
+		font-size: var(--text-base);
+		font-weight: 600;
+		transition: all var(--theme-transition);
+	}
+
+	.cv-download-btn:hover {
+		background: var(--accent-dark);
+		opacity: 0.9;
+	}
+
+	/* Override parent containers to allow sticky */
+	.wrapper {
+		overflow: visible !important;
+	}
+
+	/* CV Layout with TOC Sidebar */
+	.cv-layout {
+		position: relative;
+		max-width: 90rem;
+		margin-inline: auto;
+		padding-left: calc(250px + 3rem);
+	}
+
+	/* Hide toggle button on desktop */
+	.toc-toggle {
+		display: none;
+	}
+
+	.toc-nav {
+		position: fixed;
+		/* top is set dynamically by JavaScript */
+		width: 250px;
+		padding: 1.5rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-left: 3px solid var(--accent-regular);
+		box-shadow: var(--shadow-sm);
+		max-height: calc(100vh - 4rem);
+		overflow-y: auto;
+		z-index: 10;
+		/* No transition - instant response to scroll */
+	}
+
+	.cv-content {
+		max-width: 65rem;
+	}
+
+	.toc-title {
+		font-size: var(--text-lg);
+		color: var(--gray-0);
+		margin: 0 0 1rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid var(--gray-800);
+	}
+
+	.toc-list {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.toc-link {
+		display: block;
+		padding: 0.5rem 0.75rem;
+		color: var(--gray-300);
+		text-decoration: none;
+		font-size: var(--text-sm);
+		border-radius: 0.25rem;
+		transition: all var(--theme-transition);
+		border-left: 2px solid transparent;
+	}
+
+	.toc-link:hover {
+		color: var(--gray-0);
+		background: var(--gray-800);
+		border-left-color: var(--accent-regular);
+		padding-left: 1rem;
+	}
+
+	.toc-link.active {
+		color: var(--accent-regular);
+		background: var(--gray-800);
+		border-left-color: var(--accent-regular);
+		font-weight: 600;
+		padding-left: 1rem;
+	}
+
+	.cv-section {
+		padding-block: 1rem;
+	}
+
+	.section-title {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+		margin-bottom: 1.5rem;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid var(--accent-regular);
+	}
+
+	.timeline {
+		position: relative;
+		padding-left: 2rem;
+	}
+
+	.timeline::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 2px;
+		background: var(--accent-regular);
+	}
+
+	.cv-entry {
+		position: relative;
+		padding: 1.5rem;
+		margin-bottom: 1.5rem;
+		background: var(--gray-999);
+		border-left: 1px solid var(--accent-regular);
+		border-radius: 0;
+	}
+
+	.cv-entry::before {
+		content: '';
+		position: absolute;
+		left: -2.5rem;
+		top: 1.5rem;
+		width: 0.75rem;
+		height: 0.75rem;
+		background: var(--accent-regular);
+		border-radius: 50%;
+		border: 2px solid var(--gray-999);
+	}
+
+	.awards-list {
+		padding-left: 0;
+	}
+
+	.awards-list .cv-entry {
+		position: static;
+		padding: 1rem 1.5rem;
+		border-left: 3px solid var(--accent-regular);
+	}
+
+	.awards-list .cv-entry::before {
+		display: none;
+	}
+
+	.entry-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.entry-title {
+		font-size: var(--text-lg);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.entry-date {
+		font-size: var(--text-sm);
+		color: var(--accent-regular);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.entry-location {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		margin-bottom: 0.5rem;
+		font-style: italic;
+	}
+
+	.entry-description {
+		font-size: var(--text-base);
+		color: var(--gray-200);
+		line-height: 1.6;
+	}
+
+	.entry-list {
+		margin-top: 0.75rem;
+		margin-left: 1.25rem;
+		color: var(--gray-200);
+		line-height: 1.6;
+	}
+
+	.entry-list li {
+		margin-bottom: 0.5rem;
+	}
+
+	.skills-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1.5rem;
+		padding: 1rem;
+	}
+
+	.skill-category {
+		padding: 1.25rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-top: 3px solid var(--accent-regular);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.skill-category-title {
+		font-size: var(--text-md);
+		color: var(--gray-0);
+		margin-bottom: 0.75rem;
+	}
+
+	.skill-items {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.6;
+	}
+
+	@media (max-width: 50em) {
+		/* Remove left padding and reset layout on mobile */
+		.cv-layout {
+			padding-left: 0;
+			display: block;
+		}
+
+		/* Show toggle button on mobile */
+		.toc-toggle {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+			padding: 0.75rem 1rem;
+			background: var(--accent-regular);
+			color: var(--gray-999);
+			border: none;
+			border-radius: 0.375rem;
+			font-size: var(--text-base);
+			font-weight: 600;
+			cursor: pointer;
+			transition: all var(--theme-transition);
+			margin-bottom: 0.5rem;
+		}
+
+		.toc-toggle:hover {
+			background: var(--accent-dark);
+		}
+
+		.toggle-icon {
+			font-size: 0.875rem;
+			transition: transform 0.3s;
+		}
+
+		/* Make TOC static on mobile - not fixed */
+		.toc-nav {
+			position: static;
+			left: auto;
+			width: 100%;
+			max-height: 0;
+			overflow: hidden;
+			padding: 0;
+			margin-bottom: 2rem;
+			transition: max-height 0.3s ease, padding 0.3s ease;
+		}
+
+		/* Show when expanded */
+		.toc-nav.toc-expanded {
+			max-height: 500px;
+			padding: 1rem;
+		}
+
+		.toc-title {
+			display: none;
+		}
+
+		.toc-list {
+			display: flex;
+			flex-direction: column;
+			gap: 0.25rem;
+		}
+
+		.toc-link {
+			font-size: var(--text-sm);
+			padding: 0.75rem;
+			text-align: left;
+			border-radius: 0.25rem;
+		}
+
+		.toc-link:hover,
+		.toc-link.active {
+			padding-left: 1rem;
+		}
+
+		.entry-header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.page-title {
+			font-size: var(--text-3xl);
+		}
+
+		.section-title {
+			font-size: var(--text-xl);
+		}
+	}
+</style>

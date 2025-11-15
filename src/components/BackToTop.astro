@@ -1,0 +1,75 @@
+---
+import Icon from './Icon.astro';
+---
+
+<button id="back-to-top" class="back-to-top" aria-label="Back to top" title="Back to top">
+	<Icon icon="arrow-up" size="1.5em" />
+</button>
+
+<script>
+	const backToTopButton = document.getElementById('back-to-top');
+
+	// Show/hide button based on scroll position
+	window.addEventListener('scroll', () => {
+		if (window.scrollY > 300) {
+			backToTopButton?.classList.add('visible');
+		} else {
+			backToTopButton?.classList.remove('visible');
+		}
+	});
+
+	// Scroll to top when clicked
+	backToTopButton?.addEventListener('click', () => {
+		window.scrollTo({
+			top: 0,
+			behavior: 'smooth'
+		});
+	});
+</script>
+
+<style>
+	.back-to-top {
+		position: fixed;
+		bottom: 2rem;
+		right: 2rem;
+		width: 3rem;
+		height: 3rem;
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		border: none;
+		border-radius: 0;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		visibility: hidden;
+		transition: all var(--theme-transition);
+		z-index: 1000;
+		box-shadow: var(--shadow-md);
+	}
+
+	.back-to-top.visible {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	.back-to-top:hover {
+		background: var(--accent-dark);
+		transform: translateY(-4px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.back-to-top:active {
+		transform: translateY(-2px);
+	}
+
+	@media (max-width: 50em) {
+		.back-to-top {
+			bottom: 1.5rem;
+			right: 1.5rem;
+			width: 2.75rem;
+			height: 2.75rem;
+		}
+	}
+</style>

@@ -1,0 +1,230 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogCard from '../components/cards/BlogCard.astro';
+
+// Get latest thoughts and adventures from collections
+const latestThoughts = (await getCollection('thoughts'))
+	.filter(thought => !thought.data.draft)
+	.sort((a, b) => {
+		const dateA = a.data.publishedDate ? new Date(a.data.publishedDate).getTime() : 0;
+		const dateB = b.data.publishedDate ? new Date(b.data.publishedDate).getTime() : 0;
+		return dateB - dateA;
+	})
+	.slice(0, 4); // Show latest 4
+
+const latestAdventures = (await getCollection('adventures'))
+	.filter(adventure => !adventure.data.draft)
+	.sort((a, b) => {
+		const dateA = a.data.publishedDate ? new Date(a.data.publishedDate).getTime() : 0;
+		const dateB = b.data.publishedDate ? new Date(b.data.publishedDate).getTime() : 0;
+		return dateB - dateA;
+	})
+	.slice(0, 3); // Show latest 3
+---
+
+<BaseLayout title="Beyond Research" description="Personal interests and hobbies outside the lab">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<h1 class="page-title">Beyond Research</h1>
+				<p class="page-subtitle">Life outside the lab: hobbies, interests, and adventures</p>
+			</header>
+
+			<main class="beyond-content stack gap-15 lg:gap-20">
+				<!-- Hobbies Grid -->
+				<section class="hobbies-section">
+					<h2 class="section-title">Hobbies & Interests</h2>
+					<div class="hobbies-grid">
+						<div class="hobby-card">
+							<h3>Water Polo</h3>
+							<p>
+								Team sport, strategy, intensity. Been hooked since I first tried it.
+							</p>
+						</div>
+
+						<div class="hobby-card">
+							<h3>Multi-day Hiking</h3>
+							<p>
+								It's always nice to have a challenging hike with spectacular views and serene nature. The kind of reset you can't get anywhere else.
+							</p>
+						</div>
+
+						<div class="hobby-card">
+							<h3>Reading Sci-Fi</h3>
+							<p>
+								Can disappear into worlds for days. Current favourite: Adrian Tchaikovsky's Children of Time series.
+							</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- Blog/Thoughts Section -->
+				<section class="blog-section">
+					<div class="section-header-with-link">
+						<h2 class="section-title">Thoughts</h2>
+						{latestThoughts.length > 0 && <a href="/beyond/thoughts/" class="view-all-link">View All →</a>}
+					</div>
+					{latestThoughts.length > 0 ? (
+						<div class="blog-list stack gap-6">
+							{latestThoughts.map(thought => (
+								<BlogCard
+									date={thought.data.date}
+									title={thought.data.title}
+									excerpt={thought.data.excerpt}
+									href={`/beyond/thoughts/${thought.id}/`}
+								/>
+							))}
+						</div>
+					) : (
+						<div class="coming-soon">
+							<p>Coming soon...</p>
+						</div>
+					)}
+				</section>
+
+				<!-- Travel & Adventures -->
+				<section class="travel-section">
+					<div class="section-header-with-link">
+						<h2 class="section-title">Trips</h2>
+						{latestAdventures.length > 0 && <a href="/beyond/adventures/" class="view-all-link">View All →</a>}
+					</div>
+					{latestAdventures.length > 0 ? (
+						<div class="travel-grid">
+							{latestAdventures.map(adventure => (
+								<BlogCard
+									date={adventure.data.location}
+									title={adventure.data.title}
+									excerpt={adventure.data.description}
+									href={`/beyond/adventures/${adventure.id}/`}
+								/>
+							))}
+						</div>
+					) : (
+						<div class="coming-soon">
+							<p>Coming soon...</p>
+						</div>
+					)}
+				</section>
+
+				<!-- Fun Facts -->
+				<section class="facts-section">
+					<h2 class="section-title">Random Facts</h2>
+					<div class="facts-grid">
+						<div class="fact-item">
+							<p>I name my plants. Bob, the cactus, didn't survive the PhD with me</p>
+						</div>
+						<div class="fact-item">
+							<p>Terminal is the most perfect place to be</p>
+						</div>
+						<div class="fact-item">
+							<p>Once got so into foraging Icelandic moss for tea that I accidentally cleared the entire patch</p>
+						</div>
+						<div class="fact-item">
+							<p>Both coffee and chamomile tea take me through the day</p>
+						</div>
+						<div class="fact-item">
+							<p>I can tell what type of music I was listening to when I read my code back</p>
+						</div>
+						<div class="fact-item">
+							<p>My field work was mostly trips to the -80 freezer</p>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	/* Page-specific: Beyond content width */
+	.beyond-content {
+		max-width: 70rem;
+		margin-inline: auto;
+	}
+
+	/* Page-specific: Hobby cards (unique to this page) */
+	.hobbies-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.5rem;
+	}
+
+	.hobby-card {
+		padding: 1.5rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-left: 3px solid var(--accent-light);
+		box-shadow: var(--shadow-sm);
+		transition: all var(--theme-transition);
+	}
+
+	.hobby-card:hover {
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.hobby-card h3 {
+		font-size: var(--text-lg);
+		color: var(--gray-0);
+		margin: 0 0 0.5rem;
+	}
+
+	.hobby-card p {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	/* Page-specific: Fun Facts (unique to this page) */
+	.facts-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		gap: 1rem;
+	}
+
+	.fact-item {
+		padding: 1rem 1.25rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-left: 3px solid var(--gray-400);
+		box-shadow: var(--shadow-sm);
+		transition: all var(--theme-transition);
+	}
+
+	.fact-item:hover {
+		border-left-color: var(--accent-regular);
+		transform: translateX(4px);
+	}
+
+	.fact-item p {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	/* Coming Soon placeholder */
+	.coming-soon {
+		padding: 3rem 2rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		text-align: center;
+		border: 2px dashed var(--gray-800);
+	}
+
+	.coming-soon p {
+		font-size: var(--text-lg);
+		color: var(--gray-400);
+		margin: 0;
+		font-style: italic;
+	}
+
+	@media (max-width: 50em) {
+		.hobbies-grid,
+		.facts-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

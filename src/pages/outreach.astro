@@ -1,0 +1,543 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Fetch outreach events
+const allOutreach = await getCollection('outreach');
+
+// Filter out drafts and sort by date
+const publishedOutreach = allOutreach
+	.filter(event => !event.data.draft)
+	.sort((a, b) => b.data.publishedDate.getTime() - a.data.publishedDate.getTime());
+
+// Group by year
+const eventsByYear = publishedOutreach.reduce((acc, event) => {
+	const year = event.data.year;
+	if (!acc[year]) {
+		acc[year] = [];
+	}
+	acc[year].push(event);
+	return acc;
+}, {} as Record<number, typeof publishedOutreach>);
+
+// Sort years in descending order
+const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
+---
+
+<BaseLayout title="Outreach & Engagement" description="Talks, workshops, hackathons, and educational activities">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<h1 class="page-title">Outreach & Engagement</h1>
+				<p class="page-subtitle">Talks, workshops, hackathons, courses, and community engagement</p>
+			</header>
+
+			<main class="outreach-content">
+				<!-- Filter Component -->
+				<div class="filter-wrapper">
+					<label class="filter-label">Filter by</label>
+					<div class="custom-select">
+						<button class="select-button" id="filter-button" aria-haspopup="listbox" aria-expanded="false">
+							<span class="select-text">All Events</span>
+							<svg class="select-arrow" width="12" height="8" viewBox="0 0 12 8" fill="none">
+								<path d="M1 1L6 6L11 1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+							</svg>
+						</button>
+						<ul class="select-dropdown" id="filter-dropdown" role="listbox" hidden>
+							<li class="select-option active" data-value="all" role="option">All Events</li>
+							<li class="select-option" data-value="invited" role="option">Invited Talks</li>
+							<li class="select-option" data-value="conference" role="option">Conferences</li>
+							<li class="select-option" data-value="workshop" role="option">Workshops</li>
+							<li class="select-option" data-value="poster" role="option">Posters</li>
+							<li class="select-option" data-value="hackathon" role="option">Hackathons</li>
+							<li class="select-option" data-value="course" role="option">Courses</li>
+							<li class="select-option" data-value="volunteering" role="option">Volunteering</li>
+							<li class="select-option" data-value="PhD trip" role="option">PhD Trips</li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="timeline">
+					{years.map((year) => (
+						<div class="timeline-section">
+							<div class="year-marker">
+								<span class="year">{year}</span>
+							</div>
+
+							<div class="events-group stack gap-6">
+								{eventsByYear[year].map((event) => (
+									<article class="event-card">
+										<div class="event-header">
+											<h3 class="event-title">{event.data.title}</h3>
+											<span class={`event-type ${event.data.type.replace(' ', '-')}`}>
+												{event.data.type === 'invited' ? 'Invited Talk' :
+												 event.data.type === 'conference' ? 'Conference' :
+												 event.data.type === 'workshop' ? 'Workshop' :
+												 event.data.type === 'poster' ? 'Poster' :
+												 event.data.type === 'hackathon' ? 'Hackathon' :
+												 event.data.type === 'course' ? 'Summer School' :
+												 event.data.type === 'volunteering' ? 'Volunteering' :
+												 event.data.type === 'PhD trip' ? 'PhD Trip' : event.data.type}
+											</span>
+										</div>
+										{event.data.authors && (
+											<p class="event-authors" set:html={event.data.authors}></p>
+										)}
+										<p class="event-venue">{event.data.venue}</p>
+										<p class="event-location">{event.data.location} • {event.data.date}</p>
+										<p class="event-description">
+											{event.data.description}
+										</p>
+										{event.data.links && event.data.links.length > 0 && (
+											<div class="event-links">
+												{event.data.links.map((link) => (
+													<a href={link.href} class="event-link">{link.label}</a>
+												))}
+											</div>
+										)}
+									</article>
+								))}
+							</div>
+						</div>
+					))}
+				</div>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<script>
+	// Custom dropdown functionality
+	const filterButton = document.getElementById('filter-button');
+	const filterDropdown = document.getElementById('filter-dropdown');
+	const selectText = filterButton?.querySelector('.select-text');
+	const selectOptions = filterDropdown?.querySelectorAll('.select-option');
+	const eventCards = document.querySelectorAll('.event-card');
+	const timelineSections = document.querySelectorAll('.timeline-section');
+
+	let isOpen = false;
+
+	function filterEvents(filterValue: string) {
+		eventCards.forEach((card) => {
+			const cardElement = card as HTMLElement;
+			const eventTypeElement = cardElement.querySelector('.event-type');
+			const eventType = eventTypeElement?.classList[1] || '';
+
+			if (filterValue === 'all' || eventType === filterValue) {
+				cardElement.style.display = '';
+			} else {
+				cardElement.style.display = 'none';
+			}
+		});
+
+		timelineSections.forEach((section) => {
+			const sectionElement = section as HTMLElement;
+			const visibleCards = sectionElement.querySelectorAll('.event-card:not([style*="display: none"])');
+			sectionElement.style.display = visibleCards.length > 0 ? '' : 'none';
+		});
+	}
+
+	// Toggle dropdown
+	filterButton?.addEventListener('click', () => {
+		isOpen = !isOpen;
+		filterButton.setAttribute('aria-expanded', String(isOpen));
+		filterDropdown!.hidden = !isOpen;
+	});
+
+	// Handle option selection
+	selectOptions?.forEach((option) => {
+		option.addEventListener('click', () => {
+			const value = option.getAttribute('data-value') || 'all';
+			const text = option.textContent || 'All Events';
+
+			// Update selected text
+			if (selectText) selectText.textContent = text;
+
+			// Update active state
+			selectOptions.forEach(opt => opt.classList.remove('active'));
+			option.classList.add('active');
+
+			// Filter events
+			filterEvents(value);
+
+			// Close dropdown
+			isOpen = false;
+			filterButton!.setAttribute('aria-expanded', 'false');
+			filterDropdown!.hidden = true;
+		});
+	});
+
+	// Close dropdown when clicking outside
+	document.addEventListener('click', (e) => {
+		if (!filterButton?.contains(e.target as Node) && !filterDropdown?.contains(e.target as Node)) {
+			isOpen = false;
+			filterButton!.setAttribute('aria-expanded', 'false');
+			filterDropdown!.hidden = true;
+		}
+	});
+</script>
+
+<style>
+	.page-header {
+		padding-block: 2.5rem;
+		text-align: center;
+		max-width: 50rem;
+		margin-inline: auto;
+	}
+
+	.page-title {
+		font-size: var(--text-4xl);
+		color: var(--gray-0);
+		margin: 0 0 0.5rem;
+	}
+
+	.page-subtitle {
+		font-size: var(--text-lg);
+		color: var(--gray-300);
+		margin: 0;
+	}
+
+	.outreach-content {
+		max-width: 65rem;
+		margin-inline: auto;
+	}
+
+	/* Filter Component */
+	.filter-wrapper {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 2rem;
+		padding-left: 2rem;
+	}
+
+	.filter-label {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		font-weight: 500;
+	}
+
+	.custom-select {
+		position: relative;
+		min-width: 180px;
+	}
+
+	.select-button {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.5rem 0.875rem;
+		font-size: var(--text-sm);
+		font-family: var(--font-brand);
+		font-weight: 500;
+		color: var(--gray-300);
+		background-color: var(--gray-999);
+		border: 1px solid var(--gray-700);
+		border-radius: 0;
+		cursor: pointer;
+		transition: all var(--theme-transition);
+		text-align: left;
+	}
+
+	.select-button:hover {
+		border-color: var(--accent-regular);
+	}
+
+	.select-arrow {
+		flex-shrink: 0;
+		color: var(--gray-400);
+		transition: transform var(--theme-transition);
+	}
+
+	.select-button[aria-expanded="true"] .select-arrow {
+		transform: rotate(180deg);
+	}
+
+	.select-dropdown {
+		position: absolute;
+		top: calc(100% + 0.25rem);
+		left: 0;
+		right: 0;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		background: var(--gray-999);
+		border: 1px solid var(--gray-700);
+		border-radius: 0;
+		box-shadow: var(--shadow-md);
+		z-index: 100;
+		max-height: 300px;
+		overflow-y: auto;
+	}
+
+	.select-option {
+		padding: 0.625rem 0.875rem;
+		font-size: var(--text-sm);
+		font-family: var(--font-brand);
+		font-weight: 500;
+		color: var(--gray-300);
+		cursor: pointer;
+		transition: all var(--theme-transition);
+	}
+
+	.select-option:hover {
+		background: var(--gray-800);
+		color: var(--gray-0);
+	}
+
+	.select-option.active {
+		background: var(--accent-regular);
+		color: var(--accent-text-over);
+	}
+
+	.timeline {
+		position: relative;
+		padding-left: 2rem;
+	}
+
+	.timeline::before {
+		content: '';
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 3px;
+		background: linear-gradient(180deg, var(--accent-regular), var(--accent-dark));
+	}
+
+	.timeline-section {
+		position: relative;
+		margin-bottom: 3rem;
+	}
+
+	.year-marker {
+		position: sticky;
+		top: 1rem;
+		z-index: 10;
+		margin-bottom: 2rem;
+	}
+
+	.year {
+		display: inline-block;
+		font-size: var(--text-2xl);
+		font-weight: 700;
+		color: var(--gray-0);
+		background: var(--accent-regular);
+		color: var(--accent-text-over);
+		padding: 0.5rem 1.5rem;
+		border-radius: 2rem;
+		box-shadow: var(--shadow-md);
+		position: relative;
+		left: -2.5rem;
+	}
+
+	.events-group {
+		padding-left: 1rem;
+	}
+
+	.event-card {
+		position: relative;
+		padding: 1.75rem;
+		background: var(--gray-999);
+		border-radius: 0.75rem;
+		border-left: 4px solid var(--accent-regular);
+		box-shadow: var(--shadow-sm);
+		transition: all var(--theme-transition);
+	}
+
+	.event-card::before {
+		content: '';
+		position: absolute;
+		left: -2.5rem;
+		top: 2rem;
+		width: 1rem;
+		height: 1rem;
+		background: var(--accent-regular);
+		border-radius: 50%;
+		border: 3px solid var(--gray-999);
+		box-shadow: 0 0 0 3px var(--accent-regular);
+	}
+
+	.event-card:hover {
+		transform: translateX(8px);
+		box-shadow: var(--shadow-lg);
+	}
+
+	.event-card:hover::before {
+		transform: scale(1.3);
+		box-shadow: 0 0 0 4px var(--accent-regular);
+	}
+
+	.event-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1rem;
+		margin-bottom: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.event-title {
+		font-size: var(--text-lg);
+		color: var(--gray-0);
+		margin: 0;
+		flex: 1;
+		min-width: 200px;
+	}
+
+	.event-type {
+		display: inline-block;
+		padding: 0.25rem 0.75rem;
+		border-radius: 0.375rem;
+		font-size: var(--text-sm);
+		font-weight: 600;
+		white-space: nowrap;
+	}
+
+	.event-type.invited {
+		background: var(--accent-regular);
+		color: var(--accent-text-over);
+	}
+
+	.event-type.conference {
+		background: var(--accent-light);
+		color: var(--gray-0);
+	}
+
+	.event-type.workshop {
+		background: var(--gray-600);
+		color: var(--gray-999);
+	}
+
+	.event-type.poster {
+		background: var(--gray-400);
+		color: var(--gray-999);
+	}
+
+	.event-type.hackathon {
+		background: #8b5cf6;
+		color: var(--gray-999);
+	}
+
+	.event-type.course {
+		background: #06b6d4;
+		color: var(--gray-999);
+	}
+
+	.event-type.volunteering {
+		background: #10b981;
+		color: var(--gray-999);
+	}
+
+	.event-type.PhD-trip {
+		background: var(--gray-500);
+		color: var(--gray-999);
+	}
+
+	.event-authors {
+		font-size: var(--text-sm);
+		color: var(--gray-300);
+		margin: 0.5rem 0 0.75rem;
+		font-style: italic;
+	}
+
+	.event-venue {
+		font-size: var(--text-base);
+		color: var(--gray-100);
+		margin: 0 0 0.25rem;
+		font-weight: 500;
+	}
+
+	.event-location {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		margin: 0 0 1rem;
+	}
+
+	.event-description {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.6;
+		margin: 0 0 1.25rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid var(--gray-800);
+	}
+
+	.event-links {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.event-link {
+		display: inline-block;
+		padding: 0.4rem 1rem;
+		background: transparent;
+		color: var(--accent-regular);
+		text-decoration: none;
+		border: 1px solid var(--accent-regular);
+		border-radius: 0;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		transition: all var(--theme-transition);
+	}
+
+	.event-link:hover {
+		background: var(--accent-regular);
+		color: var(--gray-999);
+	}
+
+	@media (max-width: 50em) {
+		.timeline {
+			padding-left: 1.5rem;
+		}
+
+		.timeline::before {
+			width: 2px;
+		}
+
+		.year {
+			font-size: var(--text-xl);
+			padding: 0.4rem 1rem;
+			left: -2rem;
+		}
+
+		.event-card::before {
+			left: -2rem;
+			width: 0.75rem;
+			height: 0.75rem;
+		}
+
+		.page-title {
+			font-size: var(--text-3xl);
+		}
+
+		.page-subtitle {
+			font-size: var(--text-base);
+		}
+
+		.event-card {
+			padding: 1.5rem;
+		}
+
+		.event-header {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+
+		.filter-wrapper {
+			padding-left: 1.5rem;
+		}
+
+		.filter-label {
+			font-size: var(--text-xs);
+		}
+
+		.filter-select {
+			font-size: var(--text-xs);
+			padding: 0.4rem 0.7rem;
+		}
+	}
+</style>

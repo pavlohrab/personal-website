@@ -1,0 +1,277 @@
+---
+// Scientifically accurate phylogenetic tree background animation
+---
+
+<canvas id="phylo-canvas"></canvas>
+
+<script>
+	function initPhyloCanvas() {
+		const canvas = document.getElementById('phylo-canvas') as HTMLCanvasElement;
+		if (!canvas) return;
+
+		// Clear any existing animation
+		const existingCtx = canvas.getContext('2d');
+		if (existingCtx) {
+			existingCtx.clearRect(0, 0, canvas.width, canvas.height);
+		}
+
+	if (canvas) {
+		const ctx = canvas.getContext('2d');
+		if (!ctx) throw new Error('Could not get canvas context');
+
+		// Set canvas size with device pixel ratio for sharp rendering
+		function resizeCanvas() {
+			const dpr = window.devicePixelRatio || 1;
+			canvas.width = window.innerWidth * dpr;
+			canvas.height = window.innerHeight * dpr;
+			canvas.style.width = window.innerWidth + 'px';
+			canvas.style.height = window.innerHeight + 'px';
+			// Reset transform before scaling to prevent accumulation
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			ctx.scale(dpr, dpr);
+		}
+		resizeCanvas();
+		window.addEventListener('resize', () => {
+			resizeCanvas();
+			// Recreate trees on resize
+			trees.length = 0;
+			for (let x = 0; x < window.innerWidth + gridSize; x += gridSize) {
+				for (let y = 0; y < window.innerHeight + gridSize; y += gridSize) {
+					trees.push(createNewTree(true));
+				}
+			}
+		});
+
+		// Tree structure - scientifically accurate phylogenetic tree
+		interface Node {
+			x: number;
+			y: number;
+			children: Node[];
+			isTerminal: boolean;
+			age: number;
+			branchLength: number; // Evolutionary distance
+			depth: number;
+		}
+
+		function createTree(x: number, y: number, depth: number, maxDepth: number, baseAngle?: number, parentLength?: number): Node {
+			// Branch length represents evolutionary time - SMALLER trees
+			const branchLength = parentLength ? parentLength * (0.65 + Math.random() * 0.5) : window.innerWidth * 0.018;
+
+			const node: Node = {
+				x,
+				y,
+				children: [],
+				isTerminal: depth >= maxDepth,
+				age: Math.random(),
+				branchLength,
+				depth
+			};
+
+			if (depth < maxDepth) {
+				// Bifurcation is most common in phylogenetics (binary tree)
+				const branches = Math.random() > 0.85 ? 3 : 2; // Mostly binary, rarely polytomy
+				const angleSpread = Math.PI / 4; // 45 degrees total spread
+
+				for (let i = 0; i < branches; i++) {
+					// Distribute branches symmetrically around base angle
+					const offset = (i - (branches - 1) / 2) * (angleSpread / (branches - 1 || 1));
+					const angle = baseAngle !== undefined
+						? baseAngle + offset + (Math.random() - 0.5) * 0.2
+						: offset + (Math.random() - 0.5) * 0.3;
+
+					const newX = x + Math.cos(angle) * branchLength;
+					const newY = y + Math.sin(angle) * branchLength;
+					node.children.push(createTree(newX, newY, depth + 1, maxDepth, angle, branchLength));
+				}
+			}
+
+			return node;
+		}
+
+		// Create radial tree (circular phylogram - common in phylogenetics)
+		function createRadialTree(centerX: number, centerY: number, maxDepth: number): Node {
+			const root: Node = {
+				x: centerX,
+				y: centerY,
+				children: [],
+				isTerminal: false,
+				age: Math.random(),
+				branchLength: window.innerWidth * 0.02, // Smaller
+				depth: 0
+			};
+
+			// Create radial branches (typically 3-6 main clades)
+			const branches = 3 + Math.floor(Math.random() * 4);
+			for (let i = 0; i < branches; i++) {
+				const angle = (i / branches) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
+				const baseLength = window.innerWidth * 0.018; // Smaller
+				const x = centerX + Math.cos(angle) * baseLength;
+				const y = centerY + Math.sin(angle) * baseLength;
+				root.children.push(createTree(x, y, 1, maxDepth, angle, baseLength));
+			}
+
+			return root;
+		}
+
+		// Tree with radial variant
+		interface TreeData {
+			tree: Node;
+			opacity: number;
+			phase: number;
+			type: 'linear' | 'radial';
+			centerX?: number;
+			centerY?: number;
+			lifetime: number;
+			maxLifetime: number;
+		}
+
+		// Create multiple trees
+		const trees: TreeData[] = [];
+		const gridSize = 500; // Increased spacing between trees
+
+		function createNewTree(startVisible: boolean = false): TreeData {
+			const isRadial = Math.random() > 0.7;
+			const x = Math.random() * (window.innerWidth + gridSize);
+			const y = Math.random() * (window.innerHeight + gridSize);
+			const maxLife = 8 + Math.random() * 10; // 8-18 seconds (longer lifetime)
+
+			// Smaller trees - 60% are small (depth 3), 40% medium (depth 4)
+			const depth = Math.random() > 0.6 ? 3 : 4;
+
+			return {
+				tree: isRadial ? createRadialTree(x, y, depth) : createTree(x, y, 0, depth),
+				opacity: Math.random(),
+				phase: Math.random() * Math.PI * 2,
+				type: isRadial ? 'radial' : 'linear',
+				centerX: isRadial ? x : undefined,
+				centerY: isRadial ? y : undefined,
+				lifetime: startVisible ? Math.random() * maxLife * 0.7 : 0,
+				maxLifetime: maxLife
+			};
+		}
+
+		// Initialize trees (start visible with random lifetimes)
+		for (let x = 0; x < window.innerWidth + gridSize; x += gridSize) {
+			for (let y = 0; y < window.innerHeight + gridSize; y += gridSize) {
+				trees.push(createNewTree(true));
+			}
+		}
+
+		// Animation
+		let time = 0;
+		function animate() {
+			time += 0.01;
+
+			// Clear canvas
+			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+			// Toned down colors - more subtle, scientific palette
+			const isDark = document.documentElement.classList.contains('theme-dark');
+			const branchColor = isDark ? '#666666' : '#999999';
+			const nodeColor = isDark ? '#777777' : '#888888';
+			const terminalColor = isDark ? '#d4a574' : '#c9925e'; // Muted amber instead of bright yellow
+
+			// Update and draw trees
+			trees.forEach((treeData, index) => {
+				// Update lifetime
+				treeData.lifetime += 0.016;
+
+				// Replace expired trees
+				if (treeData.lifetime >= treeData.maxLifetime) {
+					trees[index] = createNewTree();
+					return;
+				}
+
+				// Calculate lifetime-based fade
+				const fadeIn = Math.min(treeData.lifetime / 1, 1);
+				const timeUntilEnd = treeData.maxLifetime - treeData.lifetime;
+				const fadeOut = timeUntilEnd < 1.5 ? timeUntilEnd / 1.5 : 1;
+				const lifetimeFade = Math.min(fadeIn, fadeOut);
+
+				// Subtle opacity pulse - increased base opacity
+				const basePulse = (Math.sin(time * 0.5 + treeData.phase) + 1) / 2;
+				const treeOpacity = (basePulse * 0.3 + 0.4) * lifetimeFade; // Raised from 0.25+0.25 to 0.3+0.4
+
+				// Draw tree with movement and progressive branch appearance
+				function drawNode(node: Node, parentX?: number, parentY?: number) {
+					// Calculate branch-specific "growth" - branches appear/disappear progressively
+					const branchPhase = node.age * 8 + time * 1.5; // Faster phase change
+					const branchGrowth = (Math.sin(branchPhase) + 1) / 2; // 0 to 1
+					const branchVisibility = branchGrowth * 0.4 + 0.6; // 0.6 to 1 (more visible range)
+
+					// Add MORE movement to node positions - increased amplitude and speed
+					const swayX = Math.sin(time * 1.2 + node.age * 8) * 3.5; // Increased from 0.6*2 to 1.2*3.5
+					const swayY = Math.cos(time * 0.9 + node.age * 10) * 3.5; // Increased from 0.4*2 to 0.9*3.5
+					const nodeX = node.x + swayX;
+					const nodeY = node.y + swayY;
+
+					// Draw branch from parent
+					if (parentX !== undefined && parentY !== undefined) {
+						ctx.strokeStyle = branchColor;
+						ctx.globalAlpha = treeOpacity * branchVisibility;
+						// Variable line width with MORE pulsing
+						const widthPulse = Math.sin(time * 2 + node.age * 6) * 0.3 + 1; // Increased speed and amplitude
+						ctx.lineWidth = Math.max(1.5, (4 - node.depth * 0.5) * widthPulse);
+						ctx.beginPath();
+						ctx.moveTo(parentX, parentY);
+						ctx.lineTo(nodeX, nodeY);
+						ctx.stroke();
+					}
+
+					// Draw node with MORE pulsing
+					const nodePulse = Math.sin(time * 2.5 + node.age * 15) * 0.4 + 1; // Increased from 1.5*12 to 2.5*15
+
+					if (node.isTerminal) {
+						// Terminal nodes (taxa) pulse and glow - LARGER
+						ctx.fillStyle = terminalColor;
+						ctx.globalAlpha = treeOpacity * 0.95 * branchVisibility;
+						ctx.beginPath();
+						ctx.arc(nodeX, nodeY, 3.5 * nodePulse, 0, Math.PI * 2);
+						ctx.fill();
+					} else {
+						// Internal nodes (ancestors) - LARGER
+						ctx.fillStyle = nodeColor;
+						ctx.globalAlpha = treeOpacity * 0.8 * branchVisibility;
+						ctx.beginPath();
+						ctx.arc(nodeX, nodeY, 2.5 * nodePulse, 0, Math.PI * 2);
+						ctx.fill();
+					}
+
+					// Draw children recursively
+					node.children.forEach(child => drawNode(child, nodeX, nodeY));
+				}
+
+				drawNode(treeData.tree);
+			});
+
+			ctx.globalAlpha = 1;
+			requestAnimationFrame(animate);
+		}
+
+		animate();
+	}
+	}
+
+	// Initialize on load and re-initialize after View Transitions
+	document.addEventListener('astro:page-load', initPhyloCanvas);
+	initPhyloCanvas();
+</script>
+
+<style is:global>
+	#phylo-canvas {
+		position: fixed !important;
+		top: 0 !important;
+		left: 0 !important;
+		z-index: 0 !important;
+		pointer-events: none !important;
+		/* Increased visibility */
+		opacity: 0.55 !important;
+		background: transparent !important;
+		/* Let JS handle width/height to prevent stretching */
+		display: block !important;
+	}
+
+	.theme-dark #phylo-canvas {
+		opacity: 0.5 !important;
+	}
+</style>

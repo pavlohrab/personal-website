@@ -1,0 +1,58 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+// Generate static paths for all adventures
+export async function getStaticPaths() {
+	const adventures = await getCollection('adventures');
+	return adventures.map(adventure => ({
+		params: { slug: adventure.id },
+		props: { entry: adventure }
+	}));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="post-header">
+				<div class="breadcrumb">
+					<a href="/beyond/adventures/">← Back to Adventures</a>
+				</div>
+
+				{entry.data.date && (
+					<span class="post-date">{entry.data.date}</span>
+				)}
+				<h1 class="post-title">{entry.data.title}</h1>
+				<p class="post-subtitle">{entry.data.location}</p>
+			</header>
+
+			<main class="post-content">
+				<div class="content-section">
+					<Content />
+				</div>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<script>
+	// Smart back button: go to referring page if from same site, otherwise fallback to adventures list
+	const backLink = document.querySelector('.breadcrumb a');
+	if (backLink) {
+		backLink.addEventListener('click', (e) => {
+			const referrer = document.referrer;
+			const currentDomain = window.location.origin;
+
+			// If user came from somewhere on our site, go back in history
+			if (referrer && referrer.startsWith(currentDomain)) {
+				e.preventDefault();
+				window.history.back();
+			}
+			// Otherwise, let the default href handle it (goes to /beyond/adventures/)
+		});
+	}
+</script>

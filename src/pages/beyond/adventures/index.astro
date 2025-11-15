@@ -1,0 +1,274 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogCard from '../../../components/cards/BlogCard.astro';
+
+// Get all adventures, filter out drafts, and sort by published date (newest first)
+const allAdventures = (await getCollection('adventures'))
+	.filter(adventure => !adventure.data.draft)
+	.sort((a, b) => {
+		const dateA = a.data.publishedDate ? new Date(a.data.publishedDate).getTime() : 0;
+		const dateB = b.data.publishedDate ? new Date(b.data.publishedDate).getTime() : 0;
+		return dateB - dateA; // Newest first
+	});
+
+// Category labels for display
+const categoryLabels = {
+	'field-work': 'Field Work',
+	'hiking': 'Hiking',
+	'travel': 'Travel',
+	'personal': 'Personal'
+};
+---
+
+<BaseLayout title="Trips" description="Field work, research expeditions, and travel experiences">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<a href="/beyond/" class="back-link">← Back to Beyond Research</a>
+				<h1 class="page-title">Trips</h1>
+				<p class="page-subtitle">Field work, research expeditions, hiking, and travel experiences</p>
+			</header>
+
+			{allAdventures.length > 0 ? (
+				<>
+					<!-- Search -->
+					<div class="search-container">
+						<input
+							type="text"
+							id="search-input"
+							placeholder="Search trips..."
+							class="search-input"
+						/>
+					</div>
+
+					<div class="category-filter">
+						<span class="filter-label">Filter by type:</span>
+						<div class="filter-categories">
+							<button
+								class="filter-category active"
+								data-category=""
+							>
+								All
+							</button>
+							{Object.entries(categoryLabels).map(([key, label]) => (
+								<button
+									class="filter-category"
+									data-category={key}
+								>
+									{label}
+								</button>
+							))}
+						</div>
+					</div>
+
+					<main class="adventures-content">
+						<div class="adventures-list stack gap-6" id="adventures-list">
+							{allAdventures.map(adventure => (
+								<div data-category={adventure.data.category || ''}>
+									<BlogCard
+										date={adventure.data.location}
+										title={adventure.data.title}
+										excerpt={adventure.data.description}
+										href={`/beyond/adventures/${adventure.id}/`}
+									/>
+								</div>
+							))}
+						</div>
+						<div id="no-results" class="no-results" style="display: none;">
+							<p>No trips found matching your search.</p>
+						</div>
+					</main>
+				</>
+			) : (
+				<main class="adventures-content">
+					<div class="coming-soon">
+						<p>Coming soon...</p>
+					</div>
+				</main>
+			)}
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.category-filter {
+		max-width: 70rem;
+		margin-inline: auto;
+		margin-bottom: 2rem;
+	}
+
+	.filter-label {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		font-weight: 600;
+		margin-bottom: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.filter-categories {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.filter-category {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		background: var(--gray-999);
+		color: var(--gray-300);
+		text-decoration: none;
+		border: 1px solid var(--gray-800);
+		border-radius: 0.25rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		transition: all var(--theme-transition);
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.filter-category:hover {
+		background: var(--gray-800);
+		color: var(--gray-0);
+		border-color: var(--accent-regular);
+	}
+
+	.filter-category.active {
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		border-color: var(--accent-regular);
+	}
+
+	.adventures-content {
+		max-width: 60rem;
+		margin-inline: auto;
+	}
+
+	.adventures-list {
+		max-width: 60rem;
+		margin-inline: auto;
+	}
+
+	.search-container {
+		max-width: 60rem;
+		margin-inline: auto;
+		margin-bottom: 2rem;
+	}
+
+	.search-input {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		font-size: var(--text-base);
+		background: var(--gray-999);
+		color: var(--gray-0);
+		border: 2px solid var(--gray-800);
+		border-radius: 0.375rem;
+		transition: all var(--theme-transition);
+	}
+
+	.search-input:focus {
+		outline: none;
+		border-color: var(--accent-regular);
+		box-shadow: 0 0 0 3px var(--accent-overlay);
+	}
+
+	.search-input::placeholder {
+		color: var(--gray-400);
+	}
+
+	.no-results {
+		text-align: center;
+		padding: 3rem 1rem;
+		color: var(--gray-400);
+	}
+
+	.no-results p {
+		font-size: var(--text-lg);
+		margin: 0;
+	}
+
+	/* Coming Soon placeholder */
+	.coming-soon {
+		padding: 3rem 2rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		text-align: center;
+		border: 2px dashed var(--gray-800);
+	}
+
+	.coming-soon p {
+		font-size: var(--text-lg);
+		color: var(--gray-400);
+		margin: 0;
+		font-style: italic;
+	}
+</style>
+
+<script>
+	// Client-side search and filter functionality
+	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const adventuresList = document.getElementById('adventures-list');
+	const noResults = document.getElementById('no-results');
+	const filterCategories = document.querySelectorAll('.filter-category');
+
+	let currentCategory = '';
+
+	if (adventuresList && noResults) {
+		const adventureWrappers = Array.from(adventuresList.querySelectorAll('[data-category]'));
+
+		function applyFilters() {
+			const query = searchInput?.value.toLowerCase().trim() || '';
+			let visibleCount = 0;
+
+			adventureWrappers.forEach(wrapper => {
+				const element = wrapper as HTMLElement;
+				const category = element.dataset.category || '';
+
+				// Check category filter
+				const categoryMatch = !currentCategory || category === currentCategory;
+
+				// Check search query
+				let searchMatch = true;
+				if (query) {
+					const title = element.querySelector('.blog-title')?.textContent?.toLowerCase() || '';
+					const excerpt = element.querySelector('.blog-excerpt')?.textContent?.toLowerCase() || '';
+					const date = element.querySelector('.blog-date')?.textContent?.toLowerCase() || '';
+					searchMatch = title.includes(query) || excerpt.includes(query) || date.includes(query);
+				}
+
+				if (categoryMatch && searchMatch) {
+					element.style.display = '';
+					visibleCount++;
+				} else {
+					element.style.display = 'none';
+				}
+			});
+
+			noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+		}
+
+		// Search input handler
+		if (searchInput) {
+			searchInput.addEventListener('input', applyFilters);
+		}
+
+		// Category filter handlers
+		filterCategories.forEach(category => {
+			category.addEventListener('click', () => {
+				// Remove active class from all categories
+				filterCategories.forEach(c => c.classList.remove('active'));
+
+				// Add active class to clicked category
+				category.classList.add('active');
+
+				// Update current category
+				currentCategory = (category as HTMLElement).dataset.category || '';
+
+				// Apply filters
+				applyFilters();
+			});
+		});
+	}
+</script>

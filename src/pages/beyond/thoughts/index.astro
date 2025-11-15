@@ -1,0 +1,266 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogCard from '../../../components/cards/BlogCard.astro';
+
+// Get all thoughts, filter out drafts, and sort by published date (newest first)
+const allThoughts = (await getCollection('thoughts'))
+	.filter(thought => !thought.data.draft)
+	.sort((a, b) => {
+		const dateA = a.data.publishedDate ? new Date(a.data.publishedDate).getTime() : 0;
+		const dateB = b.data.publishedDate ? new Date(b.data.publishedDate).getTime() : 0;
+		return dateB - dateA; // Newest first
+	});
+
+// Get unique tags from all thoughts
+const allTags = [...new Set(allThoughts.flatMap(thought => thought.data.tags || []))].sort();
+---
+
+<BaseLayout title="Thoughts" description="Essays, reflections, and thoughts on science, life, and everything in between">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<a href="/beyond/" class="back-link">← Back to Beyond Research</a>
+				<h1 class="page-title">Thoughts</h1>
+				<p class="page-subtitle">Essays, reflections, and thoughts on science, life, and everything in between</p>
+			</header>
+
+			{allThoughts.length > 0 ? (
+				<>
+					<!-- Search -->
+					<div class="search-container">
+						<input
+							type="text"
+							id="search-input"
+							placeholder="Search thoughts..."
+							class="search-input"
+						/>
+					</div>
+
+					{allTags.length > 0 && (
+						<div class="tag-filter">
+							<span class="filter-label">Filter by topic:</span>
+							<div class="filter-tags">
+								<button
+									class="filter-tag active"
+									data-tag=""
+								>
+									All
+								</button>
+								{allTags.map(tag => (
+									<button
+										class="filter-tag"
+										data-tag={tag}
+									>
+										{tag}
+									</button>
+								))}
+							</div>
+						</div>
+					)}
+
+					<main class="thoughts-content">
+						<div class="blog-list stack gap-6" id="thoughts-list">
+							{allThoughts.map(thought => (
+								<div data-tags={JSON.stringify(thought.data.tags || [])}>
+									<BlogCard
+										date={thought.data.date}
+										title={thought.data.title}
+										excerpt={thought.data.excerpt}
+										href={`/beyond/thoughts/${thought.id}/`}
+									/>
+								</div>
+							))}
+						</div>
+						<div id="no-results" class="no-results" style="display: none;">
+							<p>No thoughts found matching your search.</p>
+						</div>
+					</main>
+				</>
+			) : (
+				<main class="thoughts-content">
+					<div class="coming-soon">
+						<p>Coming soon...</p>
+					</div>
+				</main>
+			)}
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.tag-filter {
+		max-width: 60rem;
+		margin-inline: auto;
+		margin-bottom: 2rem;
+	}
+
+	.filter-label {
+		display: block;
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		font-weight: 600;
+		margin-bottom: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	.filter-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.filter-tag {
+		display: inline-block;
+		padding: 0.5rem 1rem;
+		background: var(--gray-999);
+		color: var(--gray-300);
+		text-decoration: none;
+		border: 1px solid var(--gray-800);
+		border-radius: 0.25rem;
+		font-size: var(--text-sm);
+		font-weight: 500;
+		transition: all var(--theme-transition);
+		cursor: pointer;
+		font-family: inherit;
+	}
+
+	.filter-tag:hover {
+		background: var(--gray-800);
+		color: var(--gray-0);
+		border-color: var(--accent-regular);
+	}
+
+	.filter-tag.active {
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		border-color: var(--accent-regular);
+	}
+
+	.thoughts-content {
+		max-width: 60rem;
+		margin-inline: auto;
+	}
+
+	.search-container {
+		max-width: 60rem;
+		margin-inline: auto;
+		margin-bottom: 2rem;
+	}
+
+	.search-input {
+		width: 100%;
+		padding: 0.75rem 1rem;
+		font-size: var(--text-base);
+		background: var(--gray-999);
+		color: var(--gray-0);
+		border: 2px solid var(--gray-800);
+		border-radius: 0.375rem;
+		transition: all var(--theme-transition);
+	}
+
+	.search-input:focus {
+		outline: none;
+		border-color: var(--accent-regular);
+		box-shadow: 0 0 0 3px var(--accent-overlay);
+	}
+
+	.search-input::placeholder {
+		color: var(--gray-400);
+	}
+
+	.no-results {
+		text-align: center;
+		padding: 3rem 1rem;
+		color: var(--gray-400);
+	}
+
+	.no-results p {
+		font-size: var(--text-lg);
+		margin: 0;
+	}
+
+	/* Coming Soon placeholder */
+	.coming-soon {
+		padding: 3rem 2rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		text-align: center;
+		border: 2px dashed var(--gray-800);
+	}
+
+	.coming-soon p {
+		font-size: var(--text-lg);
+		color: var(--gray-400);
+		margin: 0;
+		font-style: italic;
+	}
+</style>
+
+<script>
+	// Client-side search and filter functionality
+	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const thoughtsList = document.getElementById('thoughts-list');
+	const noResults = document.getElementById('no-results');
+	const filterTags = document.querySelectorAll('.filter-tag');
+
+	let currentTag = '';
+
+	if (thoughtsList && noResults) {
+		const thoughtWrappers = Array.from(thoughtsList.querySelectorAll('[data-tags]'));
+
+		function applyFilters() {
+			const query = searchInput?.value.toLowerCase().trim() || '';
+			let visibleCount = 0;
+
+			thoughtWrappers.forEach(wrapper => {
+				const element = wrapper as HTMLElement;
+				const tags = JSON.parse(element.dataset.tags || '[]') as string[];
+
+				// Check tag filter
+				const tagMatch = !currentTag || tags.includes(currentTag);
+
+				// Check search query
+				let searchMatch = true;
+				if (query) {
+					const title = element.querySelector('.blog-title')?.textContent?.toLowerCase() || '';
+					const excerpt = element.querySelector('.blog-excerpt')?.textContent?.toLowerCase() || '';
+					const date = element.querySelector('.blog-date')?.textContent?.toLowerCase() || '';
+					searchMatch = title.includes(query) || excerpt.includes(query) || date.includes(query);
+				}
+
+				if (tagMatch && searchMatch) {
+					element.style.display = '';
+					visibleCount++;
+				} else {
+					element.style.display = 'none';
+				}
+			});
+
+			noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+		}
+
+		// Search input handler
+		if (searchInput) {
+			searchInput.addEventListener('input', applyFilters);
+		}
+
+		// Tag filter handlers
+		filterTags.forEach(tag => {
+			tag.addEventListener('click', () => {
+				// Remove active class from all tags
+				filterTags.forEach(t => t.classList.remove('active'));
+
+				// Add active class to clicked tag
+				tag.classList.add('active');
+
+				// Update current tag
+				currentTag = (tag as HTMLElement).dataset.tag || '';
+
+				// Apply filters
+				applyFilters();
+			});
+		});
+	}
+</script>

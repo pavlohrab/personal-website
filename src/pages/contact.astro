@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<BaseLayout title="Contact | Pavlo Hrab" description="Get in touch with Pavlo Hrab">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<h1 class="page-title">Get in Touch</h1>
+				<p class="page-subtitle">Feel free to reach out for collaborations, questions, or just to say hi!</p>
+				<a href="mailto:pavlo.hrab@wur.nl" class="contact-me-button">
+					Contact Me
+				</a>
+			</header>
+
+			<main class="contact-content">
+				<section class="contact-info">
+					<h2 class="section-title">Contact Information</h2>
+
+					<div class="contact-grid">
+						<div class="contact-card">
+							<Icon icon="paper-plane-tilt" size="2em" />
+							<h3>Email</h3>
+							<a href="mailto:pavlo.hrab@wur.nl" class="contact-link">
+								pavlo.hrab[at]wur.nl
+							</a>
+						</div>
+
+						<div class="contact-card">
+							<Icon icon="github-logo" size="2em" />
+							<h3>GitHub</h3>
+							<a href="https://github.com/pavlohrab" class="contact-link" target="_blank" rel="noopener">
+								github.com/pavlohrab
+							</a>
+						</div>
+
+						<div class="contact-card">
+							<Icon icon="linkedin-logo" size="2em" />
+							<h3>LinkedIn</h3>
+							<a href="https://linkedin.com/in/phrab" class="contact-link" target="_blank" rel="noopener">
+								linkedin.com/in/phrab
+							</a>
+						</div>
+
+						<div class="contact-card">
+							<Icon icon="orcid-logo" size="2em" />
+							<h3>ORCID</h3>
+							<a href="https://orcid.org/0000-0002-0742-8478" class="contact-link" target="_blank" rel="noopener">
+								0000-0002-0742-8478
+							</a>
+						</div>
+
+						<div class="contact-card">
+							<Icon icon="scholar-logo" size="2em" />
+							<h3>Google Scholar</h3>
+							<a href="https://scholar.google.com/citations?user=VKJQl6UAAAAJ" class="contact-link" target="_blank" rel="noopener">
+								View Profile
+							</a>
+						</div>
+
+						<div class="contact-card">
+							<Icon icon="researchgate-logo" size="2em" />
+							<h3>ResearchGate</h3>
+							<a href="https://researchgate.net/profile/Pavlo-Hrab-2" class="contact-link" target="_blank" rel="noopener">
+								View Profile
+							</a>
+						</div>
+					</div>
+				</section>
+
+				<section class="location-section">
+					<h2 class="section-title">Location</h2>
+					<div class="location-card">
+						<p class="location-text">
+							<strong>Microbiology Department</strong><br/>
+							<strong>Bioinformatics Group</strong><br/>
+							Helix building 124, Office 6028 <br/>
+							Stippeneng 4<br/>
+							6708WE, Wageningen<br/>
+							Wageningen University & Research<br/>
+							the Netherlands
+						</p>
+					</div>
+				</section>
+
+				<section class="message-section">
+					<h2 class="section-title">Collaborations & Inquiries</h2>
+					<div class="message-card">
+						<p>
+							I'm always open to collaborating on (marine) microbiome bioinformatics projects, discussing research ideas,
+							or answering questions.
+						</p>
+						<p>
+							Don't hesitate to contact me! I typically respond within 2-3 business days.
+						</p>
+					</div>
+				</section>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
+
+<style>
+	.page-header {
+		padding-block: 2.5rem;
+		text-align: center;
+		max-width: 50rem;
+		margin-inline: auto;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 1.5rem;
+	}
+
+	.page-title {
+		font-size: var(--text-4xl);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.page-subtitle {
+		font-size: var(--text-lg);
+		color: var(--gray-300);
+		margin: 0;
+	}
+
+	.contact-me-button {
+		display: inline-block;
+		padding: 0.75rem 2.5rem;
+		background: var(--accent-regular);
+		color: var(--gray-999);
+		text-decoration: none;
+		border-radius: 0;
+		font-size: var(--text-base);
+		font-weight: 600;
+		transition: all var(--theme-transition);
+		border: 1px solid var(--accent-regular);
+	}
+
+	.contact-me-button:hover {
+		background: var(--accent-dark);
+		opacity: 0.9;
+		transform: translateY(-2px);
+		box-shadow: var(--shadow-md);
+	}
+
+	.contact-content {
+		max-width: 70rem;
+		margin-inline: auto;
+		display: flex;
+		flex-direction: column;
+		gap: 4rem;
+	}
+
+	.section-title {
+		font-size: var(--text-2xl);
+		color: var(--gray-0);
+		margin-bottom: 2rem;
+		text-align: center;
+	}
+
+	.contact-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 2rem;
+	}
+
+	.contact-card {
+		padding: 2rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-top: 3px solid var(--accent-regular);
+		box-shadow: var(--shadow-sm);
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.contact-card h3 {
+		font-size: var(--text-lg);
+		color: var(--gray-0);
+		margin: 0;
+	}
+
+	.contact-link {
+		color: var(--gray-300);
+		text-decoration: none;
+		font-size: var(--text-base);
+		word-break: break-all;
+		transition: color var(--theme-transition);
+	}
+
+	.contact-link:hover {
+		color: var(--accent-regular);
+	}
+
+	.location-card {
+		max-width: 40rem;
+		margin-inline: auto;
+		padding: 2rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-left: 4px solid var(--accent-light);
+		box-shadow: var(--shadow-sm);
+		text-align: center;
+	}
+
+	.location-text {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.8;
+		margin: 0;
+	}
+
+	.location-text strong {
+		color: var(--gray-0);
+		font-size: var(--text-lg);
+	}
+
+	.message-section {
+		margin-bottom: 2rem;
+	}
+
+	.message-card {
+		max-width: 50rem;
+		margin-inline: auto;
+		padding: 2rem;
+		background: var(--gray-999);
+		border-radius: 0.5rem;
+		border-left: 4px solid var(--accent-regular);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.message-card p {
+		font-size: var(--text-base);
+		color: var(--gray-300);
+		line-height: 1.6;
+		margin-bottom: 1rem;
+	}
+
+	.message-card p:last-of-type {
+		margin-bottom: 0;
+	}
+
+	.message-card ul {
+		margin: 1rem 0 1rem 1.5rem;
+		color: var(--gray-300);
+		line-height: 1.8;
+	}
+
+	.message-card li {
+		margin-bottom: 0.5rem;
+	}
+
+	@media (max-width: 50em) {
+		.page-title {
+			font-size: var(--text-3xl);
+		}
+
+		.page-subtitle {
+			font-size: var(--text-base);
+		}
+
+		.section-title {
+			font-size: var(--text-xl);
+		}
+
+		.contact-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.contact-card {
+			padding: 1.5rem;
+		}
+	}
+</style>

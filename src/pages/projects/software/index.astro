@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProjectCard from '../../../components/cards/ProjectCard.astro';
+
+// Get all software projects
+const softwareProjects = (await getCollection('projects'))
+	.filter(p => p.data.category === 'software')
+	.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Software & Tools" description="Open-source software and bioinformatics tools">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<a href="/projects/" class="back-link">← Back to Projects</a>
+				<h1 class="page-title">Software & Tools</h1>
+				<p class="page-subtitle">Open-source projects, packages, and bioinformatics tools</p>
+			</header>
+
+			<main class="projects-content">
+				<div class="projects-grid">
+					{softwareProjects.map(project => (
+						<ProjectCard
+							title={project.data.title}
+							status={project.data.status}
+							meta={project.data.meta}
+							description={project.data.description}
+							tags={project.data.tags}
+							links={project.data.links}
+							href={`/projects/${project.id}/`}
+						/>
+					))}
+				</div>
+			</main>
+		</div>
+	</div>
+</BaseLayout>
