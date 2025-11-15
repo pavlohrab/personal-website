@@ -13,7 +13,7 @@ const archiveProjects = (await getCollection('projects'))
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header">
-				<a href="/projects/" class="back-link">← Back to Projects</a>
+				<a href={`${import.meta.env.BASE_URL}projects/`} class="back-link">← Back to Projects</a>
 				<h1 class="page-title">Past Projects</h1>
 				<p class="page-subtitle">Completed research, thesis work, and academic projects</p>
 			</header>

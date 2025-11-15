@@ -48,8 +48,8 @@ const latestNews = (await getCollection('news'))
 						</p>
 					</div>
 					<div class="hero-cta">
-						<a href="/cv/" class="hero-button primary">View CV</a>
-						<a href="/contact/" class="hero-button primary">Contact Me</a>
+						<a href={`${import.meta.env.BASE_URL}cv/`} class="hero-button primary">View CV</a>
+						<a href={`${import.meta.env.BASE_URL}contact/`} class="hero-button primary">Contact Me</a>
 					</div>
 				</Hero>
 
@@ -128,7 +128,7 @@ const latestNews = (await getCollection('news'))
 					</div>
 
 					<div class="cta">
-						<CallToAction href="/projects/">
+						<CallToAction href={`${import.meta.env.BASE_URL}projects/`}>
 							View All Projects
 							<Icon icon="arrow-right" size="1.2em" />
 						</CallToAction>
@@ -154,7 +154,7 @@ const latestNews = (await getCollection('news'))
 				</div>
 
 				<div class="cta">
-					<CallToAction href="/publications/">
+					<CallToAction href={`${import.meta.env.BASE_URL}publications/`}>
 						View All Publications
 						<Icon icon="arrow-right" size="1.2em" />
 					</CallToAction>
@@ -191,7 +191,7 @@ const latestNews = (await getCollection('news'))
 				</div>
 
 				<div class="cta">
-					<CallToAction href="/news/">
+					<CallToAction href={`${import.meta.env.BASE_URL}news/`}>
 						View All News
 						<Icon icon="arrow-right" size="1.2em" />
 					</CallToAction>

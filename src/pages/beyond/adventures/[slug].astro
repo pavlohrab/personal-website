@@ -20,7 +20,7 @@ const { Content } = await render(entry);
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="post-header">
 				<div class="breadcrumb">
-					<a href="/beyond/adventures/">← Back to Adventures</a>
+					<a href={`${import.meta.env.BASE_URL}beyond/adventures/`}>← Back to Adventures</a>
 				</div>
 
 				{entry.data.date && (

@@ -5,13 +5,13 @@ import ThemeToggle from './ThemeToggle.astro';
 
 /** Main menu items */
 const textLinks: { label: string; href: string }[] = [
-	{ label: 'Home', href: '/' },
-	{ label: 'CV', href: '/cv/' },
-	{ label: 'Publications', href: '/publications/' },
-	{ label: 'Outreach', href: '/outreach/' },
-	{ label: 'Projects', href: '/projects/' },
-	{ label: 'Beyond Research', href: '/beyond/' },
-	{ label: 'Contact', href: '/contact/' },
+	{ label: 'Home', href: `${import.meta.env.BASE_URL}` },
+	{ label: 'CV', href: `${import.meta.env.BASE_URL}cv/` },
+	{ label: 'Publications', href: `${import.meta.env.BASE_URL}publications/` },
+	{ label: 'Outreach', href: `${import.meta.env.BASE_URL}outreach/` },
+	{ label: 'Projects', href: `${import.meta.env.BASE_URL}projects/` },
+	{ label: 'Beyond Research', href: `${import.meta.env.BASE_URL}beyond/` },
+	{ label: 'Contact', href: `${import.meta.env.BASE_URL}contact/` },
 ];
 
 /** Icon links to social media — edit these with links to your profiles! */
@@ -34,7 +34,7 @@ const isCurrentPage = (href: string) => {
 
 <nav>
 	<div class="menu-header">
-		<a href="/" class="site-title">
+		<a href={import.meta.env.BASE_URL} class="site-title">
 			Pavlo Hrab
 		</a>
 		<menu-button>

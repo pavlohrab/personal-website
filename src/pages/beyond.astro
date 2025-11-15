@@ -63,7 +63,7 @@ const latestAdventures = (await getCollection('adventures'))
 				<section class="blog-section">
 					<div class="section-header-with-link">
 						<h2 class="section-title">Thoughts</h2>
-						{latestThoughts.length > 0 && <a href="/beyond/thoughts/" class="view-all-link">View All →</a>}
+						{latestThoughts.length > 0 && <a href={`${import.meta.env.BASE_URL}beyond/thoughts/`} class="view-all-link">View All →</a>}
 					</div>
 					{latestThoughts.length > 0 ? (
 						<div class="blog-list stack gap-6">
@@ -72,7 +72,7 @@ const latestAdventures = (await getCollection('adventures'))
 									date={thought.data.date}
 									title={thought.data.title}
 									excerpt={thought.data.excerpt}
-									href={`/beyond/thoughts/${thought.id}/`}
+									href={`${import.meta.env.BASE_URL}beyond/thoughts/${thought.id}/`}
 								/>
 							))}
 						</div>
@@ -87,7 +87,7 @@ const latestAdventures = (await getCollection('adventures'))
 				<section class="travel-section">
 					<div class="section-header-with-link">
 						<h2 class="section-title">Trips</h2>
-						{latestAdventures.length > 0 && <a href="/beyond/adventures/" class="view-all-link">View All →</a>}
+						{latestAdventures.length > 0 && <a href={`${import.meta.env.BASE_URL}beyond/adventures/`} class="view-all-link">View All →</a>}
 					</div>
 					{latestAdventures.length > 0 ? (
 						<div class="travel-grid">
@@ -96,7 +96,7 @@ const latestAdventures = (await getCollection('adventures'))
 									date={adventure.data.location}
 									title={adventure.data.title}
 									excerpt={adventure.data.description}
-									href={`/beyond/adventures/${adventure.id}/`}
+									href={`${import.meta.env.BASE_URL}beyond/adventures/${adventure.id}/`}
 								/>
 							))}
 						</div>

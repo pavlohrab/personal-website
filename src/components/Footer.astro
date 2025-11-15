@@ -6,7 +6,7 @@ const currentYear = new Date().getFullYear();
 
 <footer>
 	<p>&copy; {currentYear} Pavlo Hrab. All rights reserved.</p>
-	<p class="footer-contact"><a href="/contact/">Get in Touch</a></p>
+	<p class="footer-contact"><a href={`${import.meta.env.BASE_URL}contact/`}>Get in Touch</a></p>
 	<p class="claude-credit">Made with help of Claude Sonnet 4.5</p>
 </footer>
 <style>
