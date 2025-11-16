@@ -46,9 +46,9 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 						<ul class="select-dropdown" id="filter-dropdown" role="listbox" hidden>
 							<li class="select-option active" data-value="all" role="option">All Events</li>
 							<li class="select-option" data-value="invited" role="option">Invited Talks</li>
-							<li class="select-option" data-value="conference" role="option">Conferences</li>
+							<li class="select-option" data-value="conference" role="option">Conference Talks</li>
 							<li class="select-option" data-value="workshop" role="option">Workshops</li>
-							<li class="select-option" data-value="poster" role="option">Posters</li>
+							<li class="select-option" data-value="poster" role="option">Conference Posters</li>
 							<li class="select-option" data-value="hackathon" role="option">Hackathons</li>
 							<li class="select-option" data-value="course" role="option">Courses</li>
 							<li class="select-option" data-value="volunteering" role="option">Volunteering</li>
@@ -71,11 +71,11 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 											<h3 class="event-title">{event.data.title}</h3>
 											<span class={`event-type ${event.data.type.replace(' ', '-')}`}>
 												{event.data.type === 'invited' ? 'Invited Talk' :
-												 event.data.type === 'conference' ? 'Conference' :
+												 event.data.type === 'conference' ? 'Conference Talk' :
 												 event.data.type === 'workshop' ? 'Workshop' :
-												 event.data.type === 'poster' ? 'Poster' :
+												 event.data.type === 'poster' ? 'Conference Poster' :
 												 event.data.type === 'hackathon' ? 'Hackathon' :
-												 event.data.type === 'course' ? 'Summer School' :
+												 event.data.type === 'course' ? 'Course' :
 												 event.data.type === 'volunteering' ? 'Volunteering' :
 												 event.data.type === 'PhD trip' ? 'PhD Trip' : event.data.type}
 											</span>
@@ -465,8 +465,8 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 	}
 
 	.event-type.conference {
-		background: var(--accent-light);
-		color: var(--gray-0);
+		background: #7b9db5;
+		color: var(--gray-999);
 	}
 
 	.event-type.workshop {
@@ -475,7 +475,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 	}
 
 	.event-type.poster {
-		background: var(--gray-400);
+		background: #d4a574;
 		color: var(--gray-999);
 	}
 
