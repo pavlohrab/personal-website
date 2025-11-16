@@ -210,13 +210,13 @@ const latestNews = (await getCollection('news'))
 		padding-block: 2rem;
 	}
 
-	/* On mobile: show image first, then text */
+	/* On mobile: show image first (order: -1), then text (order: 1) */
 	.hero > :first-child {
-		order: 2;
+		order: 1;
 	}
 
 	.hero-image {
-		order: 1;
+		order: -1;
 	}
 
 	.intro-text {
