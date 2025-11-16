@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProjectCard from '../../../components/cards/ProjectCard.astro';
+
+// Get all featured research projects
+const featuredProjects = (await getCollection('projects'))
+	.filter(p => p.data.featured && p.data.category === 'research')
+	.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="Featured Research Projects" description="Current and ongoing research projects">
+	<div class="stack gap-20 lg:gap-48">
+		<div class="wrapper stack gap-8 lg:gap-20">
+			<header class="page-header">
+				<a href={`${import.meta.env.BASE_URL}projects/`} class="back-link">← Back to Projects</a>
+				<h1 class="page-title">Featured Research Projects</h1>
+				<p class="page-subtitle">Current research projects and ongoing work</p>
+			</header>
+
+			<main class="projects-content">
+				<div class="projects-grid">
+					{featuredProjects.map(project => (
+						<ProjectCard
+							title={project.data.title}
+							status={project.data.status}
+							meta={project.data.meta}
+							description={project.data.description}
+							tags={project.data.tags}
+							links={project.data.links}
+							href={`/projects/${project.id}/`}
+							featured={project.data.featured}
+						/>
+					))}
+				</div>
+			</main>
+		</div>
+	</div>
+</BaseLayout>

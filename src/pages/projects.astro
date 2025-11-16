@@ -36,7 +36,7 @@ const archiveProjects = allProjects
 			<main class="projects-content stack gap-15 lg:gap-20">
 				<!-- Featured Projects -->
 				<Section>
-					<SectionHeader title="Featured Projects" />
+					<SectionHeader title="Featured Projects" viewAllLink="/projects/featured/" />
 					<Grid variant="projects">
 						{featuredProjects.map(project => (
 							<ProjectCard
@@ -99,5 +99,14 @@ const archiveProjects = allProjects
 	.projects-content {
 		max-width: 75rem;
 		margin-inline: auto;
+	}
+</style>
+
+<style is:global>
+	/* Mobile optimization: Show only first item in each section */
+	@media (max-width: 50em) {
+		.projects-grid > .project-card-link:nth-child(n+2) {
+			display: none !important;
+		}
 	}
 </style>

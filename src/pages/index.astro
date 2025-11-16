@@ -44,7 +44,7 @@ const latestNews = (await getCollection('news'))
 				>
 					<div class="intro-text">
 						<p>
-							Bioinformatician studying microbial communities by combining molecular lab and computational multi-omics approaches. Currently focused on Acidobacteriota - a biosynthetically rich yet understudied bacterial phylum. I integrate metagenomics, metatranscriptomics, and cultivation to discover novel natural products and understand how bacteria adapt to their hosts.
+							Bioinformatician studying microbial communities by combining molecular lab and computational multi-omics approaches.<span class="mobile-hide"> Currently focused on Acidobacteriota - a biosynthetically rich yet understudied bacterial phylum. I integrate metagenomics, metatranscriptomics, and cultivation to discover novel natural products and understand how bacteria adapt to their hosts.</span>
 						</p>
 					</div>
 					<div class="hero-cta">
@@ -578,6 +578,31 @@ const latestNews = (await getCollection('news'))
 	}
 
 	@media (max-width: 50em) {
+		/* Hide extra intro text on mobile */
+		.mobile-hide {
+			display: none;
+		}
+
+		/* Research Focus: Hide descriptions, show only titles */
+		.interest-card p {
+			display: none;
+		}
+
+		/* Projects: Show only first project on mobile */
+		.featured-projects .scroll-reveal:nth-child(n+2) {
+			display: none;
+		}
+
+		/* Publications: Show only first publication on mobile */
+		.recent-publications .pub-preview:nth-child(n+2) {
+			display: none;
+		}
+
+		/* News: Show only first news item on mobile */
+		.news-list > *:nth-child(n+2) {
+			display: none;
+		}
+
 		.stats-grid {
 			grid-template-columns: repeat(2, 1fr);
 		}

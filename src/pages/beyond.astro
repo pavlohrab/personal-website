@@ -226,5 +226,20 @@ const latestAdventures = (await getCollection('adventures'))
 		.facts-grid {
 			grid-template-columns: 1fr;
 		}
+
+		/* Thoughts: Show only first item on mobile */
+		.blog-list > *:nth-child(n+2) {
+			display: none;
+		}
+
+		/* Travel/Adventures: Show only first item on mobile */
+		.travel-grid > *:nth-child(n+2) {
+			display: none;
+		}
+
+		/* Fun Facts: Show only first 3 on mobile */
+		.facts-grid > *:nth-child(n+4) {
+			display: none;
+		}
 	}
 </style>
