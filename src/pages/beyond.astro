@@ -112,19 +112,10 @@ const latestAdventures = (await getCollection('adventures'))
 					<h2 class="section-title">Random Facts</h2>
 					<div class="facts-grid">
 						<div class="fact-item">
-							<p>I name my plants. Bob, the cactus, didn't survive the PhD with me</p>
-						</div>
-						<div class="fact-item">
-							<p>Terminal is the most perfect place to be</p>
-						</div>
-						<div class="fact-item">
-							<p>Once got so into foraging Icelandic moss for tea that I accidentally cleared the entire patch</p>
-						</div>
-						<div class="fact-item">
-							<p>Both coffee and chamomile tea take me through the day</p>
-						</div>
-						<div class="fact-item">
 							<p>I can tell what type of music I was listening to when I read my code back</p>
+						</div>
+						<div class="fact-item">
+							<p>I name my plants. Bob, the cactus, didn't survive the PhD with me</p>
 						</div>
 						<div class="fact-item">
 							<p>My field work was mostly trips to the -80 freezer</p>
@@ -234,11 +225,6 @@ const latestAdventures = (await getCollection('adventures'))
 
 		/* Travel/Adventures: Show only first item on mobile */
 		.travel-grid > *:nth-child(n+2) {
-			display: none;
-		}
-
-		/* Fun Facts: Show only first 3 on mobile */
-		.facts-grid > *:nth-child(n+4) {
 			display: none;
 		}
 	}
