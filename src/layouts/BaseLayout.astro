@@ -67,11 +67,7 @@ const { title, description} = Astro.props;
 				/* Allow canvas to position within this container */
 			}
 
-			/* Ensure content appears above canvas */
-			.backgrounds > :not(canvas) {
-				position: relative;
-				z-index: 1;
-			}
+			/* Content will naturally appear above canvas (z-index: -1) */
 		</style>
 	</body>
 </html>
