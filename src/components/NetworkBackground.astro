@@ -57,12 +57,9 @@
 				const widthChange = Math.abs(window.innerWidth - prevWidth);
 				const heightChange = Math.abs(window.innerHeight - prevHeight);
 
-				// Only regenerate trees if size change is significant (>100px)
+				// Only regenerate trees if size change is significant (>200px)
 				// This prevents regeneration during mobile scroll bounce and URL bar changes
-				if (widthChange > 100 || heightChange > 100) {
-					prevWidth = window.innerWidth;
-					prevHeight = window.innerHeight;
-
+				if (widthChange > 200 || heightChange > 200) {
 					// Update grid size based on new viewport
 					gridSize = isMobile ? 280 : 500;
 					// Recreate trees on significant resize
@@ -73,6 +70,10 @@
 						}
 					}
 				}
+
+				// Always update tracked dimensions to current state
+				prevWidth = window.innerWidth;
+				prevHeight = window.innerHeight;
 			}, 150); // 150ms debounce delay
 		});
 
