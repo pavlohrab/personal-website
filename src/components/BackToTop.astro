@@ -7,24 +7,37 @@ import Icon from './Icon.astro';
 </button>
 
 <script>
-	const backToTopButton = document.getElementById('back-to-top');
+	function initBackToTop() {
+		const backToTopButton = document.getElementById('back-to-top');
+		if (!backToTopButton) return;
 
-	// Show/hide button based on scroll position
-	window.addEventListener('scroll', () => {
-		if (window.scrollY > 300) {
-			backToTopButton?.classList.add('visible');
-		} else {
-			backToTopButton?.classList.remove('visible');
+		// Check initial scroll position
+		function checkScrollPosition() {
+			if (window.scrollY > 300) {
+				backToTopButton.classList.add('visible');
+			} else {
+				backToTopButton.classList.remove('visible');
+			}
 		}
-	});
 
-	// Scroll to top when clicked
-	backToTopButton?.addEventListener('click', () => {
-		window.scrollTo({
-			top: 0,
-			behavior: 'smooth'
+		// Check on init in case page is already scrolled
+		checkScrollPosition();
+
+		// Show/hide button based on scroll position
+		window.addEventListener('scroll', checkScrollPosition);
+
+		// Scroll to top when clicked
+		backToTopButton.addEventListener('click', () => {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth'
+			});
 		});
-	});
+	}
+
+	// Initialize on load and re-initialize after View Transitions
+	document.addEventListener('astro:page-load', initBackToTop);
+	initBackToTop();
 </script>
 
 <style>
