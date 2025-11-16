@@ -22,6 +22,11 @@
 		// Mobile detection
 		let isMobile = window.innerWidth < 800;
 
+		// Track dimensions to prevent unnecessary tree regeneration
+		let prevWidth = window.innerWidth;
+		let prevHeight = window.innerHeight;
+		let resizeTimeout: number | null = null;
+
 		// Set canvas size with device pixel ratio for sharp rendering
 		function resizeCanvas() {
 			// Update mobile state
@@ -36,17 +41,39 @@
 			ctx.scale(dpr, dpr);
 		}
 		resizeCanvas();
+
+		// Debounced resize handler to prevent tree regeneration during scroll bounce
 		window.addEventListener('resize', () => {
+			// Always update canvas dimensions immediately for smooth rendering
 			resizeCanvas();
-			// Update grid size based on new viewport
-			gridSize = isMobile ? 280 : 500;
-			// Recreate trees on resize
-			trees.length = 0;
-			for (let x = 0; x < window.innerWidth + gridSize; x += gridSize) {
-				for (let y = 0; y < window.innerHeight + gridSize; y += gridSize) {
-					trees.push(createNewTree(true));
-				}
+
+			// Clear existing timeout
+			if (resizeTimeout !== null) {
+				clearTimeout(resizeTimeout);
 			}
+
+			// Debounce tree regeneration
+			resizeTimeout = window.setTimeout(() => {
+				const widthChange = Math.abs(window.innerWidth - prevWidth);
+				const heightChange = Math.abs(window.innerHeight - prevHeight);
+
+				// Only regenerate trees if size change is significant (>100px)
+				// This prevents regeneration during mobile scroll bounce and URL bar changes
+				if (widthChange > 100 || heightChange > 100) {
+					prevWidth = window.innerWidth;
+					prevHeight = window.innerHeight;
+
+					// Update grid size based on new viewport
+					gridSize = isMobile ? 280 : 500;
+					// Recreate trees on significant resize
+					trees.length = 0;
+					for (let x = 0; x < window.innerWidth + gridSize; x += gridSize) {
+						for (let y = 0; y < window.innerHeight + gridSize; y += gridSize) {
+							trees.push(createNewTree(true));
+						}
+					}
+				}
+			}, 150); // 150ms debounce delay
 		});
 
 		// Tree structure - scientifically accurate phylogenetic tree
