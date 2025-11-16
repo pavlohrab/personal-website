@@ -19,8 +19,13 @@
 		const ctx = canvas.getContext('2d');
 		if (!ctx) throw new Error('Could not get canvas context');
 
+		// Mobile detection
+		let isMobile = window.innerWidth < 800;
+
 		// Set canvas size with device pixel ratio for sharp rendering
 		function resizeCanvas() {
+			// Update mobile state
+			isMobile = window.innerWidth < 800;
 			const dpr = window.devicePixelRatio || 1;
 			canvas.width = window.innerWidth * dpr;
 			canvas.height = window.innerHeight * dpr;
@@ -33,6 +38,8 @@
 		resizeCanvas();
 		window.addEventListener('resize', () => {
 			resizeCanvas();
+			// Update grid size based on new viewport
+			gridSize = isMobile ? 280 : 500;
 			// Recreate trees on resize
 			trees.length = 0;
 			for (let x = 0; x < window.innerWidth + gridSize; x += gridSize) {
@@ -54,8 +61,9 @@
 		}
 
 		function createTree(x: number, y: number, depth: number, maxDepth: number, baseAngle?: number, parentLength?: number): Node {
-			// Branch length represents evolutionary time - SMALLER trees
-			const branchLength = parentLength ? parentLength * (0.65 + Math.random() * 0.5) : window.innerWidth * 0.018;
+			// Branch length represents evolutionary time - responsive sizing
+			const branchFactor = isMobile ? 0.04 : 0.018; // Larger branches on mobile
+			const branchLength = parentLength ? parentLength * (0.65 + Math.random() * 0.5) : window.innerWidth * branchFactor;
 
 			const node: Node = {
 				x,
@@ -90,13 +98,16 @@
 
 		// Create radial tree (circular phylogram - common in phylogenetics)
 		function createRadialTree(centerX: number, centerY: number, maxDepth: number): Node {
+			const radialFactor = isMobile ? 0.045 : 0.02;
+			const baseLengthFactor = isMobile ? 0.04 : 0.018;
+
 			const root: Node = {
 				x: centerX,
 				y: centerY,
 				children: [],
 				isTerminal: false,
 				age: Math.random(),
-				branchLength: window.innerWidth * 0.02, // Smaller
+				branchLength: window.innerWidth * radialFactor,
 				depth: 0
 			};
 
@@ -104,7 +115,7 @@
 			const branches = 3 + Math.floor(Math.random() * 4);
 			for (let i = 0; i < branches; i++) {
 				const angle = (i / branches) * Math.PI * 2 + (Math.random() - 0.5) * 0.2;
-				const baseLength = window.innerWidth * 0.018; // Smaller
+				const baseLength = window.innerWidth * baseLengthFactor;
 				const x = centerX + Math.cos(angle) * baseLength;
 				const y = centerY + Math.sin(angle) * baseLength;
 				root.children.push(createTree(x, y, 1, maxDepth, angle, baseLength));
@@ -127,7 +138,7 @@
 
 		// Create multiple trees
 		const trees: TreeData[] = [];
-		const gridSize = 500; // Increased spacing between trees
+		let gridSize = isMobile ? 280 : 500; // Smaller grid on mobile
 
 		function createNewTree(startVisible: boolean = false): TreeData {
 			const isRadial = Math.random() > 0.7;
@@ -135,8 +146,10 @@
 			const y = Math.random() * (window.innerHeight + gridSize);
 			const maxLife = 8 + Math.random() * 10; // 8-18 seconds (longer lifetime)
 
-			// Smaller trees - 60% are small (depth 3), 40% medium (depth 4)
-			const depth = Math.random() > 0.6 ? 3 : 4;
+			// Simpler trees on mobile, more complex on desktop
+			const depth = isMobile
+				? (Math.random() > 0.6 ? 2 : 3)  // Mobile: depth 2-3
+				: (Math.random() > 0.6 ? 3 : 4); // Desktop: depth 3-4
 
 			return {
 				tree: isRadial ? createRadialTree(x, y, depth) : createTree(x, y, 0, depth),
