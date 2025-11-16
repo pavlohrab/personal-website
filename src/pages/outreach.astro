@@ -175,6 +175,69 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 			filterDropdown!.hidden = true;
 		}
 	});
+
+	// Read More functionality for mobile
+	function initReadMore() {
+		// Only run on mobile screens - use matchMedia to match CSS breakpoint
+		const isMobile = window.matchMedia('(max-width: 50em)').matches;
+		if (!isMobile) {
+			// Remove any existing buttons if we're on desktop
+			document.querySelectorAll('.read-more-btn').forEach(btn => btn.remove());
+			return;
+		}
+
+		// Only add buttons if they don't already exist
+		const existingButtons = document.querySelectorAll('.read-more-btn');
+		if (existingButtons.length > 0) return;
+
+		const eventDescriptions = document.querySelectorAll('.event-description');
+
+		eventDescriptions.forEach((description) => {
+			// Create Read More span (styled as text, like project cards)
+			const readMore = document.createElement('span');
+			readMore.className = 'read-more-btn';
+			readMore.textContent = 'Read More...';
+			// Accessibility attributes
+			readMore.setAttribute('role', 'button');
+			readMore.setAttribute('tabindex', '0');
+			readMore.setAttribute('aria-expanded', 'false');
+
+			// Insert after the description
+			description.parentNode?.insertBefore(readMore, description.nextSibling);
+
+			// Toggle function
+			const toggle = () => {
+				const isExpanded = description.classList.contains('expanded');
+
+				if (isExpanded) {
+					description.classList.remove('expanded');
+					readMore.classList.remove('expanded');
+					readMore.textContent = 'Read More...';
+					readMore.setAttribute('aria-expanded', 'false');
+				} else {
+					description.classList.add('expanded');
+					readMore.classList.add('expanded');
+					readMore.textContent = 'Read Less...';
+					readMore.setAttribute('aria-expanded', 'true');
+				}
+			};
+
+			// Click handler
+			readMore.addEventListener('click', toggle);
+
+			// Keyboard support (Enter and Space)
+			readMore.addEventListener('keydown', (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					toggle();
+				}
+			});
+		});
+	}
+
+	// Initialize on load and after View Transitions
+	document.addEventListener('astro:page-load', initReadMore);
+	initReadMore();
 </script>
 
 <style>
@@ -538,6 +601,51 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 		.filter-select {
 			font-size: var(--text-xs);
 			padding: 0.4rem 0.7rem;
+		}
+
+		/* Hide event descriptions on mobile by default */
+		.event-description {
+			display: none;
+		}
+
+		.event-description.expanded {
+			display: block;
+		}
+	}
+</style>
+
+<style is:global>
+	/* Read More - Global styles for dynamically created elements */
+	.read-more-btn {
+		display: inline-block;
+		margin-top: 0.75rem;
+		margin-bottom: 1rem;
+		color: var(--gray-100) !important;
+		font-size: var(--text-sm);
+		font-weight: 700;
+		cursor: pointer;
+		transition: color var(--theme-transition);
+	}
+
+	.read-more-btn:hover,
+	.read-more-btn.expanded {
+		color: var(--gray-0) !important;
+	}
+
+	/* Dark mode - lighter grey for better harmony */
+	:root.theme-dark .read-more-btn {
+		color: var(--gray-100) !important;
+	}
+
+	:root.theme-dark .read-more-btn:hover,
+	:root.theme-dark .read-more-btn.expanded {
+		color: var(--gray-50) !important;
+	}
+
+	/* Hide on desktop, show only on mobile */
+	@media (min-width: 50.01em) {
+		.read-more-btn {
+			display: none !important;
 		}
 	}
 </style>
