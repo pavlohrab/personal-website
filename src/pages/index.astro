@@ -210,6 +210,13 @@ const latestNews = (await getCollection('news'))
 		padding-block: 2rem;
 	}
 
+	@media (max-width: 50em) {
+		.hero {
+			gap: 1.5rem;
+			padding-block: 0.25rem;
+		}
+	}
+
 	/* On mobile: show image first (order: -1), then text (order: 1) */
 	.hero > :first-child {
 		order: 1;
@@ -283,6 +290,12 @@ const latestNews = (await getCollection('news'))
 	/* Stats Section */
 	.stats-section {
 		padding-block: 1rem;
+	}
+
+	@media (max-width: 50em) {
+		.stats-section {
+			padding-block: 0.5rem;
+		}
 	}
 
 	.stats-grid {

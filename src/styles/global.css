@@ -261,6 +261,16 @@ h5 {
 	gap: 12rem;
 }
 
+/* Mobile: Reduce spacing */
+@media (max-width: 50em) {
+	.gap-8 {
+		gap: 1.25rem;
+	}
+	.gap-20 {
+		gap: 2.5rem;
+	}
+}
+
 @media (min-width: 50em) {
 	.lg\:gap-2 {
 		gap: 0.5rem;
