@@ -170,10 +170,23 @@
 			}
 		}
 
-		// Animation
+		// Animation with mobile optimization
 		let time = 0;
-		function animate() {
-			time += 0.01;
+		let lastFrameTime = 0;
+		const targetFPS = isMobile ? 30 : 60; // Lower FPS on mobile for smoother performance
+		const frameInterval = 1000 / targetFPS;
+
+		function animate(currentTime: number) {
+			// Throttle frame rate on mobile
+			const elapsed = currentTime - lastFrameTime;
+			if (elapsed < frameInterval) {
+				requestAnimationFrame(animate);
+				return;
+			}
+			lastFrameTime = currentTime - (elapsed % frameInterval);
+
+			// Slower time progression on mobile for gentler animations
+			time += isMobile ? 0.008 : 0.01;
 
 			// Clear canvas
 			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -212,9 +225,11 @@
 					const branchGrowth = (Math.sin(branchPhase) + 1) / 2; // 0 to 1
 					const branchVisibility = branchGrowth * 0.4 + 0.6; // 0.6 to 1 (more visible range)
 
-					// Add MORE movement to node positions - increased amplitude and speed
-					const swayX = Math.sin(time * 1.2 + node.age * 8) * 3.5; // Increased from 0.6*2 to 1.2*3.5
-					const swayY = Math.cos(time * 0.9 + node.age * 10) * 3.5; // Increased from 0.4*2 to 0.9*3.5
+					// Reduced movement on mobile to prevent jarring during scroll
+					const swayAmplitude = isMobile ? 1.5 : 3.5; // Much gentler on mobile
+					const swaySpeed = isMobile ? 0.6 : 1.2; // Slower on mobile
+					const swayX = Math.sin(time * swaySpeed + node.age * 8) * swayAmplitude;
+					const swayY = Math.cos(time * (swaySpeed * 0.75) + node.age * 10) * swayAmplitude;
 					const nodeX = node.x + swayX;
 					const nodeY = node.y + swayY;
 
@@ -222,8 +237,9 @@
 					if (parentX !== undefined && parentY !== undefined) {
 						ctx.strokeStyle = branchColor;
 						ctx.globalAlpha = treeOpacity * branchVisibility;
-						// Variable line width with MORE pulsing
-						const widthPulse = Math.sin(time * 2 + node.age * 6) * 0.3 + 1; // Increased speed and amplitude
+						// Reduced pulsing on mobile
+						const pulseSpeed = isMobile ? 1.2 : 2;
+						const widthPulse = Math.sin(time * pulseSpeed + node.age * 6) * 0.3 + 1;
 						ctx.lineWidth = Math.max(1.5, (4 - node.depth * 0.5) * widthPulse);
 						ctx.beginPath();
 						ctx.moveTo(parentX, parentY);
@@ -231,8 +247,9 @@
 						ctx.stroke();
 					}
 
-					// Draw node with MORE pulsing
-					const nodePulse = Math.sin(time * 2.5 + node.age * 15) * 0.4 + 1; // Increased from 1.5*12 to 2.5*15
+					// Reduced node pulsing on mobile
+					const nodePulseSpeed = isMobile ? 1.5 : 2.5;
+					const nodePulse = Math.sin(time * nodePulseSpeed + node.age * 15) * 0.4 + 1;
 
 					if (node.isTerminal) {
 						// Terminal nodes (taxa) pulse and glow - LARGER
@@ -261,7 +278,7 @@
 			requestAnimationFrame(animate);
 		}
 
-		animate();
+		requestAnimationFrame(animate);
 	}
 	}
 
@@ -282,6 +299,12 @@
 		background: transparent !important;
 		/* Let JS handle width/height to prevent stretching */
 		display: block !important;
+		/* GPU acceleration to prevent jarring during scroll stops on mobile */
+		transform: translateZ(0) !important;
+		will-change: transform !important;
+		-webkit-transform: translateZ(0) !important;
+		backface-visibility: hidden !important;
+		-webkit-backface-visibility: hidden !important;
 	}
 
 	.theme-dark #phylo-canvas {
