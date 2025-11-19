@@ -40,6 +40,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 								<span class="entry-date">2026 - Present</span>
 							</div>
 							<p class="entry-location">Medema group, Bioinformatics group, Wageningen University & Research</p>
+							<div class="consortium-badge">
+								<span class="badge-label">Research Consortium:</span>
+								<a href="https://www.combo-eu.org" target="_blank" rel="noopener noreferrer" class="consortium-link combo">COMBO</a>
+							</div>
 							<ul class="entry-list">
 								<li>Search for biosynthetic gene clusters in marine sponges and seaweed for downstream heterologous expression</li>
 								<li>Marine microbiome metagenomics</li>
@@ -51,6 +55,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 								<span class="entry-date">2022 - 2026</span>
 							</div>
 							<p class="entry-location">Medema group & Detmer sipkema lab, Bioinformatics group & Molecular ecology group, Wageningen University & Research</p>
+							<div class="consortium-badge">
+								<span class="badge-label">Research Consortium:</span>
+								<a href="https://marblesproject.eu/" target="_blank" rel="noopener noreferrer" class="consortium-link marbles">MARBLES</a>
+							</div>
 							<ul class="entry-list">
 								<li>Performed large-scale metagenomic and metatranscriptomic analyses</li>
 								<li>Executed functional annotation and targeted marine bacteria from marine sponges</li>
@@ -604,6 +612,63 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		margin-bottom: 0.5rem;
 	}
 
+	/* Consortium Badge Styles */
+	.consortium-badge {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
+		margin-bottom: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.badge-label {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		font-weight: 500;
+	}
+
+	.consortium-link {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.35rem 0.9rem;
+		font-size: var(--text-sm);
+		font-weight: 600;
+		text-decoration: none;
+		border-radius: 0.25rem;
+		transition: all var(--theme-transition);
+		border: 1.5px solid;
+		position: relative;
+	}
+
+	/* MARBLES styling - inspired by their blue/cyan palette */
+	.consortium-link.marbles {
+		color: #5da3d5;
+		border-color: #5da3d5;
+		background: rgba(93, 163, 213, 0.1);
+	}
+
+	.consortium-link.marbles:hover {
+		background: rgba(93, 163, 213, 0.2);
+		border-color: #7ab8dd;
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(93, 163, 213, 0.3);
+	}
+
+	/* COMBO styling - clean professional look */
+	.consortium-link.combo {
+		color: #6bb8a7;
+		border-color: #6bb8a7;
+		background: rgba(107, 184, 167, 0.1);
+	}
+
+	.consortium-link.combo:hover {
+		background: rgba(107, 184, 167, 0.2);
+		border-color: #82c5b4;
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(107, 184, 167, 0.3);
+	}
+
 	.skills-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -636,6 +701,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		.cv-layout {
 			padding-left: 0;
 			display: block;
+		}
+
+		/* Consortium badges - mobile adjustments */
+		.consortium-badge {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 0.4rem;
+			margin-top: 0.5rem;
+			margin-bottom: 0.5rem;
+		}
+
+		.badge-label {
+			font-size: var(--text-xs);
+		}
+
+		.consortium-link {
+			font-size: var(--text-xs);
+			padding: 0.3rem 0.75rem;
 		}
 
 		/* Hide entry lists on mobile by default */
