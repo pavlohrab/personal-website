@@ -115,6 +115,15 @@ const { Content } = await render(entry);
 		color: var(--accent-dark);
 	}
 
+	.content-body :global(img) {
+		display: block;
+		max-width: 100%;
+		height: auto;
+		margin: 1.5rem auto;
+		border-radius: 0.5rem;
+		box-shadow: var(--shadow-sm);
+	}
+
 	.content-body :global(ul),
 	.content-body :global(ol) {
 		margin-bottom: 1rem;
