@@ -23,6 +23,33 @@ export const collections = {
 			publishedDate: z.coerce.date().optional(),
 		}),
 	}),
+	tools: defineCollection({
+		loader: glob({ base: './src/content/tools', pattern: '**/*.md' }),
+		schema: z.object({
+			title: z.string(),
+			// One line: the problem the tool solves.
+			description: z.string(),
+			role: z.enum(['author', 'contributor']).default('author'),
+			stack: z.array(z.string()),
+			// Only list what the repo actually has — these render as badges.
+			signals: z.array(
+				z.enum(['tests', 'CI', 'packaged', 'container', 'released', 'DOI', 'docs', 'live demo'])
+			).default([]),
+			image: z.string().optional(),
+			imageAlt: z.string().optional(),
+			links: z.array(
+				z.object({
+					label: z.string(),
+					href: z.string(),
+				})
+			),
+			// Slug of a project in the `projects` collection this tool came out of.
+			project: z.string().optional(),
+			year: z.string(),
+			order: z.number().default(999),
+			draft: z.boolean().default(false),
+		}),
+	}),
 	thoughts: defineCollection({
 		loader: glob({ base: './src/content/thoughts', pattern: '**/*.md' }),
 		schema: z.object({

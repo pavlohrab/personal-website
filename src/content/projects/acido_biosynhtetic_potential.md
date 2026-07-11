@@ -2,21 +2,28 @@
 title: "Global biosynthetic potential of Acidobacteriota"
 status: ongoing
 meta: "2023 - Present"
-description: "We aim to comprehensively annotate the biosynthetic potential of phylum Acidobacteriota, using publicly available metagenomics datasets. "
-tags: [ "BGC mining", "Metagenomics"]
+description: "Built a Nextflow pipeline to clean and dereplicate 19,720 Acidobacteriota MAGs from public data, and mined the result for biosynthetic gene clusters across every biome the phylum occupies."
+tags: ["BGC mining", "Metagenomics", "Nextflow"]
+links:
+  - label: "MAG Cleaning Pipeline"
+    href: "https://github.com/pavlohrab/Mag_cleaning_pipeline"
+  - label: "bigscape-pfam-explorer"
+    href: "https://github.com/pavlohrab/bigscape_pfam_explorer"
 featured: true
 category: research
 order: 1
 ---
 
-## Project Overview
+## The problem
 
-Bacteria from the phylum Acidobacteriota are widely distributed across diverse environments, yet only a few representatives have been isolated and described, with the majority retrieved from soil. Although recent studies suggest substantial biosynthetic potential in Acidobacteriota across soil and marine environments, no comprehensive cross-biome analysis has yet been conducted yet. To address this gap, we analyzed 19,720 metagenome-assembled genomes from Acidobacteriota along with their environmental metadata to provides a systematic overview of the biosynthetic potential of Acidobacteriota.
+Acidobacteriota are everywhere — soil, sediment, marine sponges — but almost none have been isolated, so nearly everything we know about them comes from metagenome-assembled genomes. Individual studies had hinted at real biosynthetic potential, but nobody had looked across biomes at once, which is the comparison that tells you whether that potential is a soil story or a general one.
 
-## Key Findings
+## What I did
 
-We collected 19720 MAGs from public databases and dereplicated them at a species level. The comprehensive BGC annotation of the data is ongoing
+I collected 19,720 Acidobacteriota MAGs from public databases together with their environmental metadata, then built a Nextflow pipeline to make them usable: mash-based strain clustering, CheckM2 quality filtering, GUNC chimerism removal, dRep dereplication and GTDB-Tk classification. That pipeline is open source as [Mag_cleaning_pipeline](https://github.com/pavlohrab/Mag_cleaning_pipeline), and it runs on any MAG set, not just this one.
 
-## Publications
+On the cleaned, species-level set I run antiSMASH and BiG-SCAPE. BiG-SCAPE writes its results to a SQLite database that resists inspection, so I also wrote [bigscape-pfam-explorer](https://github.com/pavlohrab/bigscape_pfam_explorer) to interrogate Pfam domain co-occurrence across BGC families directly.
 
-To be published
+## Status
+
+BGC annotation across the dereplicated set is in progress. Both tools are finished and released.

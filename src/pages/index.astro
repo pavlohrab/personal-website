@@ -3,13 +3,9 @@ import { getCollection } from 'astro:content';
 // Component Imports
 import CallToAction from '../components/CallToAction.astro';
 // Page section components
-import ContactCTA from '../components/ContactCTA.astro';
-import Grid from '../components/Grid.astro';
 import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
-import Pill from '../components/Pill.astro';
 import ProjectCard from '../components/cards/ProjectCard.astro';
-import Skills from '../components/Skills.astro';
 // Layout import — provides basic page elements: <head>, <nav>, <footer> etc.
 import BaseLayout from '../layouts/BaseLayout.astro';
 
@@ -39,63 +35,42 @@ const latestNews = (await getCollection('news'))
 			<header class="hero">
 				<Hero
 					title="Pavlo Hrab"
-					tagline="(Marine) Bioinformatics Researcher | PhD Candidate"
+					tagline="Computational biologist, PhD | Pipelines and tools for microbial genomics"
 					align="start"
 				>
 					<div class="intro-text">
 						<p>
-							Bioinformatician studying microbial communities by combining molecular lab and computational multi-omics approaches.<span class="mobile-hide"> Currently focused on Acidobacteriota - a biosynthetically rich yet understudied bacterial phylum. I integrate metagenomics, metatranscriptomics, and cultivation to discover novel natural products and understand how bacteria adapt to their hosts.</span>
+							Computational biologist (PhD) working across microbiology and bioinformatics. I build reproducible pipelines and tools in R, Python, and Nextflow to make sense of large, messy biological datasets.<span class="mobile-hide"> My work covers metagenomics, transcriptomics, phylogenetics, functional annotation, and machine learning. I also work at the bench, culturing slow-growing bacteria and running molecular assays, so I understand the data from both sides.</span>
 						</p>
 					</div>
 					<div class="hero-cta">
-						<a href={`${import.meta.env.BASE_URL}cv/`} class="hero-button primary">View CV</a>
-						<a href={`${import.meta.env.BASE_URL}contact/`} class="hero-button primary">Contact Me</a>
+						<a href={`${import.meta.env.BASE_URL}tools/`} class="hero-button primary">View Tools</a>
+						<a href={`${import.meta.env.BASE_URL}cv/`} class="hero-button secondary">View CV</a>
+						<a href={`${import.meta.env.BASE_URL}contact/`} class="hero-button secondary">Get in Touch</a>
 					</div>
 				</Hero>
 
 				<img src={`${import.meta.env.BASE_URL}pavlo-hero.jpg`} alt="Pavlo Hrab" class="hero-image" />
 			</header>
 
-			<!-- Research Stats -->
-			<section class="stats-section">
-				<div class="stats-grid">
-					<div class="stat-card">
-						<div class="stat-number" data-target="4">0</div>
-						<div class="stat-label">Publications</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-number" data-target="16">0</div>
-						<div class="stat-label">Conference Presentations</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-number" data-target="2">0</div>
-						<div class="stat-label">Open-source Tools</div>
-					</div>
-					<div class="stat-card">
-						<div class="stat-number" data-target="10000">0</div>
-						<div class="stat-label">Genomes Analyzed</div>
-					</div>
-				</div>
-			</section>
-
 			<section class="research-interests">
-				<h2 class="section-title">Research Focus</h2>
+				<h2 class="section-title">What I do</h2>
 				<div class="interests-grid">
 					<div class="interest-card">
-						<h3>(Marine) Microbiome Genomics</h3>
-						<p>Investigating microbial communities in marine sponges using metagenomics and genomics to uncover hidden diversity, with focus on understudied bacterial phyla like Acidobacteriota</p>
+						<h3>Pipelines & data engineering</h3>
+						<p>Reproducible Nextflow workflows from raw reads to annotation, built to run the same way on a laptop and a cluster</p>
 					</div>
 					<div class="interest-card">
-						<h3>Natural Product Discovery</h3>
-						<p>Mining novel biosynthetic gene clusters from undercharacterized bacterial lineages using unconventional computational approaches and large-scale genomic datasets</p>
+						<h3>Genome mining</h3>
+						<p>Biosynthetic gene clusters at scale with antiSMASH, BiG-SCAPE and MIBiG, including lineages nobody has mined before</p>
 					</div>
 					<div class="interest-card">
-						<h3>Comparative Genomics</h3>
-						<p>Reconstructing evolutionary relationships and identifying genomic adaptations across bacterial lineages using phylogenomics and comparative analyses</p>
+						<h3>Multi-omics & ML</h3>
+						<p>Metagenomics, metatranscriptomics and phylogenomics, with the statistics and machine learning needed to draw a conclusion from them</p>
 					</div>
 					<div class="interest-card">
-						<h3>Host-Microbe Interactions</h3>
-						<p>Understanding what drives bacteria to associate with marine sponge hosts, distinguishing ecological adaptation from shared ancestry</p>
+						<h3>Wet lab</h3>
+						<p>Cultivation of slow-growing bacteria, molecular assays, (q)PCR and heterologous expression — I generate data as well as analyse it</p>
 					</div>
 				</div>
 			</section>
@@ -286,48 +261,6 @@ const latestNews = (await getCollection('news'))
 		box-shadow: var(--shadow-md);
 		position: relative;
 		z-index: 1;
-	}
-
-	/* Stats Section */
-	.stats-section {
-		padding-block: 1rem;
-	}
-
-	@media (max-width: 50em) {
-		.stats-section {
-			padding-block: 0.5rem;
-		}
-	}
-
-	.stats-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: 1.5rem;
-	}
-
-	.stat-card {
-		padding: 2rem 1.5rem;
-		background: var(--gray-999);
-		border-radius: 0.5rem;
-		text-align: center;
-		border-top: 3px solid var(--accent-regular);
-		box-shadow: var(--shadow-sm);
-	}
-
-	.stat-number {
-		font-size: var(--text-3xl);
-		font-weight: 600;
-		color: var(--gray-0);
-		font-family: var(--font-brand);
-		margin-bottom: 0.25rem;
-	}
-
-	.stat-label {
-		font-size: var(--text-sm);
-		color: var(--gray-300);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-		line-height: 1.3;
 	}
 
 	.research-interests {
@@ -633,72 +566,8 @@ const latestNews = (await getCollection('news'))
 			display: none;
 		}
 
-		.stats-grid {
-			grid-template-columns: repeat(2, 1fr);
-		}
-
-		.stat-number {
-			font-size: var(--text-2xl);
-		}
-
-		.stat-label {
-			font-size: 0.75rem;
-		}
-
 		.featured-projects {
 			grid-template-columns: 1fr;
 		}
 	}
 </style>
-
-<script>
-	// Animated stat counters
-	function animateCounter(element: HTMLElement, target: number, suffix: string = '') {
-		const duration = 2000; // 2 seconds
-		const steps = 60;
-		const increment = target / steps;
-		let current = 0;
-		const timer = setInterval(() => {
-			current += increment;
-			if (current >= target) {
-				element.textContent = target.toLocaleString() + suffix;
-				clearInterval(timer);
-			} else {
-				element.textContent = Math.floor(current).toLocaleString() + suffix;
-			}
-		}, duration / steps);
-	}
-
-	// Initialize animations (works with View Transitions)
-	function initAnimations() {
-		// Reset stat counters to 0
-		const statNumbers = document.querySelectorAll('.stat-number[data-target]');
-		statNumbers.forEach((el) => {
-			el.textContent = '0';
-		});
-
-		// Trigger counters when stats section is visible
-		const statsSection = document.querySelector('.stats-section');
-		if (statsSection) {
-			const observer = new IntersectionObserver((entries) => {
-				entries.forEach(entry => {
-					if (entry.isIntersecting) {
-						const statNumbers = document.querySelectorAll('.stat-number[data-target]');
-						statNumbers.forEach((el) => {
-							const target = parseInt(el.getAttribute('data-target') || '0');
-							const suffix = (target >= 16 || target >= 10000) ? '+' : '';
-							animateCounter(el as HTMLElement, target, suffix);
-						});
-						observer.unobserve(entry.target);
-					}
-				});
-			}, { threshold: 0.5 });
-
-			observer.observe(statsSection);
-		}
-	}
-
-	// Run on initial load and when navigating with View Transitions
-	document.addEventListener('astro:page-load', initAnimations);
-	initAnimations();
-</script>
