@@ -2,7 +2,7 @@
 // Scientifically accurate phylogenetic tree background animation
 ---
 
-<canvas id="phylo-canvas"></canvas>
+<canvas id="phylo-canvas" data-bg="phylogram-legacy" aria-hidden="true"></canvas>
 
 <script>
 	function initPhyloCanvas() {
@@ -315,27 +315,3 @@
 	initPhyloCanvas();
 </script>
 
-<style is:global>
-	#phylo-canvas {
-		position: fixed !important;
-		top: 0 !important;
-		left: 0 !important;
-		z-index: -1 !important;
-		pointer-events: none !important;
-		/* Increased visibility */
-		opacity: 0.55 !important;
-		background: transparent !important;
-		/* Let JS handle width/height to prevent stretching */
-		display: block !important;
-		/* GPU acceleration to prevent jarring during scroll stops on mobile */
-		transform: translateZ(0) !important;
-		will-change: transform !important;
-		-webkit-transform: translateZ(0) !important;
-		backface-visibility: hidden !important;
-		-webkit-backface-visibility: hidden !important;
-	}
-
-	.theme-dark #phylo-canvas {
-		opacity: 0.5 !important;
-	}
-</style>

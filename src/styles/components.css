@@ -26,6 +26,14 @@
 	margin: 0;
 }
 
+/* Page header that carries an action (CV download, Email me). */
+.page-header.with-action {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1.5rem;
+}
+
 .back-link {
 	display: inline-block;
 	color: var(--accent-regular);
@@ -33,7 +41,9 @@
 	font-size: var(--text-sm);
 	font-weight: 500;
 	margin-bottom: 1.5rem;
-	transition: color var(--theme-transition);
+	transition:
+		color var(--theme-transition),
+		background-size var(--sweep);
 }
 
 .back-link:hover {
@@ -47,7 +57,7 @@
 .section-title {
 	font-size: var(--text-2xl);
 	color: var(--gray-0);
-	margin: 0 0 2rem;
+	margin: 0 0 1.5rem;
 	padding-bottom: 0.5rem;
 	border-bottom: 2px solid var(--accent-regular);
 }
@@ -69,7 +79,9 @@
 	color: var(--accent-regular);
 	text-decoration: none;
 	font-weight: 600;
-	transition: color var(--theme-transition);
+	transition:
+		color var(--theme-transition),
+		background-size var(--sweep);
 	white-space: nowrap;
 	margin-left: 1rem;
 }
@@ -82,8 +94,92 @@
    PROJECT CARDS
    ============================================ */
 
+/* ===================================================================
+   Buttons — the only two. Both square, both lift on hover.
+   .btn-primary  filled accent, for the single main action on a view
+   .btn-outline  accent outline, for everything else
+   =================================================================== */
+
+.btn {
+	display: inline-block;
+	padding: 0.75rem 2rem;
+	border: 1px solid var(--accent-regular);
+	border-radius: var(--radius-control);
+	font-size: var(--text-base);
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
+}
+
+.btn:hover {
+	transform: translateY(var(--lift));
+	box-shadow: var(--shadow-md);
+}
+
+.btn-primary {
+	background: var(--accent-regular);
+	color: var(--accent-text-over);
+}
+
+.btn-primary:hover {
+	background: var(--accent-dark);
+}
+
+.btn-outline {
+	background: transparent;
+	color: var(--accent-regular);
+}
+
+.btn-outline:hover {
+	background: var(--accent-regular);
+	color: var(--accent-text-over);
+}
+
+/* Compact variant, for buttons sitting inside a card */
+.btn-sm {
+	padding: 0.5rem 1rem;
+	font-size: var(--text-sm);
+	font-weight: 500;
+}
+
+/* ===================================================================
+   Surfaces — every card and panel on the site is one of these.
+   .surface       the shared box: background, radius, resting shadow
+   .surface-grid  accent bar on the top edge   (cards in a grid)
+   .surface-row   accent bar on the left edge  (rows in a list, panels)
+   .surface-lift  opts into the hover gesture  (interactive surfaces only)
+   =================================================================== */
+
+.surface {
+	background: var(--gray-999);
+	border-radius: var(--radius-surface);
+	box-shadow: var(--shadow-sm);
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition);
+}
+
+.surface-grid {
+	border-top: var(--accent-bar) solid var(--accent-regular);
+}
+
+.surface-row {
+	border-left: var(--accent-bar) solid var(--accent-regular);
+}
+
+.surface-lift:hover,
+a:hover > .surface-lift {
+	transform: translateY(var(--lift));
+	box-shadow: var(--shadow-md);
+}
+
 .projects-content {
-	max-width: 70rem;
+	max-width: var(--width-content);
 	margin-inline: auto;
 }
 
@@ -112,15 +208,16 @@
 	flex-direction: column;
 	padding: 2rem;
 	background: var(--gray-999);
-	border-radius: 0.75rem;
-	border-top: 4px solid var(--accent-regular);
+	border-radius: var(--radius-surface);
+	border-top: var(--accent-bar) solid var(--accent-regular);
 	box-shadow: var(--shadow-sm);
-	transition: all var(--theme-transition);
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition);
 }
 
 .project-card.featured {
 	grid-column: span 1;
-	border-top-width: 6px;
 }
 
 .project-card.compact {
@@ -129,8 +226,8 @@
 
 .project-card:hover,
 .project-card-link:hover .project-card {
-	transform: translateY(-8px);
-	box-shadow: var(--shadow-lg);
+	transform: translateY(var(--lift));
+	box-shadow: var(--shadow-md);
 }
 
 .project-card .project-header {
@@ -152,7 +249,7 @@
 .project-status {
 	display: inline-block;
 	padding: 0.25rem 0.75rem;
-	border-radius: 0.375rem;
+	border-radius: var(--radius-tag);
 	font-size: var(--text-sm);
 	font-weight: 600;
 	white-space: nowrap;
@@ -201,7 +298,7 @@
 	padding: 0.25rem 0.75rem;
 	background: var(--gray-800);
 	color: var(--gray-200);
-	border-radius: 0.25rem;
+	border-radius: var(--radius-tag);
 	font-size: var(--text-sm);
 	font-weight: 500;
 }
@@ -213,24 +310,34 @@
 	margin-top: auto;
 }
 
+/* Deprecated: use .btn .btn-outline .btn-sm. Kept so old markup still renders. */
 .project-link {
 	display: inline-block;
 	padding: 0.5rem 1rem;
+	border: 1px solid var(--accent-regular);
+	border-radius: var(--radius-control);
 	background: transparent;
 	color: var(--accent-regular);
 	text-decoration: none;
-	border: 1px solid var(--accent-regular);
-	border-radius: 0;
 	font-size: var(--text-sm);
 	font-weight: 500;
-	transition: all var(--theme-transition);
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 }
 
 .project-link:hover {
 	background: var(--accent-regular);
-	color: var(--gray-999);
+	color: var(--accent-text-over);
+	transform: translateY(var(--lift));
+	box-shadow: var(--shadow-md);
 }
 
+/* The clickable-surface cue. Present on every card/row that navigates,
+   absent on every one that doesn't. The arrow is a pseudo-element so the
+   markup stays "Read more" and screen readers don't announce an arrow. */
 .read-more {
 	display: inline-block;
 	font-size: var(--text-sm);
@@ -238,6 +345,19 @@
 	font-weight: 600;
 	margin-top: 0.75rem;
 	transition: color var(--theme-transition);
+}
+
+.read-more::after {
+	content: '→';
+	display: inline-block;
+	margin-left: 0.4em;
+	transition: transform var(--sweep);
+}
+
+a:hover .read-more::after,
+.card-link:hover .read-more::after,
+.project-card-link:hover .read-more::after {
+	transform: translateX(var(--nudge));
 }
 
 .project-card-link:hover .read-more {
@@ -249,7 +369,7 @@
    ============================================ */
 
 .blog-list {
-	max-width: 60rem;
+	max-width: var(--width-reading);
 	margin-inline: auto;
 }
 
@@ -261,14 +381,18 @@
 .blog-card {
 	padding: 1.5rem;
 	background: var(--gray-999);
-	border-radius: 0.5rem;
-	border-left: 3px solid var(--accent-regular);
+	border-radius: var(--radius-surface);
+	border-left: var(--accent-bar) solid var(--accent-regular);
 	box-shadow: var(--shadow-sm);
-	transition: all var(--theme-transition);
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 }
 
 .blog-card-link .blog-card:hover {
-	transform: translateX(4px);
+	transform: translateY(var(--lift));
 	box-shadow: var(--shadow-md);
 	cursor: pointer;
 }
@@ -330,14 +454,18 @@
 .travel-card {
 	padding: 1.5rem;
 	background: var(--gray-999);
-	border-radius: 0.5rem;
-	border-top: 3px solid var(--accent-light);
+	border-radius: var(--radius-surface);
+	border-top: var(--accent-bar) solid var(--accent-regular);
 	box-shadow: var(--shadow-sm);
-	transition: all var(--theme-transition);
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 }
 
 .travel-card-link:hover .travel-card {
-	transform: scale(1.02);
+	transform: translateY(var(--lift));
 	box-shadow: var(--shadow-md);
 	cursor: pointer;
 }
@@ -476,8 +604,8 @@
 	margin-bottom: 2rem;
 	padding: 1.5rem;
 	background: var(--gray-999);
-	border-left: 3px solid var(--accent-regular);
-	border-radius: 0.25rem;
+	border-left: var(--accent-bar) solid var(--accent-regular);
+	border-radius: var(--radius-tag);
 }
 
 .info-item {
@@ -526,7 +654,11 @@
 	border-radius: 0;
 	font-size: var(--text-base);
 	font-weight: 600;
-	transition: all var(--theme-transition);
+	transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	text-align: center;
 	flex: 1;
 	min-width: 200px;
@@ -535,7 +667,7 @@
 .project-link-btn:hover {
 	background: var(--accent-regular);
 	color: var(--gray-999);
-	transform: translateY(-2px);
+	transform: translateY(var(--lift));
 	box-shadow: var(--shadow-md);
 }
 
@@ -600,5 +732,84 @@
 @media (min-width: 50em) and (max-width: 75em) {
 	.projects-grid {
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	}
+}
+
+
+/* ===================================================================
+   Expander — "Read more ↓" toggles content open in place.
+   Deliberately NOT the same cue as .read-more ("Read more →"), which
+   navigates away. Arrow direction encodes what will happen.
+   =================================================================== */
+
+.read-more-btn {
+	display: inline-block;
+	margin-top: 0.75rem;
+	color: var(--accent-regular);
+	font-size: var(--text-sm);
+	font-weight: 600;
+	cursor: pointer;
+	user-select: none;
+	transition: color var(--theme-transition);
+}
+
+.read-more-btn::after {
+	content: '↓';
+	display: inline-block;
+	margin-left: 0.4em;
+	transition: transform var(--sweep);
+}
+
+.read-more-btn:hover {
+	color: var(--accent-dark);
+}
+
+.read-more-btn.expanded::after {
+	transform: rotate(180deg);
+}
+
+/* Collapsed content animates open rather than snapping. */
+.collapsible {
+	overflow: hidden;
+	max-height: 0;
+	transition: max-height var(--sweep);
+}
+
+.collapsible.expanded {
+	max-height: 60rem;
+}
+
+/* The expander is a mobile affordance only; desktop shows everything. */
+@media (min-width: 50.01em) {
+	.read-more-btn {
+		display: none !important;
+	}
+}
+
+/* ===================================================================
+   Lede — the standfirst paragraph. Used by the homepage hero and the
+   CV profile, which carry the same text and must therefore look the
+   same. Smaller on mobile; the trailing sentences are dropped there
+   via .mobile-hide.
+   =================================================================== */
+
+.lede {
+	font-size: var(--text-lg);
+	color: var(--gray-300);
+	line-height: 1.6;
+	max-width: 65ch;
+	margin: 0;
+}
+
+@media (max-width: 50em) {
+	.lede {
+		font-size: var(--text-base);
+		line-height: 1.55;
+	}
+
+	/* Trailing detail: present for search engines and desktop, dropped
+	   on small screens where the first two sentences do the work. */
+	.mobile-hide {
+		display: none;
 	}
 }

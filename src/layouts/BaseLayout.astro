@@ -6,7 +6,7 @@ import Footer from '../components/Footer.astro';
 // Component Imports
 import MainHead from '../components/MainHead.astro';
 import Nav from '../components/Nav.astro';
-import NetworkBackground from '../components/NetworkBackground.astro';
+import Background from '../components/Background.astro';
 import BackToTop from '../components/BackToTop.astro';
 // Import shared component styles
 import '../styles/components.css';
@@ -25,7 +25,7 @@ const { title, description} = Astro.props;
 	</head>
 	<body>
 		<div class="stack backgrounds">
-			<NetworkBackground />
+			<Background />
 			<Nav />
 			<slot />
 			<Footer />

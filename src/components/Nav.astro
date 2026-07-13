@@ -171,7 +171,7 @@ const isCurrentPage = (href: string) => {
 		position: relative;
 		display: flex;
 		border: 0;
-		border-radius: 999rem;
+		border-radius: var(--radius-pill);
 		padding: 0.5rem;
 		font-size: 1.5rem;
 		color: var(--gray-300);
@@ -195,7 +195,7 @@ const isCurrentPage = (href: string) => {
 		inset: -1px;
 		content: '';
 		background: var(--gradient-stroke);
-		border-radius: 999rem;
+		border-radius: var(--radius-pill);
 		z-index: -1;
 	}
 
@@ -248,17 +248,22 @@ const isCurrentPage = (href: string) => {
 		font-size: var(--icon-size);
 	}
 
+	/* Muted at rest, full strength on hover — the same direction as every
+	   other hover on the site (cards lift, buttons fill, links underline).
+	   Do NOT use --accent-text-over here: it is the colour for text sitting
+	   ON an accent fill, and it resolves to the page background, which makes
+	   the icon vanish. */
 	.social {
 		display: flex;
 		padding: var(--icon-padding);
 		text-decoration: none;
-		color: var(--accent-dark);
+		color: var(--gray-400);
 		transition: color var(--theme-transition);
 	}
 
 	.social:hover,
 	.social:focus {
-		color: var(--accent-text-over);
+		color: var(--gray-0);
 	}
 
 	.theme-toggle {
@@ -292,7 +297,7 @@ const isCurrentPage = (href: string) => {
 			position: relative;
 			flex-direction: row;
 			font-size: var(--text-sm);
-			border-radius: 999rem;
+			border-radius: var(--radius-pill);
 			border: 0;
 			padding: 0.5rem 0.5625rem;
 			background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
@@ -304,27 +309,37 @@ const isCurrentPage = (href: string) => {
 			inset: -1px;
 			content: '';
 			background: var(--gradient-stroke);
-			border-radius: 999rem;
+			border-radius: var(--radius-pill);
 			z-index: -1;
 		}
 
 		.link {
 			padding: 0.5rem 1rem;
-			border-radius: 999rem;
+			border-radius: var(--radius-pill);
+			/* Anchor the sweep to the text, not the padding box, or it floats
+			   below the label and overhangs it on both sides. */
+			background-origin: content-box;
 			transition:
 				color var(--theme-transition),
-				background-color var(--theme-transition);
+				background-color var(--theme-transition),
+				background-size var(--sweep);
 		}
 
+		/* Hover is the sweep underline (see global.css) — no background pill,
+		   or the two affordances fight. The pill is reserved for "you are here". */
 		.link:hover,
 		.link:focus {
 			color: var(--gray-100);
-			background-color: var(--accent-subtle-overlay);
 		}
 
 		.link[aria-current='page'] {
 			color: var(--accent-text-over);
 			background-color: var(--accent-regular);
+		}
+
+		/* The current page is already marked by the pill; it needs no underline. */
+		.link[aria-current='page'] {
+			background-image: none;
 		}
 
 		.menu-footer {

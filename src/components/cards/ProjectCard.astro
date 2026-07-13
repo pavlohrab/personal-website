@@ -3,6 +3,12 @@
  * ProjectCard Component
  * Reusable card for displaying project information
  * Can be used as a standalone card or as a clickable link
+ *
+ * Deliberately spare: title, dates, description, links.
+ * No status chip — the date range already says whether it is ongoing.
+ * No tag pills — they restated the description and nothing could be
+ * clicked or filtered by them. `tags` is still accepted so content and
+ * any future filtering UI keep working; it just isn't rendered as chrome.
  */
 
 interface Props {
@@ -19,17 +25,13 @@ interface Props {
 
 const {
 	title,
-	status,
 	meta,
 	description,
-	tags,
 	links,
 	href,
 	featured = false,
 	compact = false
 } = Astro.props;
-
-const statusLabel = status === 'ongoing' ? 'Ongoing' : status === 'released' ? 'Released' : 'Complete';
 
 // If href is provided, wrap in link, otherwise use article
 const isClickable = !!href;
@@ -40,27 +42,19 @@ const isClickable = !!href;
 		<article class:list={['project-card', { featured, compact }]}>
 			<div class="project-header">
 				<h3 class="project-title">{title}</h3>
-				<span class={`project-status ${status}`}>{statusLabel}</span>
 			</div>
 			<p class="project-meta">{meta}</p>
 			<p class="project-description">{description}</p>
-			<div class="project-tags">
-				{tags.map(tag => <span class="tag">{tag}</span>)}
-			</div>
-			<span class="read-more">Read more →</span>
+			<span class="read-more">Read more</span>
 		</article>
 	</a>
 ) : (
 	<article class:list={['project-card', { featured, compact }]}>
 		<div class="project-header">
 			<h3 class="project-title">{title}</h3>
-			<span class={`project-status ${status}`}>{statusLabel}</span>
 		</div>
 		<p class="project-meta">{meta}</p>
 		<p class="project-description">{description}</p>
-		<div class="project-tags">
-			{tags.map(tag => <span class="tag">{tag}</span>)}
-		</div>
 		{links && links.length > 0 && (
 			<div class="project-links">
 				{links.map(link => (

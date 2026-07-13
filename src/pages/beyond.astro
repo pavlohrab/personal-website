@@ -130,7 +130,7 @@ const latestAdventures = (await getCollection('adventures'))
 <style>
 	/* Page-specific: Beyond content width */
 	.beyond-content {
-		max-width: 70rem;
+		max-width: var(--width-content);
 		margin-inline: auto;
 	}
 
@@ -144,15 +144,18 @@ const latestAdventures = (await getCollection('adventures'))
 	.hobby-card {
 		padding: 1.5rem;
 		background: var(--gray-999);
-		border-radius: 0.5rem;
-		border-left: 3px solid var(--accent-light);
+		border-radius: var(--radius-surface);
+		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
-		transition: all var(--theme-transition);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	}
 
 	.hobby-card:hover {
-		transform: translateY(-2px);
-		box-shadow: var(--shadow-md);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.hobby-card h3 {
@@ -178,15 +181,18 @@ const latestAdventures = (await getCollection('adventures'))
 	.fact-item {
 		padding: 1rem 1.25rem;
 		background: var(--gray-999);
-		border-radius: 0.5rem;
+		border-radius: var(--radius-surface);
 		border-left: 3px solid var(--gray-400);
 		box-shadow: var(--shadow-sm);
-		transition: all var(--theme-transition);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	}
 
 	.fact-item:hover {
 		border-left-color: var(--accent-regular);
-		transform: translateX(4px);
 	}
 
 	.fact-item p {
@@ -200,7 +206,7 @@ const latestAdventures = (await getCollection('adventures'))
 	.coming-soon {
 		padding: 3rem 2rem;
 		background: var(--gray-999);
-		border-radius: 0.5rem;
+		border-radius: var(--radius-surface);
 		text-align: center;
 		border: 2px dashed var(--gray-800);
 	}

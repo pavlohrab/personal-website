@@ -20,7 +20,7 @@ Acidobacteriota are everywhere — soil, sediment, marine sponges — but almost
 
 ## What I did
 
-I collected 19,720 Acidobacteriota MAGs from public databases together with their environmental metadata, then built a Nextflow pipeline to make them usable: mash-based strain clustering, CheckM2 quality filtering, GUNC chimerism removal, dRep dereplication and GTDB-Tk classification. That pipeline is open source as [Mag_cleaning_pipeline](https://github.com/pavlohrab/Mag_cleaning_pipeline), and it runs on any MAG set, not just this one.
+I collected 19,720 Acidobacteriota MAGs from public databases together with their environmental metadata, then built a Nextflow pipeline to make them usable: mash-based strain clustering, CheckM2 quality filtering, GUNC chimerism removal, dRep dereplication and GTDB-Tk classification. That pipeline is open source as [Mag_cleaning_pipeline](https://github.com/pavlohrab/Mag_cleaning_pipeline).
 
 On the cleaned, species-level set I run antiSMASH and BiG-SCAPE. BiG-SCAPE writes its results to a SQLite database that resists inspection, so I also wrote [bigscape-pfam-explorer](https://github.com/pavlohrab/bigscape_pfam_explorer) to interrogate Pfam domain co-occurrence across BGC families directly.
 

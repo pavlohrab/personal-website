@@ -22,3 +22,9 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local venv for the CV builder
+.venv-cv/
+
+# LibreOffice lock files
+.~lock.*#

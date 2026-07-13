@@ -39,14 +39,14 @@ const latestNews = (await getCollection('news'))
 					align="start"
 				>
 					<div class="intro-text">
-						<p>
-							Computational biologist (PhD) working across microbiology and bioinformatics. I build reproducible pipelines and tools in R, Python, and Nextflow to make sense of large, messy biological datasets.<span class="mobile-hide"> My work covers metagenomics, transcriptomics, phylogenetics, functional annotation, and machine learning. I also work at the bench, culturing slow-growing bacteria and running molecular assays, so I understand the data from both sides.</span>
+						<p class="lede">
+							Computational biologist (PhD) working across microbiology and bioinformatics. I build reproducible pipelines and tools in R, Python, and Nextflow to make sense of large, messy biological datasets.<span class="mobile-hide"> My work covers metagenomics, transcriptomics, phylogenetics, functional annotation, and machine learning. I also work at the bench, culturing slow-growing bacteria, so I understand the data from both sides.</span>
 						</p>
 					</div>
 					<div class="hero-cta">
-						<a href={`${import.meta.env.BASE_URL}tools/`} class="hero-button primary">View Tools</a>
-						<a href={`${import.meta.env.BASE_URL}cv/`} class="hero-button secondary">View CV</a>
-						<a href={`${import.meta.env.BASE_URL}contact/`} class="hero-button secondary">Get in Touch</a>
+						<a href={`${import.meta.env.BASE_URL}tools/`} class="btn btn-primary">View Tools</a>
+						<a href={`${import.meta.env.BASE_URL}cv/`} class="btn btn-outline">View CV</a>
+						<a href={`${import.meta.env.BASE_URL}contact/`} class="btn btn-outline">Get in Touch</a>
 					</div>
 				</Hero>
 
@@ -58,19 +58,19 @@ const latestNews = (await getCollection('news'))
 				<div class="interests-grid">
 					<div class="interest-card">
 						<h3>Pipelines & data engineering</h3>
-						<p>Reproducible Nextflow workflows from raw reads to annotation, built to run the same way on a laptop and a cluster</p>
+						<p>Reproducible Nextflow workflows for working with metagenomics data</p>
 					</div>
 					<div class="interest-card">
 						<h3>Genome mining</h3>
-						<p>Biosynthetic gene clusters at scale with antiSMASH, BiG-SCAPE and MIBiG, including lineages nobody has mined before</p>
+						<p>Biosynthetic gene clusters mining at scale with antiSMASH, and BiG-SCAPE, including lineages nobody has mined before</p>
 					</div>
 					<div class="interest-card">
 						<h3>Multi-omics & ML</h3>
-						<p>Metagenomics, metatranscriptomics and phylogenomics, with the statistics and machine learning needed to draw a conclusion from them</p>
+						<p>Metagenomics, metatranscriptomics and phylogenomics. Applying statistics and machine learning to draw a conclusion from them</p>
 					</div>
 					<div class="interest-card">
 						<h3>Wet lab</h3>
-						<p>Cultivation of slow-growing bacteria, molecular assays, (q)PCR and heterologous expression — I generate data as well as analyse it</p>
+						<p>Cultivation of slow-growing bacteria, PCR and sequencing - I generate data as well as analyse it</p>
 					</div>
 				</div>
 			</section>
@@ -154,6 +154,7 @@ const latestNews = (await getCollection('news'))
 								<div class="news-item">
 									<span class="news-date">{news.data.date}</span>
 									<p>{news.data.description}</p>
+									<span class="read-more">Read more</span>
 								</div>
 							</a>
 						) : (
@@ -207,12 +208,6 @@ const latestNews = (await getCollection('news'))
 		max-width: 50ch;
 	}
 
-	.intro-text p {
-		font-size: var(--text-lg);
-		color: var(--gray-300);
-		line-height: 1.6;
-	}
-
 	.hero-cta {
 		display: flex;
 		gap: 1rem;
@@ -220,44 +215,12 @@ const latestNews = (await getCollection('news'))
 		flex-wrap: wrap;
 	}
 
-	.hero-button {
-		display: inline-block;
-		padding: 0.75rem 2rem;
-		border-radius: 0;
-		font-size: var(--text-base);
-		font-weight: 600;
-		text-decoration: none;
-		transition: all var(--theme-transition);
-		border: 1px solid var(--accent-regular);
-	}
-
-	.hero-button.primary {
-		background: var(--accent-regular);
-		color: var(--gray-999);
-	}
-
-	.hero-button.primary:hover {
-		background: var(--accent-dark);
-		opacity: 0.9;
-	}
-
-	.hero-button.secondary {
-		background: transparent;
-		color: var(--accent-regular);
-		border: 1px solid var(--accent-regular);
-	}
-
-	.hero-button.secondary:hover {
-		background: var(--accent-regular);
-		color: var(--gray-999);
-	}
-
 	.hero-image {
 		width: 100%;
 		max-width: 500px;
 		aspect-ratio: 3 / 4;
 		object-fit: cover;
-		border-radius: 1rem;
+		border-radius: var(--radius-surface);
 		box-shadow: var(--shadow-md);
 		position: relative;
 		z-index: 1;
@@ -265,13 +228,6 @@ const latestNews = (await getCollection('news'))
 
 	.research-interests {
 		padding-block: 2rem;
-	}
-
-	.section-title {
-		font-size: var(--text-2xl);
-		color: var(--gray-0);
-		margin-bottom: 1.5rem;
-		text-align: center;
 	}
 
 	.interests-grid {
@@ -284,8 +240,8 @@ const latestNews = (await getCollection('news'))
 	.interest-card {
 		padding: 1.5rem;
 		background: var(--gray-999);
-		border-radius: 0.75rem;
-		border-left: 3px solid var(--accent-regular);
+		border-radius: var(--radius-surface);
+		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
 	}
 
@@ -304,10 +260,12 @@ const latestNews = (await getCollection('news'))
 	@media (min-width: 50em) {
 		.hero {
 			display: grid;
-			grid-template-columns: 1fr 300px;
+			grid-template-columns: 1fr 22rem;
 			padding-inline: 2.5rem;
 			gap: 3.75rem;
-			align-items: start;
+			/* stretch, not start: the photo runs the full height of the text
+			   column instead of stopping short of it. */
+			align-items: stretch;
 		}
 
 		/* Reset order on desktop - text left, image right */
@@ -317,6 +275,11 @@ const latestNews = (await getCollection('news'))
 
 		.hero-image {
 			max-width: 100%;
+			/* Height is driven by the text column; object-fit crops rather than
+			   distorts, so the fixed 3/4 ratio is dropped here. */
+			aspect-ratio: auto;
+			height: 100%;
+			min-height: 28rem;
 			order: 0;
 		}
 	}
@@ -409,7 +372,7 @@ const latestNews = (await getCollection('news'))
 		gap: 1.5rem;
 		padding: 2rem 0;
 		grid-column: 1 / -1;
-		max-width: 60rem;
+		max-width: var(--width-reading);
 		margin-inline: auto;
 		width: 100%;
 	}
@@ -417,15 +380,19 @@ const latestNews = (await getCollection('news'))
 	.pub-preview {
 		padding: 1.5rem;
 		background: var(--gray-999);
-		border-left: 3px solid var(--accent-regular);
-		border-radius: 0.5rem;
+		border-left: var(--accent-bar) solid var(--accent-regular);
+		border-radius: var(--radius-surface);
 		box-shadow: var(--shadow-sm);
-		transition: all var(--theme-transition);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	}
 
+	/* Static: a publication preview is content, not a destination. */
 	.pub-preview:hover {
-		transform: translateX(4px);
-		box-shadow: var(--shadow-md);
+		box-shadow: var(--shadow-sm);
 	}
 
 	.pub-preview h4 {
@@ -461,7 +428,7 @@ const latestNews = (await getCollection('news'))
 		gap: 1rem;
 		padding: 2rem 0;
 		grid-column: 1 / -1;
-		max-width: 60rem;
+		max-width: var(--width-reading);
 		margin-inline: auto;
 		width: 100%;
 	}
@@ -474,18 +441,24 @@ const latestNews = (await getCollection('news'))
 	.news-item {
 		padding: 1rem 1.5rem;
 		background: var(--gray-999);
-		border-radius: 0.5rem;
-		border-left: 3px solid var(--accent-light);
+		border-radius: var(--radius-surface);
+		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
-		transition: all var(--theme-transition);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	}
 
 	.news-item-link .news-item {
 		cursor: pointer;
 	}
 
-	.news-item:hover {
-		transform: translateX(4px);
+	/* Only a news row with a page behind it lifts. A row without one is
+	   static, so the hover state itself tells you whether it is clickable. */
+	.news-item-link:hover .news-item {
+		transform: translateY(var(--lift));
 		box-shadow: var(--shadow-md);
 	}
 
@@ -508,7 +481,7 @@ const latestNews = (await getCollection('news'))
 		gap: 1.5rem;
 		padding: 2rem 0;
 		grid-column: 1 / -1;
-		max-width: 70rem;
+		max-width: var(--width-content);
 		margin-inline: auto;
 		width: 100%;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -525,11 +498,6 @@ const latestNews = (await getCollection('news'))
 	}
 
 	@media (max-width: 50em) {
-		/* Hide extra intro text on mobile */
-		.mobile-hide {
-			display: none;
-		}
-
 		/* Research Focus: 2x2 grid on mobile, titles only */
 		.interests-grid {
 			grid-template-columns: repeat(2, 1fr);

@@ -138,40 +138,13 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 </BaseLayout>
 
 <style>
-	.page-header {
-		padding-block: 2.5rem;
-		text-align: center;
-		max-width: 50rem;
-		margin-inline: auto;
-	}
-
-	.page-title {
-		font-size: var(--text-4xl);
-		color: var(--gray-0);
-		margin: 0 0 0.5rem;
-	}
-
-	.page-subtitle {
-		font-size: var(--text-lg);
-		color: var(--gray-300);
-		margin: 0;
-	}
-
 	.publications-content {
-		max-width: 65rem;
+		max-width: var(--width-reading);
 		margin-inline: auto;
 	}
 
 	.pub-section {
 		padding-block: 1rem;
-	}
-
-	.section-title {
-		font-size: var(--text-2xl);
-		color: var(--gray-0);
-		margin-bottom: 1.5rem;
-		padding-bottom: 0.5rem;
-		border-bottom: 2px solid var(--accent-regular);
 	}
 
 	.publications-list {
@@ -181,16 +154,19 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 	.publication-card {
 		padding: 2rem;
 		background: var(--gray-999);
-		border-radius: 0.75rem;
-		border-left: 4px solid var(--accent-regular);
+		border-radius: var(--radius-surface);
+		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
-		transition: all var(--theme-transition);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	}
 
+	/* Static: the DOI/paper links inside are the interactive part. */
 	.publication-card:hover {
-		transform: translateY(-4px);
-		box-shadow: var(--shadow-lg);
-		border-left-width: 6px;
+		box-shadow: var(--shadow-sm);
 	}
 
 	.publication-card.preprint {
@@ -254,7 +230,11 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 		border: 1px solid var(--accent-regular);
 		font-size: var(--text-sm);
 		font-weight: 500;
-		transition: all var(--theme-transition);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 	}
 
 	.pub-link:hover {
@@ -263,19 +243,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 	}
 
 	@media (max-width: 50em) {
-		.page-title {
-			font-size: var(--text-3xl);
-		}
-
-		.page-subtitle {
-			font-size: var(--text-base);
-		}
-
-		.section-title {
-			font-size: var(--text-xl);
-		}
-
-		.publication-card {
+				.publication-card {
 			padding: 1.5rem;
 		}
 

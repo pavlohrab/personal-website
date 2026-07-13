@@ -1,0 +1,238 @@
+---
+// Background: multiple sequence alignment blocks.
+//
+// Each block is a real alignment in miniature: a set of homologous sequences
+// evolved from one ancestor, so columns are mostly conserved with scattered
+// substitutions and the occasional gap column. Conserved columns are drawn
+// darker; substitutions are amber, the way a mismatch is highlighted in Jalview
+// or an MSA viewer.
+//
+// Monospace, to match the site's Fira Code brand face.
+// One animation only: fade in, hold, fade out.
+---
+
+<canvas id="phylo-canvas" data-bg="alignment" aria-hidden="true"></canvas>
+
+<script>
+	interface Block {
+		rows: string[][]; // [seq][col]
+		conserved: boolean[]; // per column
+		originX: number;
+		originY: number;
+		born: number;
+		lifetime: number;
+	}
+
+	let rafId: number | null = null;
+
+	function initAlignmentCanvas() {
+		if (rafId !== null) {
+			cancelAnimationFrame(rafId);
+			rafId = null;
+		}
+
+		const canvas = document.getElementById('phylo-canvas') as HTMLCanvasElement | null;
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		let isMobile = window.innerWidth < 800;
+		let width = window.innerWidth;
+		let height = window.innerHeight;
+
+		function resize() {
+			isMobile = window.innerWidth < 800;
+			const dpr = window.devicePixelRatio || 1;
+			width = window.innerWidth;
+			height = window.innerHeight;
+			canvas!.width = width * dpr;
+			canvas!.height = height * dpr;
+			canvas!.style.width = width + 'px';
+			canvas!.style.height = height + 'px';
+			ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+		}
+
+		/* ---------------- construction ---------------- */
+
+		const BASES = ['A', 'C', 'G', 'T'];
+
+		// Build an alignment the way one actually arises: take an ancestral
+		// sequence and evolve each row from it under a low substitution rate, with
+		// a few indel columns. That produces genuine conservation structure —
+		// mostly-identical columns punctuated by variable ones — rather than noise.
+		function makeBlock(now: number, stagger: boolean): Block {
+			const nSeq = 4 + Math.floor(Math.random() * 4); // 4–7 sequences
+			const nCol = isMobile
+				? 10 + Math.floor(Math.random() * 8)
+				: 14 + Math.floor(Math.random() * 16);
+
+			const ancestor = Array.from(
+				{ length: nCol },
+				() => BASES[Math.floor(Math.random() * 4)]
+			);
+
+			// Columns under selection stay put; a minority drift freely.
+			const variable = Array.from({ length: nCol }, () => Math.random() < 0.22);
+			// A rare gap column, as an indel shared by part of the alignment.
+			const gapCol = Math.random() < 0.35 ? Math.floor(Math.random() * nCol) : -1;
+
+			const rows: string[][] = [];
+			for (let s = 0; s < nSeq; s++) {
+				const row: string[] = [];
+				for (let c = 0; c < nCol; c++) {
+					if (c === gapCol && s % 2 === 0) {
+						row.push('-');
+						continue;
+					}
+					const subRate = variable[c] ? 0.55 : 0.06;
+					if (Math.random() < subRate) {
+						const others = BASES.filter(b => b !== ancestor[c]);
+						row.push(others[Math.floor(Math.random() * others.length)]);
+					} else {
+						row.push(ancestor[c]);
+					}
+				}
+				rows.push(row);
+			}
+
+			// A column is conserved if every non-gap residue agrees.
+			const conserved = Array.from({ length: nCol }, (_, c) => {
+				const residues = rows.map(r => r[c]).filter(ch => ch !== '-');
+				return residues.every(ch => ch === residues[0]);
+			});
+
+			const lifetime = 9000 + Math.random() * 9000;
+
+			return {
+				rows,
+				conserved,
+				originX: Math.random() * width,
+				originY: Math.random() * height,
+				born: stagger ? now - Math.random() * lifetime : now,
+				lifetime,
+			};
+		}
+
+		/* ---------------- drawing ---------------- */
+
+		const blocks: Block[] = [];
+
+		function draw(now: number) {
+			ctx!.clearRect(0, 0, width, height);
+
+			const isDark = document.documentElement.classList.contains('theme-dark');
+			const conservedColor = isDark ? '#9a9a9a' : '#7a7a7a'; // agrees: darker
+			const variableColor = isDark ? '#6a6a6a' : '#a8a8a8'; // disagrees: fainter
+			const amber = isDark ? '#d4a574' : '#c9925e'; // substitution
+			const gapColor = isDark ? '#5a5a5a' : '#b8b8b8';
+
+			const cell = isMobile ? 9 : 11;
+			const lineH = isMobile ? 11 : 14;
+			ctx!.font = `${isMobile ? 9 : 11}px "Fira Code", ui-monospace, monospace`;
+			ctx!.textBaseline = 'top';
+
+			for (let i = 0; i < blocks.length; i++) {
+				const b = blocks[i];
+				const age = now - b.born;
+
+				if (age >= b.lifetime) {
+					blocks[i] = makeBlock(now, false);
+					continue;
+				}
+
+				const FADE = 2200;
+				let alpha = 1;
+				if (age < FADE) alpha = age / FADE;
+				else if (age > b.lifetime - FADE) alpha = (b.lifetime - age) / FADE;
+				ctx!.globalAlpha = Math.max(0, Math.min(1, alpha));
+
+				// Consensus/conservation bar under the block, as an MSA viewer draws.
+				const blockW = b.rows[0].length * cell;
+				const blockH = b.rows.length * lineH;
+				for (let c = 0; c < b.conserved.length; c++) {
+					if (!b.conserved[c]) continue;
+					ctx!.fillStyle = conservedColor;
+					ctx!.globalAlpha = Math.max(0, Math.min(1, alpha)) * 0.35;
+					ctx!.fillRect(b.originX + c * cell, b.originY + blockH + 3, cell - 1.5, 2);
+				}
+				ctx!.globalAlpha = Math.max(0, Math.min(1, alpha));
+
+				for (let s = 0; s < b.rows.length; s++) {
+					for (let c = 0; c < b.rows[s].length; c++) {
+						const ch = b.rows[s][c];
+						if (ch === '-') ctx!.fillStyle = gapColor;
+						else if (b.conserved[c]) ctx!.fillStyle = conservedColor;
+						else {
+							// A residue that differs from the column's majority is the
+							// substitution — that is what gets highlighted.
+							const col = b.rows.map(r => r[c]).filter(x => x !== '-');
+							const counts: Record<string, number> = {};
+							for (const x of col) counts[x] = (counts[x] || 0) + 1;
+							const majority = Object.keys(counts).sort((a, z) => counts[z] - counts[a])[0];
+							ctx!.fillStyle = ch === majority ? variableColor : amber;
+						}
+						ctx!.fillText(ch, b.originX + c * cell, b.originY + s * lineH);
+					}
+				}
+
+				void blockW;
+			}
+
+			ctx!.globalAlpha = 1;
+		}
+
+		/* ---------------- setup ---------------- */
+
+		resize();
+
+		const spacing = isMobile ? 260 : 340;
+		const count = Math.max(3, Math.ceil((width * height) / (spacing * spacing)));
+		const start = performance.now();
+		for (let i = 0; i < count; i++) blocks.push(makeBlock(start, true));
+
+		let resizeTimer: number | null = null;
+		window.addEventListener('resize', () => {
+			resize();
+			if (reduceMotion) {
+				draw(performance.now());
+				return;
+			}
+			if (resizeTimer !== null) clearTimeout(resizeTimer);
+			resizeTimer = window.setTimeout(() => {
+				for (const b of blocks) {
+					b.originX = Math.random() * width;
+					b.originY = Math.random() * height;
+				}
+			}, 200);
+		});
+
+		if (reduceMotion) {
+			for (const b of blocks) {
+				b.born = start;
+				b.lifetime = Number.POSITIVE_INFINITY;
+			}
+			draw(start);
+			return;
+		}
+
+		const FPS = 24;
+		const frameInterval = 1000 / FPS;
+		let last = 0;
+
+		function loop(now: number) {
+			rafId = requestAnimationFrame(loop);
+			if (document.hidden) return;
+			if (now - last < frameInterval) return;
+			last = now;
+			draw(now);
+		}
+
+		rafId = requestAnimationFrame(loop);
+	}
+
+	document.addEventListener('astro:page-load', initAlignmentCanvas);
+	initAlignmentCanvas();
+</script>
+

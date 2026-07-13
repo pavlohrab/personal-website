@@ -1,0 +1,244 @@
+---
+// Background: biosynthetic gene cluster arrow tracks.
+//
+// The antiSMASH / clinker idiom: a contig backbone with CDS drawn as arrow
+// (pentagon) glyphs, pointing left or right by strand, sized by gene length,
+// separated by intergenic gaps. Core biosynthetic genes — the big NRPS/PKS
+// megasynthases — are drawn long and amber; tailoring, transport and regulatory
+// genes are short and grey. That size distribution is the thing that makes a
+// BGC recognisable at a glance.
+//
+// One animation only: fade in, hold, fade out.
+---
+
+<canvas id="phylo-canvas" data-bg="bgc" aria-hidden="true"></canvas>
+
+<script>
+	interface Gene {
+		start: number; // px along the contig
+		length: number;
+		strand: 1 | -1;
+		core: boolean; // core biosynthetic gene (amber, long)
+	}
+
+	interface Cluster {
+		genes: Gene[];
+		span: number;
+		originX: number;
+		originY: number;
+		flip: boolean; // draw right-to-left
+		born: number;
+		lifetime: number;
+	}
+
+	let rafId: number | null = null;
+
+	function initBgcCanvas() {
+		if (rafId !== null) {
+			cancelAnimationFrame(rafId);
+			rafId = null;
+		}
+
+		const canvas = document.getElementById('phylo-canvas') as HTMLCanvasElement | null;
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		let isMobile = window.innerWidth < 800;
+		let width = window.innerWidth;
+		let height = window.innerHeight;
+
+		function resize() {
+			isMobile = window.innerWidth < 800;
+			const dpr = window.devicePixelRatio || 1;
+			width = window.innerWidth;
+			height = window.innerHeight;
+			canvas!.width = width * dpr;
+			canvas!.height = height * dpr;
+			canvas!.style.width = width + 'px';
+			canvas!.style.height = height + 'px';
+			ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+		}
+
+		/* ---------------- construction ---------------- */
+
+		// A cluster is a run of CDS along a contig. One or two core genes are much
+		// longer than everything else (a PKS module is tens of kb; a tailoring
+		// enzyme is ~1 kb), which is exactly the visual signature of a BGC.
+		function makeCluster(now: number, stagger: boolean): Cluster {
+			const scale = isMobile ? 0.72 : 1;
+			const nGenes = 5 + Math.floor(Math.random() * 6); // 5–10 CDS
+			const coreIdx = new Set<number>();
+			coreIdx.add(1 + Math.floor(Math.random() * Math.max(1, nGenes - 2)));
+			if (Math.random() < 0.45) {
+				coreIdx.add(1 + Math.floor(Math.random() * Math.max(1, nGenes - 2)));
+			}
+
+			const genes: Gene[] = [];
+			let cursor = 0;
+			for (let i = 0; i < nGenes; i++) {
+				const core = coreIdx.has(i);
+				const length = core
+					? (70 + Math.random() * 90) * scale // megasynthase
+					: (16 + Math.random() * 26) * scale; // everything else
+				genes.push({
+					start: cursor,
+					length,
+					// Genes in a cluster tend to run in operon-like blocks, so the
+					// strand is sticky rather than independently random.
+					strand:
+						genes.length && Math.random() < 0.72
+							? genes[genes.length - 1].strand
+							: Math.random() < 0.5
+								? 1
+								: -1,
+					core,
+				});
+				cursor += length + (4 + Math.random() * 9) * scale; // intergenic gap
+			}
+
+			const lifetime = 9000 + Math.random() * 9000;
+
+			return {
+				genes,
+				span: cursor,
+				originX: Math.random() * width,
+				originY: Math.random() * height,
+				flip: Math.random() < 0.5,
+				born: stagger ? now - Math.random() * lifetime : now,
+				lifetime,
+			};
+		}
+
+		/* ---------------- drawing ---------------- */
+
+		// A CDS arrow: a rectangle body with a triangular head. The head takes the
+		// whole glyph when the gene is shorter than the head length, which is how
+		// small genes render in antiSMASH too.
+		function arrow(x: number, y: number, len: number, strand: 1 | -1, h: number) {
+			const head = Math.min(h * 0.9, len);
+			const body = len - head;
+
+			ctx!.beginPath();
+			if (strand === 1) {
+				ctx!.moveTo(x, y - h / 2);
+				ctx!.lineTo(x + body, y - h / 2);
+				ctx!.lineTo(x + len, y);
+				ctx!.lineTo(x + body, y + h / 2);
+				ctx!.lineTo(x, y + h / 2);
+			} else {
+				ctx!.moveTo(x + len, y - h / 2);
+				ctx!.lineTo(x + head, y - h / 2);
+				ctx!.lineTo(x, y);
+				ctx!.lineTo(x + head, y + h / 2);
+				ctx!.lineTo(x + len, y + h / 2);
+			}
+			ctx!.closePath();
+			ctx!.fill();
+		}
+
+		const clusters: Cluster[] = [];
+
+		function draw(now: number) {
+			ctx!.clearRect(0, 0, width, height);
+
+			const isDark = document.documentElement.classList.contains('theme-dark');
+			const grey = isDark ? '#8a8a8a' : '#8a8a8a';
+			const amber = isDark ? '#d4a574' : '#c9925e';
+			const backbone = isDark ? '#5f5f5f' : '#b0b0b0';
+
+			const h = isMobile ? 8 : 11; // arrow height
+
+			for (let i = 0; i < clusters.length; i++) {
+				const c = clusters[i];
+				const age = now - c.born;
+
+				if (age >= c.lifetime) {
+					clusters[i] = makeCluster(now, false);
+					continue;
+				}
+
+				const FADE = 2200;
+				let alpha = 1;
+				if (age < FADE) alpha = age / FADE;
+				else if (age > c.lifetime - FADE) alpha = (c.lifetime - age) / FADE;
+				ctx!.globalAlpha = Math.max(0, Math.min(1, alpha));
+
+				const dir = c.flip ? -1 : 1;
+				const px = (offset: number) => c.originX + dir * offset;
+
+				// Contig backbone
+				ctx!.strokeStyle = backbone;
+				ctx!.lineWidth = 1;
+				ctx!.beginPath();
+				ctx!.moveTo(px(0), c.originY);
+				ctx!.lineTo(px(c.span), c.originY);
+				ctx!.stroke();
+
+				for (const g of c.genes) {
+					ctx!.fillStyle = g.core ? amber : grey;
+					// When the whole track is mirrored, the strand mirrors with it.
+					const strand = (c.flip ? -g.strand : g.strand) as 1 | -1;
+					const x = c.flip ? px(g.start + g.length) : px(g.start);
+					arrow(x, c.originY, g.length, strand, h);
+				}
+			}
+
+			ctx!.globalAlpha = 1;
+		}
+
+		/* ---------------- setup ---------------- */
+
+		resize();
+
+		const spacing = isMobile ? 250 : 320;
+		const count = Math.max(3, Math.ceil((width * height) / (spacing * spacing)));
+		const start = performance.now();
+		for (let i = 0; i < count; i++) clusters.push(makeCluster(start, true));
+
+		let resizeTimer: number | null = null;
+		window.addEventListener('resize', () => {
+			resize();
+			if (reduceMotion) {
+				draw(performance.now());
+				return;
+			}
+			if (resizeTimer !== null) clearTimeout(resizeTimer);
+			resizeTimer = window.setTimeout(() => {
+				for (const c of clusters) {
+					c.originX = Math.random() * width;
+					c.originY = Math.random() * height;
+				}
+			}, 200);
+		});
+
+		if (reduceMotion) {
+			for (const c of clusters) {
+				c.born = start;
+				c.lifetime = Number.POSITIVE_INFINITY;
+			}
+			draw(start);
+			return;
+		}
+
+		const FPS = 24;
+		const frameInterval = 1000 / FPS;
+		let last = 0;
+
+		function loop(now: number) {
+			rafId = requestAnimationFrame(loop);
+			if (document.hidden) return;
+			if (now - last < frameInterval) return;
+			last = now;
+			draw(now);
+		}
+
+		rafId = requestAnimationFrame(loop);
+	}
+
+	document.addEventListener('astro:page-load', initBgcCanvas);
+	initBgcCanvas();
+</script>
+

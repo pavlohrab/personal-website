@@ -1,13 +1,49 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+// ---------------------------------------------------------------------------
+// Selected Software — edit these two lists to choose which tools the CV shows,
+// and in what order. The Tools page still lists everything; this is the cut.
+//
+// Wording, stack, signals and links are still read from src/content/tools/, so
+// each tool is described in exactly one place. Only the *selection* lives here.
+//
+// Available: ashelper, mag-cleaning-pipeline, bgcviz, pfam-tools,
+//            bigscape-pfam-explorer, rrnadif, hrmr, metawrap, arrower
+// ---------------------------------------------------------------------------
+const SELECTED = ['ashelper', 'mag-cleaning-pipeline', 'bgcviz', 'pfam-tools'];
+const SELECTED_CONTRIBUTIONS = ['metawrap', 'arrower'];
+
+const allTools = await getCollection('tools');
+
+/** Look tools up by slug, in the order listed. Fails the build on a typo. */
+function pick(slugs: string[]) {
+	return slugs.map(slug => {
+		const tool = allTools.find(t => t.id === slug);
+		if (!tool) {
+			throw new Error(
+				`cv.astro: no tool "${slug}" in src/content/tools/. ` +
+					`Available: ${allTools.map(t => t.id).join(', ')}`
+			);
+		}
+		return tool;
+	});
+}
+
+const tools = pick(SELECTED);
+const contributions = pick(SELECTED_CONTRIBUTIONS);
 ---
 
-<BaseLayout title="Curriculum Vitae" description="Academic CV and professional experience">
+<BaseLayout
+	title="CV"
+	description="CV of Pavlo Hrab — computational biologist (PhD): pipelines, open-source tools, and multi-omics for microbial genomics."
+>
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
-			<header class="page-header">
+			<header class="page-header with-action">
 				<h1 class="page-title">Curriculum Vitae</h1>
-				<a href={`${import.meta.env.BASE_URL}cv-short.pdf`} download class="cv-download-btn">Download CV (PDF)</a>
+				<a href={`${import.meta.env.BASE_URL}pavlo-hrab-cv.pdf`} download class="btn btn-primary">Download CV (PDF)</a>
 			</header>
 
 			<div class="cv-layout">
@@ -21,15 +57,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<nav class="toc-nav" id="toc-nav">
 					<h2 class="toc-title">Contents</h2>
 					<ul class="toc-list">
+						<li><a href="#profile" class="toc-link">Profile</a></li>
 						<li><a href="#work-experience" class="toc-link">Work Experience</a></li>
-						<li><a href="#teaching-experience" class="toc-link">Teaching Experience</a></li>
-						<li><a href="#education" class="toc-link">Education</a></li>
-						<li><a href="#awards" class="toc-link">Awards & Honors</a></li>
+						<li><a href="#software" class="toc-link">Selected Software</a></li>
 						<li><a href="#skills" class="toc-link">Technical Skills</a></li>
+						<li><a href="#education" class="toc-link">Education</a></li>
+						<li><a href="#teaching-experience" class="toc-link">Teaching</a></li>
+						<li><a href="#awards" class="toc-link">Awards & Honors</a></li>
+						<li><a href="#languages" class="toc-link">Languages</a></li>
 					</ul>
 				</nav>
 
 				<main class="cv-content stack gap-15 lg:gap-20">
+					<!-- Profile Section -->
+					<section id="profile" class="cv-section">
+						<h2 class="section-title">Profile</h2>
+						<p class="lede">
+							Computational biologist with a PhD in bioinformatics and microbiology. I build pipelines
+							and open-source tools in Nextflow, Python and R, and use them on large sequencing datasets.
+						</p>
+						<p class="lede profile-more">
+							My work covers metagenomics, transcriptomics, phylogenomics, functional annotation and
+							machine learning. During my PhD I cleaned and analysed 19,720 metagenome-assembled genomes
+							with a pipeline I wrote and released, and ran a year-long cultivation study to isolate the
+							bacteria behind them.
+						</p>
+						<p class="availability">Available from 1 October 2026.</p>
+					</section>
+
 					<!-- Work Experience Section -->
 					<section id="work-experience" class="cv-section">
 					<h2 class="section-title">Work Experience</h2>
@@ -37,7 +92,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 						<div class="cv-entry">
 							<div class="entry-header">
 								<h3 class="entry-title">Postdoctoral researcher</h3>
-								<span class="entry-date">2026 - Present</span>
+								<span class="entry-date">Jan 2026 - Sep 2026</span>
 							</div>
 							<p class="entry-location">Medema group, Bioinformatics group, Wageningen University & Research</p>
 							<div class="consortium-badge">
@@ -45,26 +100,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 								<a href="https://www.combo-eu.org" target="_blank" rel="noopener noreferrer" class="consortium-link combo">COMBO</a>
 							</div>
 							<ul class="entry-list">
-								<li>Search for biosynthetic gene clusters in marine sponges and seaweed for downstream heterologous expression</li>
-								<li>Marine microbiome metagenomics</li>
+								<li>Mined marine sponge metagenomes for biosynthetic gene clusters, and selected candidates for downstream heterologous expression</li>
 							</ul>
 						</div>
 						<div class="cv-entry">
 							<div class="entry-header">
 								<h3 class="entry-title">PhD Candidate</h3>
-								<span class="entry-date">2022 - 2026</span>
+								<span class="entry-date">Jan 2022 - Dec 2025</span>
 							</div>
-							<p class="entry-location">Medema group & Detmer sipkema lab, Bioinformatics group & Molecular ecology group, Wageningen University & Research</p>
+							<p class="entry-location">Medema group & Detmer Sipkema lab, Bioinformatics group & Molecular Ecology group, Wageningen University & Research</p>
 							<div class="consortium-badge">
 								<span class="badge-label">Research Consortium:</span>
 								<a href="https://marblesproject.eu/" target="_blank" rel="noopener noreferrer" class="consortium-link marbles">MARBLES</a>
 							</div>
+							<p class="entry-description">Project: Treasures of the deep — biosynthetic profiling and cultivation of marine host-associated Acidobacteriota</p>
 							<ul class="entry-list">
-								<li>Performed large-scale metagenomic and metatranscriptomic analyses</li>
-								<li>Executed functional annotation and targeted marine bacteria from marine sponges</li>
-								<li>Searched for novel biosynthetic gene clusters with unconventional techniques within undercharacterized phyla (Acidobacteriota)</li>
-								<li>Supervised 2 Msc and 1 BSc students for both: computational and molecular laboratory techniques</li>
-								<li>Communicated work in 8 cross-disciplinary international conferences</li>
+								<li>Planned and led a year-long, uninterrupted isolation study of sponge-associated bacteria under unconventional cultivation conditions, uncovering new physiological properties in the isolates</li>
+								<li>Built a Nextflow pipeline that takes raw MAGs through quality filtering, chimerism removal, dereplication and taxonomic classification — used it to reduce 19,720 public Acidobacteriota genomes to a clean, species-level set.</li>
+								<li>Mined biosynthetic gene clusters across that set with antiSMASH and BiG-SCAPE, and wrote the tooling to explore the results (an iTOL annotation generator and a BiG-SCAPE domain-co-occurrence app)</li>
+								<li>Analysed 488 marine genomes across 16 families to separate host adaptation from shared ancestry, combining phylogenomics, Pfam-based feature matrices and random forest models</li>
+								<li>Used functional predictions from the metagenomes to design the isolation media, closing the loop between the computational and the wet-lab work</li>
+								<li>Supervised 2 MSc and 1 BSc student across both computational and molecular work</li>
+								<li>Presented at 11 multidisciplinary conferences across microbiology, bioinformatics and natural products</li>
 							</ul>
 						</div>
 
@@ -75,7 +132,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 							</div>
 							<p class="entry-location">Information System Development</p>
 							<ul class="entry-list">
-								<li>The position was focused on replicating and addressing bug cases within testing servers. Proficiency in SQL, familiarity with LIMS, and a basic understanding of networking were requirements. Additionally, the role entailed compliance with HIPAA regulations.</li>
+								<li>Reproduced and diagnosed reported bugs against testing servers in a regulated, HIPAA-compliant environment</li>
 							</ul>
 						</div>
 						<div class="cv-entry">
@@ -85,7 +142,114 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 							</div>
 							<p class="entry-location">Ivan Franko National University of Lviv</p>
 							<ul class="entry-list">
-								<li>During my work in the Lab, I was mainly responsible for: Genomics data analysis, phylogenetics, BGC mining, Software development and  Manuscript writing</li>
+								<li>Sequenced, assembled and annotated the complete genome of <em>Streptomyces cyanogenus</em> S136, producer of the anticancer angucycline landomycin A (published in <em>3 Biotech</em>)</li>
+								<li>Wrote two open-source tools during this period — rRNADif and BGCViz — and carried out the phylogenetics and BGC mining behind them</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<!-- Selected Software Section -->
+				<section id="software" class="cv-section">
+					<h2 class="section-title">Selected Software</h2>
+					<p class="section-intro">
+						Open source, documented, and on GitHub. Full list on the
+						<a href={`${import.meta.env.BASE_URL}tools/`}>Tools</a> page.
+					</p>
+					<div class="software-list">
+						{tools.map(tool => (
+							<div class="software-entry">
+								<div class="entry-header">
+									<h3 class="entry-title mono">{tool.data.title}</h3>
+									<span class="entry-date">{tool.data.year}</span>
+								</div>
+								<div class="software-body">
+									<p class="entry-description">{tool.data.description}</p>
+									<p class="software-meta">
+										<span class="software-stack">{tool.data.stack.join(' · ')}</span>
+										{tool.data.signals.length > 0 && (
+											<span class="software-signals">{tool.data.signals.join(' · ')}</span>
+										)}
+									</p>
+									<div class="software-links">
+										{tool.data.links.map(link => (
+											<a href={link.href} target="_blank" rel="noopener">{link.label}</a>
+										))}
+									</div>
+								</div>
+							</div>
+						))}
+					</div>
+
+					{contributions.length > 0 && (
+						<div class="software-contributions">
+							<h3 class="subsection-title">Contributions to other projects</h3>
+							{contributions.map(tool => (
+								<p class="entry-description">
+									<strong class="mono">{tool.data.title}</strong> — {tool.data.description}{' '}
+									{tool.data.links.map(link => (
+										<a href={link.href} target="_blank" rel="noopener">{link.label}</a>
+									))}
+								</p>
+							))}
+						</div>
+					)}
+				</section>
+
+				<!-- Skills Section -->
+				<section id="skills" class="cv-section">
+					<h2 class="section-title">Technical Skills</h2>
+					<div class="skills-grid">
+						<div class="skill-category">
+							<h3 class="skill-category-title">Languages</h3>
+							<p class="skill-items">Python, R, Bash, SQL</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Workflows & reproducibility</h3>
+							<p class="skill-items">Nextflow, Conda, Git, working on remote Linux servers, R packaging, Shiny</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Bioinformatics</h3>
+							<p class="skill-items">Large-scale metagenomics and metatranscriptomics, BGC mining (antiSMASH, BiG-SCAPE, MIBiG), phylogenomics, functional annotation (Pfam, GO, HMMER/pyhmmer)</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Statistics & ML</h3>
+							<p class="skill-items">Statistical analysis in R and Python, random forests, clustering, enrichment testing, data cleaning and exploration</p>
+						</div>
+						<div class="skill-category">
+							<h3 class="skill-category-title">Laboratory</h3>
+							<p class="skill-items">Cultivation of slow-growing and marine bacteria, <em>E. coli</em> and <em>Streptomyces</em> work, heterologous expression, (q)PCR</p>
+						</div>
+					</div>
+				</section>
+
+				<!-- Education Section -->
+				<section id="education" class="cv-section">
+					<h2 class="section-title">Education</h2>
+					<div class="timeline">
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">M.Sc. in Genetics and Biotechnology</h3>
+								<span class="entry-date">Sep 2019 - Dec 2020</span>
+							</div>
+							<p class="entry-location">Ivan Franko National University of Lviv</p>
+							<p class="entry-description">Diploma cum laude. Thesis: Genome of S.cyanogenus S136: secondary metabolism potential</p>
+							<ul class="entry-list">
+								<li>Performed biosynthetic gene cluster mining in S.cyanogenus S136 genome</li>
+								<li>Developed software to support the analysis</li>
+							</ul>
+						</div>
+
+						<div class="cv-entry">
+							<div class="entry-header">
+								<h3 class="entry-title">B.Sc. in Biology</h3>
+								<span class="entry-date">2015 - 2019</span>
+							</div>
+							<p class="entry-location">Ivan Franko National University of Lviv</p>
+							<p class="entry-description">Thesis: Genetical control of morphogenesis in S.cyanogenus S136</p>
+							<ul class="entry-list">
+								<li>Performed heterologous expression of selected gene clusters</li>
+								<li>Analysed phylogeny of rodlins and chaplins in Streptomycetaceae</li>
 							</ul>
 						</div>
 					</div>
@@ -131,38 +295,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					</div>
 				</section>
 
-				<!-- Education Section -->
-				<section id="education" class="cv-section">
-					<h2 class="section-title">Education</h2>
-					<div class="timeline">
-						<div class="cv-entry">
-							<div class="entry-header">
-								<h3 class="entry-title">M.Sc. in Genetics and Biotechnology</h3>
-								<span class="entry-date">Sep 2019 - Dec 2020</span>
-							</div>
-							<p class="entry-location">Ivan Franko National University of Lviv</p>
-							<p class="entry-description">Thesis: Genome of S.cyanogenus S136: secondary metabolism potential</p>
-							<ul class="entry-list">
-								<li>Performed biosynthetic gene cluster mining in S.cyanogenus S136 genome</li>
-								<li>Developed software to support the analysis</li>
-							</ul>
-						</div>
-
-						<div class="cv-entry">
-							<div class="entry-header">
-								<h3 class="entry-title">B.Sc. in Biology</h3>
-								<span class="entry-date">2015 - 2019</span>
-							</div>
-							<p class="entry-location">Ivan Franko National University of Lviv</p>
-							<p class="entry-description">Thesis: Genetical control of morphogenesis in S.cyanogenus S136</p>
-							<ul class="entry-list">
-								<li>Performed heterologous expression of selected gene clusters</li>
-								<li>Analysed phylogeny of rodlins and chaplins in Streptomycetaceae</li>
-							</ul>
-						</div>
-					</div>
-				</section>
-
 				<!-- Awards & Honors Section -->
 				<section id="awards" class="cv-section">
 					<h2 class="section-title">Awards & Honors</h2>
@@ -187,7 +319,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 								<h3 class="entry-title">Top 3 projects</h3>
 								<span class="entry-date">2020</span>
 							</div>
-							<p class="entry-description">Data Engineering and Security winter school (DES 2020), project was rated within the top 3 (no specific places within the top 3), Lviv, Ukraine</p>
+							<p class="entry-description">Data Engineering and Security winter school (DES 2020), Lviv, Ukraine</p>
 						</div>
 						<div class="cv-entry compact">
 							<div class="entry-header">
@@ -199,28 +331,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 					</div>
 				</section>
 
-				<!-- Skills Section -->
-				<section id="skills" class="cv-section">
-					<h2 class="section-title">Technical Skills</h2>
+				<!-- Languages Section -->
+				<section id="languages" class="cv-section">
+					<h2 class="section-title">Languages</h2>
 					<div class="skills-grid">
 						<div class="skill-category">
-							<h3 class="skill-category-title">Programming</h3>
-							<p class="skill-items">Python, R, Bash</p>
+							<h3 class="skill-category-title">English</h3>
+							<p class="skill-items">Advanced (C1)</p>
 						</div>
 						<div class="skill-category">
-							<h3 class="skill-category-title">Bioinformatics techniques</h3>
-							<p class="skill-items">BGC mining (antismash), Phylogenomics, Large-scale metagenomics and metatranscriptomics</p>
+							<h3 class="skill-category-title">Ukrainian</h3>
+							<p class="skill-items">Native</p>
 						</div>
 						<div class="skill-category">
-							<h3 class="skill-category-title">Data Analysis</h3>
-							<p class="skill-items">Statistical analysis (in R and Python), Workflow management (Nextflow), Machine learning (Random Forest), Data cleaning and exploration</p>
-						</div>
-						<div class="skill-category">
-							<h3 class="skill-category-title">Laboratory</h3>
-							<p class="skill-items">E.coli and Streptomyces cultivation, Marine bacteria isolation, Heterologous expression, (q)PCR</p>
+							<h3 class="skill-category-title">Dutch</h3>
+							<p class="skill-items">Beginner (A1)</p>
 						</div>
 					</div>
 				</section>
+
 			</main>
 		</div>
 		</div>
@@ -228,155 +357,133 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </BaseLayout>
 
 <script>
-	// Mobile TOC toggle
-	const tocToggle = document.getElementById('toc-toggle');
-	const tocNav = document.getElementById('toc-nav');
-
-	if (tocToggle && tocNav) {
-		tocToggle.addEventListener('click', () => {
-			tocNav.classList.toggle('toc-expanded');
-			const icon = tocToggle.querySelector('.toggle-icon');
-			if (icon) {
-				icon.textContent = tocNav.classList.contains('toc-expanded') ? '▲' : '▼';
-			}
-		});
-	}
-
-	// Smooth scrolling for TOC links
-	document.querySelectorAll('.toc-link').forEach(link => {
-		link.addEventListener('click', (e) => {
-			e.preventDefault();
-			const targetId = link.getAttribute('href');
-			const targetSection = document.querySelector(targetId);
-			if (targetSection) {
-				// Close mobile menu after clicking
-				if (tocNav) tocNav.classList.remove('toc-expanded');
-				if (tocToggle) {
-					const icon = tocToggle.querySelector('.toggle-icon');
-					if (icon) icon.textContent = '▼';
-				}
-				targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-			}
-		});
-	});
-
-	// Scroll spy - highlight active section
-	const sections = document.querySelectorAll('.cv-section');
-	const tocLinks = document.querySelectorAll('.toc-link');
-
-	function highlightActiveSection() {
-		let currentSection = '';
-
-		sections.forEach(section => {
-			const sectionTop = section.offsetTop;
-			if (window.pageYOffset >= sectionTop - 150) {
-				currentSection = section.getAttribute('id');
-			}
-		});
-
-		tocLinks.forEach(link => {
-			link.classList.remove('active');
-			if (link.getAttribute('href') === `#${currentSection}`) {
-				link.classList.add('active');
-			}
-		});
-	}
-
-	window.addEventListener('scroll', highlightActiveSection);
-	window.addEventListener('load', highlightActiveSection);
-
-	// Dynamic TOC positioning: starts at Work Experience level, then sticks to top on scroll
-	function positionTOC() {
+	// Everything here re-runs on astro:page-load. With View Transitions a page's
+	// module script does NOT re-execute on client-side navigation, and `window
+	// load` never fires again — which is why the TOC toggle was dead and the
+	// scroll spy never lit up when you arrived at /cv/ from another page.
+	function initCv() {
 		const tocNav = document.getElementById('toc-nav');
-		const cvLayout = document.querySelector('.cv-layout');
-		const workSection = document.getElementById('work-experience');
+		const tocToggle = document.getElementById('toc-toggle');
+		if (!tocNav) return;
 
-		if (!tocNav || !cvLayout || !workSection) return;
-
-		const isDesktop = window.innerWidth > 800;
-
-		if (isDesktop) {
-			// Horizontal positioning: align with layout left edge
-			const layoutRect = cvLayout.getBoundingClientRect();
-			const wrapperPadding = parseFloat(getComputedStyle(document.querySelector('.wrapper')).paddingLeft);
-			tocNav.style.left = `${layoutRect.left + wrapperPadding}px`;
-
-			// Vertical positioning: follow Work Experience section until it scrolls past
-			const workSectionTop = workSection.getBoundingClientRect().top;
-			const SCROLL_THRESHOLD = 100;
-			const MIN_TOP_POSITION = 32;
-
-			if (workSectionTop > SCROLL_THRESHOLD) {
-				// Work section visible: align TOC with it
-				tocNav.style.top = `${Math.max(workSectionTop, MIN_TOP_POSITION)}px`;
-			} else {
-				// Work section scrolled past: stick TOC to top
-				tocNav.style.top = '2rem';
-			}
-		} else {
-			// Mobile: reset inline styles (CSS handles mobile layout)
-			tocNav.style.left = '';
-			tocNav.style.top = '';
+		/* ---------- mobile: Jump to section ---------- */
+		if (tocToggle && !tocToggle.dataset.bound) {
+			tocToggle.dataset.bound = 'true';
+			const icon = tocToggle.querySelector('.toggle-icon');
+			const setOpen = (open: boolean) => {
+				tocNav.classList.toggle('toc-expanded', open);
+				tocToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+				if (icon) icon.textContent = open ? '▲' : '▼';
+			};
+			setOpen(false);
+			tocToggle.addEventListener('click', () => {
+				setOpen(!tocNav.classList.contains('toc-expanded'));
+			});
 		}
+
+		/* ---------- smooth scroll + close the mobile menu ---------- */
+		const links = Array.from(
+			document.querySelectorAll<HTMLAnchorElement>('.toc-link')
+		);
+		for (const link of links) {
+			if (link.dataset.bound) continue;
+			link.dataset.bound = 'true';
+			link.addEventListener('click', e => {
+				const id = link.getAttribute('href');
+				if (!id || !id.startsWith('#')) return;
+				const target = document.querySelector(id);
+				if (!target) return;
+				e.preventDefault();
+				tocNav.classList.remove('toc-expanded');
+				const icon = tocToggle?.querySelector('.toggle-icon');
+				if (icon) icon.textContent = '▼';
+				target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+				history.replaceState(null, '', id);
+			});
+		}
+
+		/* ---------- scroll spy ----------
+		   An IntersectionObserver, not offsetTop arithmetic: offsetTop is measured
+		   against the nearest positioned ancestor, so the old comparison against
+		   window.pageYOffset was wrong the moment the layout changed. */
+		const sections = Array.from(document.querySelectorAll('.cv-section'));
+		if (!sections.length) return;
+
+		const visible = new Set<string>();
+
+		const setActive = (id: string) => {
+			for (const link of links) {
+				link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+			}
+		};
+
+		const observer = new IntersectionObserver(
+			entries => {
+				for (const entry of entries) {
+					const id = entry.target.id;
+					if (entry.isIntersecting) visible.add(id);
+					else visible.delete(id);
+				}
+				// Highlight the topmost section currently on screen.
+				const first = sections.find(sec => visible.has(sec.id));
+				if (first) setActive(first.id);
+			},
+			{
+				// A band across the upper part of the viewport: a section counts as
+				// "current" once its top reaches roughly a quarter down the screen.
+				rootMargin: '-25% 0px -60% 0px',
+				threshold: 0,
+			}
+		);
+
+		for (const sec of sections) observer.observe(sec);
+
+		// Something must be lit before the first scroll event.
+		setActive(sections[0].id);
+
+		document.addEventListener('astro:before-swap', () => observer.disconnect(), {
+			once: true,
+		});
 	}
 
-	// Update position on scroll, resize, and load
-	window.addEventListener('scroll', positionTOC);
-	window.addEventListener('resize', positionTOC);
-	window.addEventListener('load', positionTOC);
-	positionTOC();
-
-	// Read More functionality for mobile
+	/* ---------- mobile: collapse long content behind "Read more" ---------- */
 	function initReadMore() {
-		// Only run on mobile screens - use matchMedia to match CSS breakpoint
 		const isMobile = window.matchMedia('(max-width: 50em)').matches;
+		const existing = document.querySelectorAll('.read-more-btn');
+
 		if (!isMobile) {
-			// Remove any existing buttons if we're on desktop
-			document.querySelectorAll('.read-more-btn').forEach(btn => btn.remove());
+			existing.forEach(btn => btn.remove());
+			document
+				.querySelectorAll('.entry-list, .software-body, .profile-more')
+				.forEach(el => el.classList.remove('expanded'));
 			return;
 		}
+		if (existing.length > 0) return;
 
-		// Only add buttons if they don't already exist
-		const existingButtons = document.querySelectorAll('.read-more-btn');
-		if (existingButtons.length > 0) return;
+		const collapsibles = document.querySelectorAll(
+			'.entry-list, .software-body, .profile-more'
+		);
 
-		const entryLists = document.querySelectorAll('.entry-list');
+		collapsibles.forEach(block => {
+			const btn = document.createElement('span');
+			btn.className = 'read-more-btn';
+			btn.textContent = 'Read more';
+			btn.setAttribute('role', 'button');
+			btn.setAttribute('tabindex', '0');
+			btn.setAttribute('aria-expanded', 'false');
 
-		entryLists.forEach((list) => {
-			// Create Read More span (styled as text, like project cards)
-			const readMore = document.createElement('span');
-			readMore.className = 'read-more-btn';
-			readMore.textContent = 'Read More...';
-			// Accessibility attributes
-			readMore.setAttribute('role', 'button');
-			readMore.setAttribute('tabindex', '0');
-			readMore.setAttribute('aria-expanded', 'false');
+			block.parentNode?.insertBefore(btn, block.nextSibling);
 
-			// Insert after the list
-			list.parentNode?.insertBefore(readMore, list.nextSibling);
-
-			// Toggle function
 			const toggle = () => {
-				const isExpanded = list.classList.contains('expanded');
-
-				if (isExpanded) {
-					list.classList.remove('expanded');
-					readMore.classList.remove('expanded');
-					readMore.textContent = 'Read More...';
-					readMore.setAttribute('aria-expanded', 'false');
-				} else {
-					list.classList.add('expanded');
-					readMore.classList.add('expanded');
-					readMore.textContent = 'Read Less...';
-					readMore.setAttribute('aria-expanded', 'true');
-				}
+				const open = !block.classList.contains('expanded');
+				block.classList.toggle('expanded', open);
+				btn.classList.toggle('expanded', open);
+				btn.textContent = open ? 'Show less' : 'Read more';
+				btn.setAttribute('aria-expanded', open ? 'true' : 'false');
 			};
 
-			// Click handler
-			readMore.addEventListener('click', toggle);
-
-			// Keyboard support (Enter and Space)
-			readMore.addEventListener('keydown', (e) => {
+			btn.addEventListener('click', toggle);
+			btn.addEventListener('keydown', e => {
 				if (e.key === 'Enter' || e.key === ' ') {
 					e.preventDefault();
 					toggle();
@@ -385,45 +492,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		});
 	}
 
-	// Initialize on load and after View Transitions
-	document.addEventListener('astro:page-load', initReadMore);
-	initReadMore();
+	function init() {
+		initCv();
+		initReadMore();
+	}
+
+	document.addEventListener('astro:page-load', init);
+	window.addEventListener('resize', initReadMore);
+	init();
 </script>
 
 <style>
-	.page-header {
-		padding-block: 2.5rem;
-		text-align: center;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 1.5rem;
-	}
-
-	.page-title {
-		font-size: var(--text-4xl);
-		color: var(--gray-0);
-		margin: 0;
-	}
-
-	.cv-download-btn {
-		display: inline-block;
-		padding: 0.75rem 2rem;
-		background: var(--accent-regular);
-		color: var(--gray-999);
-		text-decoration: none;
-		border: 1px solid var(--accent-regular);
-		border-radius: 0;
-		font-size: var(--text-base);
-		font-weight: 600;
-		transition: all var(--theme-transition);
-	}
-
-	.cv-download-btn:hover {
-		background: var(--accent-dark);
-		opacity: 0.9;
-	}
-
 	/* Override parent containers to allow sticky */
 	.wrapper {
 		overflow: visible !important;
@@ -431,10 +510,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 	/* CV Layout with TOC Sidebar */
 	.cv-layout {
-		position: relative;
-		max-width: 90rem;
+		max-width: var(--width-wide);
 		margin-inline: auto;
-		padding-left: calc(250px + 3rem);
+		display: grid;
+		grid-template-columns: 250px minmax(0, 1fr);
+		gap: 3rem;
+		align-items: start;
 	}
 
 	/* Hide toggle button on desktop */
@@ -443,13 +524,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	}
 
 	.toc-nav {
-		position: fixed;
-		/* top is set dynamically by JavaScript */
+		/* Sticky, not fixed. A fixed element with no `left` falls back to its
+		   static position until JS sets one — which is why the sidebar used to
+		   render centred and then jump left once the script ran. */
+		position: sticky;
+		top: 2rem;
 		width: 250px;
 		padding: 1.5rem;
 		background: var(--gray-999);
-		border-radius: 0.5rem;
-		border-left: 3px solid var(--accent-regular);
+		border-radius: var(--radius-surface);
+		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
 		max-height: calc(100vh - 4rem);
 		overflow-y: auto;
@@ -458,7 +542,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	}
 
 	.cv-content {
-		max-width: 65rem;
+		max-width: var(--width-reading);
 	}
 
 	.toc-title {
@@ -484,8 +568,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		color: var(--gray-300);
 		text-decoration: none;
 		font-size: var(--text-sm);
-		border-radius: 0.25rem;
-		transition: all var(--theme-transition);
+		border-radius: var(--radius-tag);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 		border-left: 2px solid transparent;
 	}
 
@@ -508,12 +596,82 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		padding-block: 1rem;
 	}
 
-	.section-title {
-		font-size: var(--text-2xl);
+	.availability {
+		font-family: var(--font-brand);
+		font-size: var(--text-sm);
+		color: var(--accent-regular);
+		margin-top: 0.75rem;
+	}
+
+	/* Selected Software */
+	.section-intro {
+		font-size: var(--text-base);
+		color: var(--gray-400);
+		margin: -0.75rem 0 1.5rem;
+	}
+
+	.section-intro a {
+		color: var(--accent-regular);
+	}
+
+	.subsection-title {
+		font-size: var(--text-md);
 		color: var(--gray-0);
-		margin-bottom: 1.5rem;
-		padding-bottom: 0.5rem;
-		border-bottom: 2px solid var(--accent-regular);
+		margin: 2rem 0 0.75rem;
+	}
+
+	.software-list {
+		display: grid;
+		gap: 1.25rem;
+	}
+
+	.software-entry {
+		padding: 1.25rem 1.5rem;
+		background: var(--gray-999);
+		border-left: var(--accent-bar) solid var(--accent-regular);
+		border-radius: var(--radius-surface);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.mono {
+		font-family: var(--font-brand);
+	}
+
+	.software-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1rem;
+		font-size: var(--text-sm);
+		margin: 0.5rem 0 0.75rem;
+	}
+
+	.software-stack {
+		font-family: var(--font-brand);
+		color: var(--gray-400);
+	}
+
+	.software-signals {
+		color: var(--accent-regular);
+		font-weight: 600;
+	}
+
+	.software-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	/* No text-decoration here — these are text links and get the site-wide
+	   sweep from global.css. */
+	.software-links a,
+	.software-contributions a {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		color: var(--accent-regular);
+	}
+
+	.software-contributions a + a {
+		margin-left: 0.75rem;
 	}
 
 	.timeline {
@@ -559,7 +717,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	.awards-list .cv-entry {
 		position: static;
 		padding: 1rem 1.5rem;
-		border-left: 3px solid var(--accent-regular);
+		border-left: var(--accent-bar) solid var(--accent-regular);
 	}
 
 	.awards-list .cv-entry::before {
@@ -635,8 +793,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 		font-size: var(--text-sm);
 		font-weight: 600;
 		text-decoration: none;
-		border-radius: 0.25rem;
-		transition: all var(--theme-transition);
+		border-radius: var(--radius-tag);
+		transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 		border: 1.5px solid;
 		position: relative;
 	}
@@ -651,7 +813,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	.consortium-link.marbles:hover {
 		background: rgba(93, 163, 213, 0.2);
 		border-color: #7ab8dd;
-		transform: translateY(-1px);
+		transform: translateY(var(--lift));
 		box-shadow: 0 2px 8px rgba(93, 163, 213, 0.3);
 	}
 
@@ -665,7 +827,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	.consortium-link.combo:hover {
 		background: rgba(107, 184, 167, 0.2);
 		border-color: #82c5b4;
-		transform: translateY(-1px);
+		transform: translateY(var(--lift));
 		box-shadow: 0 2px 8px rgba(107, 184, 167, 0.3);
 	}
 
@@ -679,8 +841,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 	.skill-category {
 		padding: 1.25rem;
 		background: var(--gray-999);
-		border-radius: 0.5rem;
-		border-top: 3px solid var(--accent-regular);
+		border-radius: var(--radius-surface);
+		border-top: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
 	}
 
@@ -721,13 +883,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			padding: 0.3rem 0.75rem;
 		}
 
-		/* Hide entry lists on mobile by default */
-		.entry-list {
-			display: none;
+		/* Collapsed on mobile, animated open by the Read more toggle. */
+		.entry-list,
+		.software-body,
+		.profile-more {
+			overflow: hidden;
+			max-height: 0;
+			transition: max-height var(--sweep);
 		}
 
-		.entry-list.expanded {
-			display: block;
+		.entry-list.expanded,
+		.software-body.expanded,
+		.profile-more.expanded {
+			max-height: 60rem;
 		}
 
 		/* Show toggle button on mobile */
@@ -740,11 +908,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			background: var(--accent-regular);
 			color: var(--gray-999);
 			border: none;
-			border-radius: 0.375rem;
+			border-radius: var(--radius-tag);
 			font-size: var(--text-base);
 			font-weight: 600;
 			cursor: pointer;
-			transition: all var(--theme-transition);
+			transition:
+		transform var(--theme-transition),
+		box-shadow var(--theme-transition),
+		background-color var(--theme-transition),
+		color var(--theme-transition);
 			margin-bottom: 0.5rem;
 		}
 
@@ -789,7 +961,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			font-size: var(--text-sm);
 			padding: 0.75rem;
 			text-align: left;
-			border-radius: 0.25rem;
+			border-radius: var(--radius-tag);
 		}
 
 		.toc-link:hover,
@@ -802,47 +974,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			align-items: flex-start;
 		}
 
-		.page-title {
-			font-size: var(--text-3xl);
-		}
-
-		.section-title {
-			font-size: var(--text-xl);
-		}
 	}
 </style>
 
-<style is:global>
-	/* Read More - Global styles for dynamically created elements */
-	.read-more-btn {
-		display: inline-block;
-		margin-top: 0.75rem;
-		color: var(--gray-100) !important;
-		font-size: var(--text-sm);
-		font-weight: 700;
-		cursor: pointer;
-		transition: color var(--theme-transition);
-	}
-
-	.read-more-btn:hover,
-	.read-more-btn.expanded {
-		color: var(--gray-0) !important;
-	}
-
-	/* Dark mode - lighter grey for better harmony */
-	:root.theme-dark .read-more-btn {
-		color: var(--gray-100) !important;
-	}
-
-	:root.theme-dark .read-more-btn:hover,
-	:root.theme-dark .read-more-btn.expanded {
-		color: var(--gray-50) !important;
-	}
-
-	/* Hide on desktop, show only on mobile */
-	@media (min-width: 50.01em) {
-		.read-more-btn {
-			display: none !important;
-		}
-	}
-</style>

@@ -65,8 +65,39 @@
 	--font-body: "Public Sans", var(--font-system);
 	--font-brand: "Fira Code", monospace;
 
-	/* Transitions */
+	/* ---------------------------------------------------------------
+	   Design system
+	   One decision per idea. Components must use these, never literals.
+
+	   Shape    surfaces are rounded, controls are square.
+	   Accent   one bar: 3px, --accent-regular. Top edge on grid cards,
+	            left edge on list rows and panels. Nothing else.
+	   Motion   one hover gesture: rise by --lift and step up one shadow.
+	            No scaling, no sideways drift, no opacity fades.
+	   --------------------------------------------------------------- */
+
+	/* Shape */
+	--radius-surface: 0.5rem; /* cards, panels, images */
+	--radius-control: 0; /* buttons — deliberately square */
+	--radius-tag: 0.25rem; /* tags */
+	--radius-pill: 999rem; /* nav pill, status/signal chips */
+
+	/* Accent bar */
+	--accent-bar: 3px;
+
+	/* Content column. The page must not change width as you navigate.
+	   --width-content  grids of cards (projects, tools, beyond, contact)
+	   --width-reading  columns of text (CV, publications, talks, news)
+	   --width-wide     the two-column CV layout only */
+	--width-content: 70rem;
+	--width-reading: 65rem;
+	--width-wide: 90rem;
+
+	/* Motion */
 	--theme-transition: 0.2s ease-in-out;
+	--lift: -2px;
+	--sweep: 0.3s cubic-bezier(0.22, 1, 0.36, 1); /* underline + arrow travel */
+	--nudge: 4px; /* how far the "Read more" arrow moves */
 }
 
 :root.theme-dark {
@@ -158,25 +189,60 @@ img {
 	height: auto;
 }
 
+/* ---------------------------------------------------------------
+   Link taxonomy — three affordances, three jobs. Nothing else.
+
+   1. Inline link (this rule)  navigates from within prose.
+      The underline sweeps in from the left on hover.
+   2. Button (.btn)            performs an action: download, open a
+      repo, send mail. Lifts and fills.
+   3. Clickable surface        the whole card/row is a link. Lifts,
+      and says so with a "Read more →" cue.
+
+   A surface that does not lift is not clickable. That is the rule.
+
+   The sweep is drawn with a background gradient rather than an
+   absolutely-positioned ::after, because an abspos pseudo-element is
+   sized against a single line box — it can only ever underline the
+   first row of a link that wraps. box-decoration-break: clone gives
+   each wrapped line its own sweep.
+   --------------------------------------------------------------- */
 a {
 	color: var(--link-color);
 	text-decoration: none;
+	background-image: linear-gradient(currentColor, currentColor);
+	background-repeat: no-repeat;
+	background-position: 0 100%;
+	background-size: 0% 2px;
+	transition: background-size var(--sweep);
+	-webkit-box-decoration-break: clone;
+	box-decoration-break: clone;
 	position: relative;
 }
 
-a::after {
-	content: '';
-	position: absolute;
-	left: 0;
-	bottom: 0;
-	width: 0;
-	height: 2px;
-	background-color: var(--link-color);
-	transition: width 0.3s ease;
+a:hover,
+a:focus-visible {
+	background-size: 100% 2px;
 }
 
-a:hover::after {
-	width: 100%;
+/* No sweep on buttons (a filled block is already the affordance), on the
+   wordmark, on icon links, or on anchors that wrap a whole card — you
+   cannot underline a surface.
+
+   NOTE: the sweep is a background-image, so any component that sets the
+   `background:` SHORTHAND silently erases it. Use `background-color` in
+   components unless you mean to remove the underline. */
+.btn,
+.site-title,
+.social,
+.card-link,
+a:has(> .surface),
+a:has(> .project-card),
+a:has(> .news-item),
+a:has(> .news-card),
+a:has(> .blog-card),
+a:has(> .travel-card) {
+	background-image: none;
 }
 
 h1,
@@ -308,4 +374,26 @@ h5 {
 .scroll-reveal.revealed {
 	opacity: 1;
 	transform: translateY(0);
+}
+
+
+/* ---------------------------------------------------------------
+   Respect the user's motion preference. Everything decorative
+   (lifts, sweeps, arrow nudges, scroll reveals) stops; nothing
+   that conveys state or meaning does.
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	.scroll-reveal {
+		opacity: 1;
+		transform: none;
+	}
 }

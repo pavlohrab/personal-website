@@ -1,0 +1,279 @@
+---
+// Background: rectangular phylograms.
+//
+// Correct tree geometry — orthogonal elbows, horizontal distance proportional
+// to branch length (evolutionary distance), exponentially distributed branches,
+// internal nodes centred on their children, tips ragged (non-ultrametric, as a
+// real phylogram is).
+//
+// The chaos comes from the *forest*, not from bending the tree: trees are dense,
+// overlapping, vary widely in depth, and are rooted from any of the four
+// directions — all of which are legitimate ways to draw a phylogram.
+//
+// Branches taper from root to tip. Tips are amber; branches are grey.
+// One animation only: fade in, hold, fade out.
+---
+
+<canvas id="phylo-canvas" data-bg="phylogram" aria-hidden="true"></canvas>
+
+<script>
+	type Orient = 'lr' | 'rl' | 'tb' | 'bt';
+
+	interface PhyloNode {
+		children: PhyloNode[];
+		branchLength: number; // evolutionary distance from parent
+		x: number; // cumulative distance from the root
+		y: number;
+		depth: number;
+	}
+
+	interface Phylogram {
+		root: PhyloNode;
+		originX: number;
+		originY: number;
+		orient: Orient;
+		born: number;
+		lifetime: number;
+	}
+
+	// Module-level so a re-init tears down the previous loop; otherwise every
+	// View Transition stacked another rAF loop on top of the last one.
+	let rafId: number | null = null;
+
+	function initPhyloCanvas() {
+		if (rafId !== null) {
+			cancelAnimationFrame(rafId);
+			rafId = null;
+		}
+
+		const canvas = document.getElementById('phylo-canvas') as HTMLCanvasElement | null;
+		if (!canvas) return;
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return;
+
+		const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		let isMobile = window.innerWidth < 800;
+		let width = window.innerWidth;
+		let height = window.innerHeight;
+
+		function resize() {
+			isMobile = window.innerWidth < 800;
+			const dpr = window.devicePixelRatio || 1;
+			width = window.innerWidth;
+			height = window.innerHeight;
+			canvas!.width = width * dpr;
+			canvas!.height = height * dpr;
+			canvas!.style.width = width + 'px';
+			canvas!.style.height = height + 'px';
+			ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+		}
+
+		/* ---------------- construction ---------------- */
+
+		// Exponentially distributed branch lengths — what a birth–death process
+		// produces, rather than a uniform random scale factor.
+		function exponential(mean: number) {
+			return -Math.log(1 - Math.random()) * mean;
+		}
+
+		function buildTree(depth: number, maxDepth: number, meanBranch: number): PhyloNode {
+			const node: PhyloNode = {
+				children: [],
+				branchLength: exponential(meanBranch),
+				x: 0,
+				y: 0,
+				depth,
+			};
+			if (depth < maxDepth) {
+				const n = Math.random() > 0.88 ? 3 : 2; // mostly bifurcating, rare polytomy
+				for (let i = 0; i < n; i++) {
+					node.children.push(buildTree(depth + 1, maxDepth, meanBranch * 0.82));
+				}
+			}
+			return node;
+		}
+
+		// x = cumulative branch length from the root (this is what makes it a
+		// phylogram, not a cladogram). Tips take evenly spaced slots; each
+		// internal node sits at the midpoint of its children.
+		function layout(node: PhyloNode, parentX: number, tipSpacing: number, cursor: { y: number }) {
+			node.x = parentX + node.branchLength;
+			if (node.children.length === 0) {
+				node.y = cursor.y;
+				cursor.y += tipSpacing;
+				return;
+			}
+			for (const child of node.children) layout(child, node.x, tipSpacing, cursor);
+			node.y = (node.children[0].y + node.children[node.children.length - 1].y) / 2;
+		}
+
+		const ORIENTS: Orient[] = ['lr', 'rl', 'tb', 'bt'];
+
+		function createPhylogram(now: number, stagger: boolean): Phylogram {
+			// Wide depth range — small three-tip trees sitting next to big ones.
+			const maxDepth = isMobile
+				? 2 + Math.floor(Math.random() * 2) // 2–3
+				: 2 + Math.floor(Math.random() * 4); // 2–5
+			const meanBranch = (isMobile ? 22 : 30) * (0.6 + Math.random() * 0.9);
+			const tipSpacing = (isMobile ? 12 : 15) * (0.8 + Math.random() * 0.6);
+
+			const root = buildTree(0, maxDepth, meanBranch);
+			root.branchLength = 0; // the root has no incoming branch
+			layout(root, 0, tipSpacing, { y: 0 });
+
+			const lifetime = 16000 + Math.random() * 14000;
+
+			return {
+				root,
+				originX: Math.random() * width,
+				originY: Math.random() * height,
+				orient: ORIENTS[Math.floor(Math.random() * ORIENTS.length)],
+				born: stagger ? now - Math.random() * lifetime : now,
+				lifetime,
+			};
+		}
+
+		/* ---------------- drawing ---------------- */
+
+		// A phylogram is drawn along one axis. Rooting it from the right, top or
+		// bottom is a reflection/transpose of the same tree — still correct, and it
+		// makes the forest read as chaotic rather than as one repeated motif.
+		function project(t: Phylogram, x: number, y: number): [number, number] {
+			switch (t.orient) {
+				case 'lr': return [t.originX + x, t.originY + y];
+				case 'rl': return [t.originX - x, t.originY + y];
+				case 'tb': return [t.originX + y, t.originY + x];
+				case 'bt': return [t.originX + y, t.originY - x];
+			}
+		}
+
+		function line(t: Phylogram, x1: number, y1: number, x2: number, y2: number) {
+			const [ax, ay] = project(t, x1, y1);
+			const [bx, by] = project(t, x2, y2);
+			ctx!.beginPath();
+			ctx!.moveTo(ax, ay);
+			ctx!.lineTo(bx, by);
+			ctx!.stroke();
+		}
+
+		function drawNode(t: Phylogram, node: PhyloNode, grey: string, amber: string) {
+			if (node.children.length === 0) {
+				// Tip — amber, like a highlighted taxon.
+				const [px, py] = project(t, node.x, node.y);
+				ctx!.fillStyle = amber;
+				ctx!.beginPath();
+				ctx!.arc(px, py, 2.6, 0, Math.PI * 2);
+				ctx!.fill();
+				return;
+			}
+
+			const first = node.children[0];
+			const last = node.children[node.children.length - 1];
+
+			// Branches taper from root to tip.
+			ctx!.strokeStyle = grey;
+			ctx!.lineWidth = Math.max(1.3, 3.6 - node.depth * 0.55);
+
+			// Vertical spine at the parent's x, spanning its children...
+			line(t, node.x, first.y, node.x, last.y);
+
+			// ...then a horizontal branch out to each child.
+			for (const child of node.children) {
+				ctx!.lineWidth = Math.max(1.3, 3.6 - child.depth * 0.55);
+				line(t, node.x, child.y, child.x, child.y);
+				drawNode(t, child, grey, amber);
+			}
+		}
+
+		const trees: Phylogram[] = [];
+
+		function draw(now: number) {
+			ctx!.clearRect(0, 0, width, height);
+
+			const isDark = document.documentElement.classList.contains('theme-dark');
+			const grey = '#8a8a8a';
+			const amber = isDark ? '#d4a574' : '#c9925e';
+
+			ctx!.lineCap = 'butt';
+			ctx!.lineJoin = 'miter';
+
+			for (let i = 0; i < trees.length; i++) {
+				const t = trees[i];
+				const age = now - t.born;
+
+				if (age >= t.lifetime) {
+					trees[i] = createPhylogram(now, false);
+					continue;
+				}
+
+				// The only animation: fade in, hold, fade out.
+				const FADE = 3500;
+				let alpha = 1;
+				if (age < FADE) alpha = age / FADE;
+				else if (age > t.lifetime - FADE) alpha = (t.lifetime - age) / FADE;
+
+				ctx!.globalAlpha = Math.max(0, Math.min(1, alpha));
+				drawNode(t, t.root, grey, amber);
+			}
+
+			ctx!.globalAlpha = 1;
+		}
+
+		/* ---------------- setup ---------------- */
+
+		resize();
+
+		// Sparse. Chaos comes from the variety of the trees (depth, orientation,
+		// branch lengths), not from cramming more of them onto the screen.
+		const spacing = isMobile ? 320 : 380;
+		const count = Math.max(3, Math.ceil((width * height) / (spacing * spacing)));
+		const start = performance.now();
+		for (let i = 0; i < count; i++) trees.push(createPhylogram(start, true));
+
+		let resizeTimer: number | null = null;
+		window.addEventListener('resize', () => {
+			resize();
+			if (reduceMotion) {
+				draw(performance.now());
+				return;
+			}
+			if (resizeTimer !== null) clearTimeout(resizeTimer);
+			resizeTimer = window.setTimeout(() => {
+				for (const t of trees) {
+					t.originX = Math.random() * width;
+					t.originY = Math.random() * height;
+				}
+			}, 200);
+		});
+
+		// Reduced motion: draw once, never loop. A CSS media query cannot switch
+		// off a requestAnimationFrame, so it has to be handled here.
+		if (reduceMotion) {
+			for (const t of trees) {
+				t.born = start;
+				t.lifetime = Number.POSITIVE_INFINITY;
+			}
+			draw(start);
+			return;
+		}
+
+		const FPS = 24; // a slow fade does not need 60
+		const frameInterval = 1000 / FPS;
+		let last = 0;
+
+		function loop(now: number) {
+			rafId = requestAnimationFrame(loop);
+			if (document.hidden) return; // don't burn cycles on a background tab
+			if (now - last < frameInterval) return;
+			last = now;
+			draw(now);
+		}
+
+		rafId = requestAnimationFrame(loop);
+	}
+
+	document.addEventListener('astro:page-load', initPhyloCanvas);
+	initPhyloCanvas();
+</script>
+

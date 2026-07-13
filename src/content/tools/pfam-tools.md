@@ -1,6 +1,6 @@
 ---
 title: "pfam_tools"
-description: "Scans proteomes against Pfam-A, builds a QC-filtered presence/absence matrix, and annotates it with GO terms — the feature table that comparative genomics and ML models actually run on."
+description: "Scans proteomes against Pfam-A, builds a QC-filtered presence/absence matrix, and annotates it with GO terms"
 role: author
 stack: ["Python", "pyhmmer", "Pfam-A", "GO / GO-Slim"]
 signals: []

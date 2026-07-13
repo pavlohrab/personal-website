@@ -22,10 +22,15 @@ const { title, viewAllLink } = Astro.props;
 		margin-bottom: 2rem;
 	}
 
+	/* Matches the site-wide section heading in components.css:
+	   left aligned, accent rule underneath. */
 	.section-title {
 		font-size: var(--text-2xl);
 		color: var(--gray-0);
 		margin: 0;
+		padding-bottom: 0.5rem;
+		border-bottom: 2px solid var(--accent-regular);
+		flex-grow: 1;
 	}
 
 	.view-all-link {
@@ -33,7 +38,9 @@ const { title, viewAllLink } = Astro.props;
 		text-decoration: none;
 		font-size: var(--text-base);
 		font-weight: 500;
-		transition: color var(--theme-transition);
+		transition:
+			color var(--theme-transition),
+			background-size var(--sweep);
 	}
 
 	.view-all-link:hover {

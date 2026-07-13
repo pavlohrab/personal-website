@@ -1,8 +1,8 @@
 ---
 title: "hrmR"
-description: "High Resolution Melting analysis from raw RFU data — a browser app for the wet-lab step that otherwise means exporting from the PCR machine and fighting with a spreadsheet."
+description: "High Resolution Melting analysis from raw RFU data"
 role: author
-stack: ["R", "Shiny", "MBmca", "mclust", "DBSCAN"]
+stack: ["R", "Shiny", "MBmca", "mclust"]
 signals: ["DOI", "released", "live demo"]
 links:
   - label: "GitHub"

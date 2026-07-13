@@ -1,0 +1,57 @@
+---
+/**
+ * Background switcher. Pick the variant in src/site.config.ts.
+ *
+ * The canvas CSS lives here, in ONE place, deliberately. Astro bundles
+ * `<style is:global>` from every *imported* component, not just the rendered
+ * one — so when each background carried its own `#phylo-canvas` rule, all four
+ * shipped at once and fought over the same selector (the legacy one's
+ * `!important` opacity was winning and overriding whichever variant you chose).
+ * One rule, varied per variant by the canvas's data-bg attribute.
+ */
+import Phylogram from './backgrounds/Phylogram.astro';
+import Alignment from './backgrounds/Alignment.astro';
+import BgcArrows from './backgrounds/BgcArrows.astro';
+import PhylogramLegacy from './backgrounds/PhylogramLegacy.astro';
+import { BACKGROUND } from '../site.config';
+---
+
+{BACKGROUND === 'phylogram' && <Phylogram />}
+{BACKGROUND === 'alignment' && <Alignment />}
+{BACKGROUND === 'bgc' && <BgcArrows />}
+{BACKGROUND === 'phylogram-legacy' && <PhylogramLegacy />}
+
+<style is:global>
+	#phylo-canvas {
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: -1;
+		pointer-events: none;
+		display: block;
+		background: transparent;
+		opacity: 0.2;
+	}
+
+	.theme-dark #phylo-canvas {
+		opacity: 0.16;
+	}
+
+	/* The legacy animation was authored against a much heavier canvas. */
+	#phylo-canvas[data-bg='phylogram-legacy'] {
+		opacity: 0.55;
+	}
+
+	.theme-dark #phylo-canvas[data-bg='phylogram-legacy'] {
+		opacity: 0.5;
+	}
+
+	/* Text on a canvas needs to sit lighter than line art to read as texture. */
+	#phylo-canvas[data-bg='alignment'] {
+		opacity: 0.26;
+	}
+
+	.theme-dark #phylo-canvas[data-bg='alignment'] {
+		opacity: 0.2;
+	}
+</style>
