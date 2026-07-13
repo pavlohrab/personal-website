@@ -33,6 +33,63 @@ function pick(slugs: string[]) {
 
 const tools = pick(SELECTED);
 const contributions = pick(SELECTED_CONTRIBUTIONS);
+
+// ---------------------------------------------------------------------------
+// Related work — what each CV entry actually produced.
+//
+// This is what a CV on the web can do that a PDF cannot: turn "built a Nextflow
+// pipeline that cleaned 19,720 genomes" from a claim into a click. Deliberately
+// a row of links UNDER each entry rather than links inside the bullets — a
+// bullet peppered with links stops being scannable, and a CV lives or dies on
+// scannability.
+//
+// Slugs only. Titles and URLs are resolved from the collections, so they cannot
+// drift, and a typo fails the build instead of shipping a dead link.
+// NOTE: `bgcviz` and `rrnadif` exist in BOTH collections, hence the split.
+// ---------------------------------------------------------------------------
+const RELATED: Record<string, { projects?: string[]; tools?: string[] }> = {
+	// Nothing published from the postdoc yet — add slugs here when there is.
+	postdoc: {},
+	phd: {
+		projects: ['acido_biosynhtetic_potential', 'marine-acido-host', 'bacteria_cultivation'],
+		tools: ['mag-cleaning-pipeline', 'ashelper', 'bigscape-pfam-explorer', 'pfam-tools'],
+	},
+	labtech: {
+		tools: ['rrnadif', 'bgcviz'],
+	},
+};
+
+const allProjects = await getCollection('projects');
+
+function relatedFor(key: string) {
+	const spec = RELATED[key] ?? {};
+	const out: { title: string; href: string }[] = [];
+
+	for (const slug of spec.projects ?? []) {
+		const project = allProjects.find(x => x.id === slug);
+		if (!project) {
+			throw new Error(
+				`cv.astro: RELATED.${key} references project "${slug}", which does not ` +
+					`exist. Available: ${allProjects.map(x => x.id).join(', ')}`
+			);
+		}
+		out.push({ title: project.data.title, href: `/projects/${project.id}/` });
+	}
+
+	for (const slug of spec.tools ?? []) {
+		const tool = allTools.find(x => x.id === slug);
+		if (!tool) {
+			throw new Error(
+				`cv.astro: RELATED.${key} references tool "${slug}", which does not exist. ` +
+					`Available: ${allTools.map(x => x.id).join(', ')}`
+			);
+		}
+		// Tools have no page of their own; the cards on /tools/ are anchor targets.
+		out.push({ title: tool.data.title, href: `/tools/#${tool.id}` });
+	}
+
+	return out;
+}
 ---
 
 <BaseLayout
@@ -102,6 +159,17 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 							<ul class="entry-list">
 								<li>Mined marine sponge metagenomes for biosynthetic gene clusters, and selected candidates for downstream heterologous expression</li>
 							</ul>
+						{relatedFor('postdoc').length > 0 && (
+							<p class="entry-related">
+								<span class="related-label">Related</span>
+								{relatedFor('postdoc').map((item, i) => (
+									<>
+										{i > 0 && <span class="related-sep"> · </span>}
+										<a href={item.href}>{item.title}</a>
+									</>
+								))}
+							</p>
+						)}
 						</div>
 						<div class="cv-entry">
 							<div class="entry-header">
@@ -123,6 +191,17 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 								<li>Supervised 2 MSc and 1 BSc student across both computational and molecular work</li>
 								<li>Presented at 11 multidisciplinary conferences across microbiology, bioinformatics and natural products</li>
 							</ul>
+						{relatedFor('phd').length > 0 && (
+							<p class="entry-related">
+								<span class="related-label">Related</span>
+								{relatedFor('phd').map((item, i) => (
+									<>
+										{i > 0 && <span class="related-sep"> · </span>}
+										<a href={item.href}>{item.title}</a>
+									</>
+								))}
+							</p>
+						)}
 						</div>
 
 						<div class="cv-entry">
@@ -145,6 +224,17 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 								<li>Sequenced, assembled and annotated the complete genome of <em>Streptomyces cyanogenus</em> S136, producer of the anticancer angucycline landomycin A (published in <em>3 Biotech</em>)</li>
 								<li>Wrote two open-source tools during this period — rRNADif and BGCViz — and carried out the phylogenetics and BGC mining behind them</li>
 							</ul>
+						{relatedFor('labtech').length > 0 && (
+							<p class="entry-related">
+								<span class="related-label">Related</span>
+								{relatedFor('labtech').map((item, i) => (
+									<>
+										{i > 0 && <span class="related-sep"> · </span>}
+										<a href={item.href}>{item.title}</a>
+									</>
+								))}
+							</p>
+						)}
 						</div>
 					</div>
 				</section>
@@ -648,6 +738,33 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 
 	.cv-section {
 		padding-block: 1rem;
+	}
+
+	/* The Related row sits OUTSIDE the mobile collapse on purpose: it is the
+	   payoff, and it is one line. Hiding it behind "Read more" would bury the
+	   whole point. */
+	.entry-related {
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		margin-top: 0.85rem;
+		line-height: 1.7;
+	}
+
+	.related-label {
+		font-family: var(--font-brand);
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--gray-400);
+		margin-right: 0.5rem;
+	}
+
+	.entry-related a {
+		color: var(--gray-200);
+	}
+
+	.related-sep {
+		color: var(--gray-500);
 	}
 
 	.availability {

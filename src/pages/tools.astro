@@ -40,7 +40,7 @@ for (const tool of allTools) {
 					<SectionHeader title="Software" />
 					<Grid variant="projects">
 						{authored.map(tool => (
-							<article class="project-card tool-card">
+							<article class="project-card tool-card" id={tool.id}>
 								{tool.data.image && (
 									<div class="tool-figure">
 										<img
@@ -94,7 +94,7 @@ for (const tool of allTools) {
 						<SectionHeader title="Contributions" />
 						<Grid variant="projects-compact">
 							{contributed.map(tool => (
-								<article class="project-card compact tool-card contribution">
+								<article class="project-card compact tool-card contribution" id={tool.id}>
 									<div class="project-header">
 										<h3 class="project-title mono">{tool.data.title}</h3>
 										<span class="project-meta tool-year">{tool.data.year}</span>
@@ -129,6 +129,12 @@ for (const tool of allTools) {
 	.tool-card:hover {
 		transform: none;
 		box-shadow: var(--shadow-sm);
+	}
+
+	/* Deep-link target: the CV links to /tools/#ashelper etc. Keep the card
+	   clear of the top edge when jumped to. */
+	.tool-card {
+		scroll-margin-top: 2rem;
 	}
 
 	.tool-card.contribution {
