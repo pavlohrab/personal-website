@@ -768,16 +768,6 @@ a:hover .read-more::after,
 	transform: rotate(180deg);
 }
 
-/* Collapsed content animates open rather than snapping. */
-.collapsible {
-	overflow: hidden;
-	max-height: 0;
-	transition: max-height var(--sweep);
-}
-
-.collapsible.expanded {
-	max-height: 60rem;
-}
 
 /* The expander is a mobile affordance only; desktop shows everything. */
 @media (min-width: 50.01em) {

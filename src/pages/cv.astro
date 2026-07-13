@@ -454,8 +454,11 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 		if (!isMobile) {
 			existing.forEach(btn => btn.remove());
 			document
-				.querySelectorAll('.entry-list, .software-body, .profile-more')
-				.forEach(el => el.classList.remove('expanded'));
+				.querySelectorAll<HTMLElement>('.entry-list, .software-body, .profile-more')
+				.forEach(el => {
+					el.classList.remove('expanded', 'is-collapsible');
+					el.style.maxHeight = '';
+				});
 			return;
 		}
 		if (existing.length > 0) return;
@@ -464,7 +467,8 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 			'.entry-list, .software-body, .profile-more'
 		);
 
-		collapsibles.forEach(block => {
+		collapsibles.forEach(el => {
+			const block = el as HTMLElement;
 			const btn = document.createElement('span');
 			btn.className = 'read-more-btn';
 			btn.textContent = 'Read more';
@@ -474,12 +478,34 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 
 			block.parentNode?.insertBefore(btn, block.nextSibling);
 
+			// JS owns the collapse from here.
+			block.classList.add('is-collapsible');
+			block.style.maxHeight = '0px';
+
 			const toggle = () => {
 				const open = !block.classList.contains('expanded');
 				block.classList.toggle('expanded', open);
 				btn.classList.toggle('expanded', open);
 				btn.textContent = open ? 'Show less' : 'Read more';
 				btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+				if (open) {
+					// Animate to the content's true height, then release the cap
+					// entirely so nothing can ever be clipped — however long the
+					// bullets get, and however the text reflows afterwards.
+					block.style.maxHeight = `${block.scrollHeight}px`;
+					block.addEventListener('transitionend', function done() {
+						block.style.maxHeight = 'none';
+						block.removeEventListener('transitionend', done);
+					});
+				} else {
+					// max-height is 'none' at this point, and you cannot animate
+					// from 'none'. Pin it to the measured height, force a reflow,
+					// then collapse.
+					block.style.maxHeight = `${block.scrollHeight}px`;
+					void block.offsetHeight;
+					block.style.maxHeight = '0px';
+				}
 			};
 
 			btn.addEventListener('click', toggle);
@@ -883,19 +909,19 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 			padding: 0.3rem 0.75rem;
 		}
 
-		/* Collapsed on mobile, animated open by the Read more toggle. */
-		.entry-list,
-		.software-body,
-		.profile-more {
-			overflow: hidden;
-			max-height: 0;
-			transition: max-height var(--sweep);
-		}
+		/* Collapsed on mobile — but ONLY once JS has taken over and added
+		   .is-collapsible. Collapsing in plain CSS meant that if the script
+		   failed, a phone visitor saw neither the content nor a button to
+		   reveal it.
 
-		.entry-list.expanded,
-		.software-body.expanded,
-		.profile-more.expanded {
-			max-height: 60rem;
+		   No max-height value here on purpose: the script sets it to the
+		   element's real scrollHeight. The old fixed 60rem cap silently cut
+		   ~430px off the PhD bullets, which need 1387px. */
+		.entry-list.is-collapsible,
+		.software-body.is-collapsible,
+		.profile-more.is-collapsible {
+			overflow: hidden;
+			transition: max-height var(--sweep);
 		}
 
 		/* Show toggle button on mobile */
