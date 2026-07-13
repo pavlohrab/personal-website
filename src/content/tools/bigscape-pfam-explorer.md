@@ -1,6 +1,6 @@
 ---
 title: "bigscape-pfam-explorer"
-description: "Point it at a BiG-SCAPE database and a Pfam domain, and it tells you which domains travel with it across BGC families — co-occurrence patterns you can't see in the raw output."
+description: "Point it at a BiG-SCAPE database and a Pfam domain, and it tells you which domains travel with it across BGC families."
 role: author
 stack: ["R", "Shiny", "SQLite", "BiG-SCAPE"]
 signals: []

@@ -1,6 +1,6 @@
 ---
 title: "ashelper"
-description: "Turns antiSMASH and BiG-SCAPE output into iTOL annotation files, so BGC results can be read straight off a phylogenetic tree instead of cross-referencing spreadsheets."
+description: "Turns antiSMASH and BiG-SCAPE output into iTOL annotation files."
 role: author
 stack: ["Python", "antiSMASH", "BiG-SCAPE", "iTOL"]
 signals: ["tests", "packaged", "released"]
