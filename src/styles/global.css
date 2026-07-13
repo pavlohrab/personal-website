@@ -254,6 +254,10 @@ h5 {
 	font-family: var(--font-brand);
 	font-weight: 600;
 	color: var(--gray-100);
+	/* Long taxonomic names (Acidobacteriota, metatranscriptomics) are single
+	   unbreakable words. Without this, a heading's min-content width can exceed
+	   the phone column and force the whole page to overflow sideways. */
+	overflow-wrap: break-word;
 }
 
 h1 {

@@ -708,7 +708,7 @@ a:hover .read-more::after,
 
 	.project-header .project-title,
 	.post-header .post-title {
-		font-size: var(--text-3xl);
+		font-size: var(--text-2xl);
 	}
 
 	.project-header .project-subtitle,
