@@ -50,10 +50,16 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 const RELATED: Record<string, { projects?: string[]; tools?: string[] }> = {
 	// Nothing published from the postdoc yet — add slugs here when there is.
 	postdoc: {},
+	// Projects only. The PhD's tools (MAG Cleaning Pipeline, ashelper,
+	// bigscape-pfam-explorer, pfam_tools) are already linked directly from the
+	// Selected Software section further down THIS page — repeating them here
+	// added four links and no new destination. Each project page also lists the
+	// tools it produced, so nothing becomes unreachable.
 	phd: {
 		projects: ['acido_biosynhtetic_potential', 'marine-acido-host', 'bacteria_cultivation'],
-		tools: ['mag-cleaning-pipeline', 'ashelper', 'bigscape-pfam-explorer', 'pfam-tools'],
 	},
+	// Kept as tools: rRNADif is not in the Selected Software cut, so this is the
+	// only place on the CV it can be reached from.
 	labtech: {
 		tools: ['rrnadif', 'bgcviz'],
 	},
