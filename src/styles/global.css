@@ -256,8 +256,12 @@ h5 {
 	color: var(--gray-100);
 	/* Long taxonomic names (Acidobacteriota, metatranscriptomics) are single
 	   unbreakable words. Without this, a heading's min-content width can exceed
-	   the phone column and force the whole page to overflow sideways. */
-	overflow-wrap: break-word;
+	   the phone column and force the whole page to overflow sideways.
+
+	   `anywhere`, not `break-word`: both break the word visually, but only
+	   `anywhere` also shrinks the element's min-content size — which is what
+	   actually stops the box from forcing the overflow in the first place. */
+	overflow-wrap: anywhere;
 }
 
 h1 {
