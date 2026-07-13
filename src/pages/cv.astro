@@ -458,6 +458,8 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 				.forEach(el => {
 					el.classList.remove('expanded', 'is-collapsible');
 					el.style.maxHeight = '';
+					el.style.opacity = '';
+					el.style.transitionDuration = '';
 				});
 			return;
 		}
@@ -481,6 +483,12 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 			// JS owns the collapse from here.
 			block.classList.add('is-collapsible');
 			block.style.maxHeight = '0px';
+			block.style.opacity = '0';
+
+			// Travel time should follow travel distance. A flat 300ms makes a
+			// 1400px expansion feel like a snap and a 160px one feel sluggish.
+			const duration = (h: number) =>
+				`${Math.min(700, Math.max(300, Math.round(280 + h * 0.28)))}ms`;
 
 			const toggle = () => {
 				const open = !block.classList.contains('expanded');
@@ -493,8 +501,13 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 					// Animate to the content's true height, then release the cap
 					// entirely so nothing can ever be clipped — however long the
 					// bullets get, and however the text reflows afterwards.
-					block.style.maxHeight = `${block.scrollHeight}px`;
-					block.addEventListener('transitionend', function done() {
+					const h = block.scrollHeight;
+					block.style.transitionDuration = duration(h);
+					block.style.maxHeight = `${h}px`;
+					block.style.opacity = '1';
+					block.addEventListener('transitionend', function done(e) {
+						// opacity finishes too; only the height transition means "done".
+						if ((e as TransitionEvent).propertyName !== 'max-height') return;
 						block.style.maxHeight = 'none';
 						block.removeEventListener('transitionend', done);
 					});
@@ -502,9 +515,24 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 					// max-height is 'none' at this point, and you cannot animate
 					// from 'none'. Pin it to the measured height, force a reflow,
 					// then collapse.
-					block.style.maxHeight = `${block.scrollHeight}px`;
+					const h = block.scrollHeight;
+					block.style.transitionDuration = duration(h);
+					block.style.maxHeight = `${h}px`;
 					void block.offsetHeight;
 					block.style.maxHeight = '0px';
+					block.style.opacity = '0';
+
+					// Collapsing removes the block's height from ABOVE the reader's
+					// scroll position, so everything below shifts up by that much
+					// and they are left stranded near the end of the page. Bring the
+					// item they just collapsed back into view — but only if it has
+					// actually scrolled off the top, so collapsing something already
+					// on screen doesn't yank the page around.
+					const anchor =
+						block.closest('.cv-entry') ?? block.closest('.cv-section') ?? block;
+					if (anchor.getBoundingClientRect().top < 0) {
+						anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+					}
 				}
 			};
 
@@ -921,7 +949,11 @@ const contributions = pick(SELECTED_CONTRIBUTIONS);
 		.software-body.is-collapsible,
 		.profile-more.is-collapsible {
 			overflow: hidden;
-			transition: max-height var(--sweep);
+			/* Duration is set inline by the script, scaled to the block's height:
+			   a 160px block should not take as long as a 1400px one. */
+			transition-property: max-height, opacity;
+			transition-timing-function: var(--collapse-ease);
+			transition-duration: 320ms;
 		}
 
 		/* Show toggle button on mobile */
