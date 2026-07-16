@@ -36,7 +36,7 @@ const isCurrentPage = (href: string) => {
 <nav>
 	<div class="menu-header">
 		<a href={import.meta.env.BASE_URL} class="site-title">
-			Pavlo Hrab
+			<span>Pavlo Hrab</span>
 		</a>
 		<menu-button>
 			<template>
@@ -159,12 +159,30 @@ const isCurrentPage = (href: string) => {
 	}
 
 	.site-title {
-		display: flex;
-		gap: 0.5rem;
-		align-items: center;
+		display: block;
 		line-height: 1.1;
 		color: var(--gray-0);
 		text-decoration: none;
+	}
+
+	/* The same sweep the nav links get from the global `a` rule, but drawn on
+	   the inner span: the anchor is a flex item of .menu-header, so its display
+	   is blockified and box-decoration-break can never fragment it. The span is
+	   inline, so each line of the wordmark gets its own underline when it wraps
+	   to two lines at narrow desktop widths. */
+	.site-title span {
+		background-image: linear-gradient(currentColor, currentColor);
+		background-repeat: no-repeat;
+		background-position: 0 100%;
+		background-size: 0% 2px;
+		transition: background-size var(--sweep);
+		-webkit-box-decoration-break: clone;
+		box-decoration-break: clone;
+	}
+
+	.site-title:hover span,
+	.site-title:focus-visible span {
+		background-size: 100% 2px;
 	}
 
 	.menu-button {

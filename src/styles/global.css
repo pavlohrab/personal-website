@@ -231,9 +231,10 @@ a:focus-visible {
 	background-size: 100% 2px;
 }
 
-/* No sweep on buttons (a filled block is already the affordance), on the
-   wordmark, on icon links, or on anchors that wrap a whole card — you
-   cannot underline a surface.
+/* No sweep on buttons (a filled block is already the affordance), on icon
+   links, or on anchors that wrap a whole card — you cannot underline a
+   surface. The wordmark opts out here but draws its own sweep on an inner
+   span (see Nav.astro): it is a flex item, so it cannot fragment per line.
 
    NOTE: the sweep is a background-image, so any component that sets the
    `background:` SHORTHAND silently erases it. Use `background-color` in
