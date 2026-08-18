@@ -1,0 +1,9 @@
+name = "ask-pavlo"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+# The Gemini API key is NOT stored here. Set it as a secret:
+#   wrangler secret put GEMINI_API_KEY
+#
+# Deploy with:  wrangler deploy
+# Local dev:    wrangler dev   (create a .dev.vars with GEMINI_API_KEY=... )

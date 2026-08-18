@@ -18,3 +18,13 @@ export type BackgroundVariant =
 	| 'none';
 
 export const BACKGROUND: BackgroundVariant = 'phylogram';
+
+/**
+ * Endpoint for the "Ask" (Gemini) mode of site search — the URL of the
+ * Cloudflare Worker that proxies Gemini (e.g. 'https://ask-pavlo.<sub>.workers.dev/ask').
+ *
+ * Leave empty to ship search as Pagefind-only: the "Ask" toggle is hidden and
+ * nothing calls out to the Worker. Set it once the Worker is deployed to switch
+ * the conversational mode on. Baked in at build time.
+ */
+export const ASK_ENDPOINT: string = '';

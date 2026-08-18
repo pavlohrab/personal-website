@@ -12,10 +12,21 @@
  * degrades to a short "available on the deployed site" message.
  */
 import Icon from './Icon.astro';
+import { ASK_ENDPOINT } from '../site.config';
+
+// When no endpoint is configured, the "Ask" toggle is hidden and the overlay
+// behaves as pure Pagefind search.
+const askEnabled = ASK_ENDPOINT.trim() !== '';
 ---
 
-<search-palette data-pagefind-ignore>
+<search-palette data-pagefind-ignore data-ask-endpoint={ASK_ENDPOINT}>
 	<dialog class="search-dialog" aria-label="Search the site">
+		{askEnabled && (
+			<div class="search-modes" role="tablist" aria-label="Search mode">
+				<button type="button" class="search-mode is-active" data-mode="search" role="tab" aria-selected="true">Search</button>
+				<button type="button" class="search-mode" data-mode="ask" role="tab" aria-selected="false">Ask AI</button>
+			</div>
+		)}
 		<form class="search-form" role="search" method="dialog">
 			<span class="search-icon"><Icon icon="search" /></span>
 			<input
@@ -31,7 +42,9 @@ import Icon from './Icon.astro';
 			<button type="button" class="search-close" aria-label="Close search">Esc</button>
 		</form>
 
+		<div class="ask-answer" hidden></div>
 		<p class="search-status" aria-live="polite"></p>
+		<p class="search-results-heading" hidden></p>
 		<ul class="search-results" role="listbox" aria-label="Search results"></ul>
 
 		<footer class="search-footer">
@@ -243,6 +256,90 @@ import Icon from './Icon.astro';
 		border-radius: var(--radius-tag);
 	}
 
+	/* ---- Mode toggle (Search / Ask) ---------------------------------- */
+	.search-modes {
+		display: flex;
+		gap: 0.25rem;
+		padding: 0.625rem 0.75rem 0;
+	}
+
+	.search-mode {
+		flex: 1;
+		padding: 0.35rem 0.5rem;
+		font-family: var(--font-brand);
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		background: var(--gray-999);
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-tag);
+		cursor: pointer;
+		transition:
+			color var(--theme-transition),
+			background-color var(--theme-transition),
+			border-color var(--theme-transition);
+	}
+
+	.search-mode:hover {
+		color: var(--gray-0);
+	}
+
+	.search-mode.is-active {
+		color: var(--gray-999);
+		background: var(--accent-regular);
+		border-color: var(--accent-regular);
+	}
+
+	/* ---- Ask answer panel -------------------------------------------- */
+	.ask-answer {
+		margin: 0.375rem 0.375rem 0;
+		padding: 0.875rem 1rem;
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-tag);
+		background: var(--gray-900);
+		font-family: var(--font-body);
+		font-size: var(--text-sm);
+		line-height: 1.6;
+		color: var(--gray-100);
+	}
+
+	.ask-answer[hidden] {
+		display: none;
+	}
+
+	.ask-answer p {
+		margin: 0 0 0.5rem;
+	}
+
+	.ask-answer p:last-child {
+		margin-bottom: 0;
+	}
+
+	.ask-thinking {
+		color: var(--gray-400);
+	}
+
+	.ask-disclosure {
+		display: block;
+		margin-top: 0.5rem;
+		font-family: var(--font-brand);
+		font-size: var(--text-xs);
+		color: var(--gray-400);
+	}
+
+	/* "Sources" / "Here's what I found" heading above the results in Ask mode. */
+	.search-results-heading {
+		margin: 0.75rem 0.875rem 0;
+		font-family: var(--font-brand);
+		font-size: var(--text-xs);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		color: var(--gray-400);
+	}
+
+	.search-results-heading[hidden] {
+		display: none;
+	}
+
 	/* ---- Motion: enter animation, gated on motion preference ---------- */
 	@media (prefers-reduced-motion: no-preference) {
 		.search-dialog,
@@ -336,6 +433,11 @@ import Icon from './Icon.astro';
 		private input!: HTMLInputElement;
 		private resultsEl!: HTMLUListElement;
 		private statusEl!: HTMLParagraphElement;
+		private askAnswerEl!: HTMLDivElement;
+		private resultsHeadingEl!: HTMLParagraphElement;
+		private modeButtons: HTMLButtonElement[] = [];
+		private mode: 'search' | 'ask' = 'search';
+		private askEndpoint = '';
 		private debounce = 0;
 		private onDocKeydown = (e: KeyboardEvent) => this.handleShortcut(e);
 		private onOpenRequest = () => this.open();
@@ -345,11 +447,19 @@ import Icon from './Icon.astro';
 			this.input = this.querySelector('.search-input')!;
 			this.resultsEl = this.querySelector('.search-results')!;
 			this.statusEl = this.querySelector('.search-status')!;
+			this.askAnswerEl = this.querySelector('.ask-answer')!;
+			this.resultsHeadingEl = this.querySelector('.search-results-heading')!;
+			this.askEndpoint = (this.dataset.askEndpoint || '').trim();
+			this.modeButtons = Array.from(this.querySelectorAll<HTMLButtonElement>('.search-mode'));
 
 			this.input.addEventListener('input', () => this.onInput());
+			this.querySelector('.search-form')!.addEventListener('submit', (e) => this.onSubmit(e));
 			this.querySelector('.search-close')!.addEventListener('click', () => this.close());
 			this.resultsEl.addEventListener('keydown', (e) => this.handleResultKeys(e as KeyboardEvent));
 			this.input.addEventListener('keydown', (e) => this.handleInputKeys(e as KeyboardEvent));
+			for (const btn of this.modeButtons) {
+				btn.addEventListener('click', () => this.setMode(btn.dataset.mode === 'ask' ? 'ask' : 'search'));
+			}
 
 			// Global entry points (balanced by disconnectedCallback so listeners
 			// never stack across View Transition swaps).
@@ -374,9 +484,86 @@ import Icon from './Icon.astro';
 			if (this.dialog.open) return;
 			this.dialog.showModal();
 			this.input.value = '';
+			// Always open in Search mode, cleared.
+			this.setMode('search');
+		}
+
+		private setMode(mode: 'search' | 'ask') {
+			this.mode = mode;
+			for (const btn of this.modeButtons) {
+				const active = btn.dataset.mode === mode;
+				btn.classList.toggle('is-active', active);
+				btn.setAttribute('aria-selected', String(active));
+			}
+			this.input.placeholder = mode === 'ask' ? 'Ask about Pavlo’s work…' : 'Search the site…';
+			this.input.setAttribute('enterkeyhint', mode === 'ask' ? 'send' : 'search');
+			this.askAnswerEl.hidden = true;
+			this.resultsHeadingEl.hidden = true;
 			this.resultsEl.replaceChildren();
 			this.statusEl.textContent = '';
 			this.input.focus();
+		}
+
+		private onSubmit(e: Event) {
+			// The form is method="dialog"; stop it from closing the overlay.
+			e.preventDefault();
+			const query = this.input.value.trim();
+			if (this.mode === 'ask' && query) this.runAsk(query);
+		}
+
+		private setResultsHeading(text: string) {
+			if (this.resultsEl.children.length > 0) {
+				this.resultsHeadingEl.textContent = text;
+				this.resultsHeadingEl.hidden = false;
+			} else {
+				this.resultsHeadingEl.hidden = true;
+			}
+		}
+
+		private async runAsk(query: string) {
+			// Kick off the grounding search in parallel — it is also the fallback.
+			const searchPromise = this.runSearch(query);
+			this.askAnswerEl.hidden = false;
+			this.askAnswerEl.innerHTML = '<p class="ask-thinking">Thinking…</p>';
+
+			let answer = '';
+			try {
+				const res = await fetch(this.askEndpoint, {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ question: query }),
+				});
+				if (res.ok) {
+					const data = await res.json();
+					answer = typeof data.answer === 'string' ? data.answer.trim() : '';
+				}
+			} catch {
+				answer = '';
+			}
+
+			await searchPromise;
+
+			// Ignore a stale response if the user changed the query or left Ask mode.
+			if (this.mode !== 'ask' || this.input.value.trim() !== query) return;
+
+			if (answer) {
+				this.statusEl.textContent = '';
+				this.askAnswerEl.replaceChildren();
+				for (const para of answer.split(/\n{2,}/)) {
+					const p = document.createElement('p');
+					p.textContent = para.trim();
+					this.askAnswerEl.appendChild(p);
+				}
+				const note = document.createElement('span');
+				note.className = 'ask-disclosure';
+				note.textContent = 'AI-generated via Google Gemini · grounded in this site';
+				this.askAnswerEl.appendChild(note);
+				this.setResultsHeading('Sources on this site');
+			} else {
+				// Deflection / error: no answer bubble, quietly show search.
+				this.askAnswerEl.hidden = true;
+				this.setResultsHeading("Here's what I found on the site");
+			}
 		}
 
 		private close() {
@@ -384,6 +571,8 @@ import Icon from './Icon.astro';
 		}
 
 		private onInput() {
+			// Live search only in Search mode; Ask waits for submit (Enter).
+			if (this.mode !== 'search') return;
 			window.clearTimeout(this.debounce);
 			this.debounce = window.setTimeout(() => this.runSearch(this.input.value.trim()), 150);
 		}
