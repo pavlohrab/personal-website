@@ -27,4 +27,4 @@ export const BACKGROUND: BackgroundVariant = 'phylogram';
  * nothing calls out to the Worker. Set it once the Worker is deployed to switch
  * the conversational mode on. Baked in at build time.
  */
-export const ASK_ENDPOINT: string = '';
+export const ASK_ENDPOINT: string = 'https://ask-pavlo.pavlohrab.workers.dev';
