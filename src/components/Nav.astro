@@ -1,6 +1,5 @@
 ---
 import Icon from './Icon.astro';
-import type { iconPaths } from './IconPaths';
 import ThemeToggle from './ThemeToggle.astro';
 
 /** Main menu items */
@@ -15,15 +14,6 @@ const textLinks: { label: string; href: string }[] = [
 	{ label: 'Contact', href: `${import.meta.env.BASE_URL}contact/` },
 ];
 
-/** Icon links to social media — edit these with links to your profiles! */
-const iconLinks: { label: string; href: string; icon: keyof typeof iconPaths }[] = [
-	{ label: 'GitHub', href: 'https://github.com/pavlohrab', icon: 'github-logo' },
-	{ label: 'LinkedIn', href: 'https://linkedin.com/in/phrab', icon: 'linkedin-logo' },
-	{ label: 'Google Scholar', href: 'https://scholar.google.com/citations?user=VKJQl6UAAAAJ', icon: 'scholar-logo' },
-	{ label: 'ResearchGate', href: 'https://researchgate.net/profile/Pavlo-Hrab-2', icon: 'researchgate-logo' },
-	{ label: 'ORCID', href: 'https://orcid.org/0000-0002-0742-8478', icon: 'orcid-logo' },
-];
-
 /** Test if a link is pointing to the current page. */
 const isCurrentPage = (href: string) => {
 	let pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
@@ -33,7 +23,7 @@ const isCurrentPage = (href: string) => {
 };
 ---
 
-<nav>
+<nav data-pagefind-ignore>
 	<div class="menu-header">
 		<a href={import.meta.env.BASE_URL} class="site-title">
 			<span>Pavlo Hrab</span>
@@ -60,20 +50,6 @@ const isCurrentPage = (href: string) => {
 			}
 		</ul>
 	</noscript>
-	<noscript>
-		<div class="menu-footer">
-			<div class="socials">
-				{
-					iconLinks.map(({ href, icon, label }) => (
-						<a href={href} class="social">
-							<span class="sr-only">{label}</span>
-							<Icon icon={icon} />
-						</a>
-					))
-				}
-			</div>
-		</div>
-	</noscript>
 	<div id="menu-content" hidden>
 		<ul class="nav-items">
 			{
@@ -87,16 +63,11 @@ const isCurrentPage = (href: string) => {
 			}
 		</ul>
 		<div class="menu-footer">
-			<div class="socials">
-				{
-					iconLinks.map(({ href, icon, label }) => (
-						<a href={href} class="social">
-							<span class="sr-only">{label}</span>
-							<Icon icon={icon} />
-						</a>
-					))
-				}
-			</div>
+			<button type="button" class="search-trigger" aria-label="Search" aria-keyshortcuts="Meta+K Control+K">
+				<span class="search-trigger-icon"><Icon icon="search" /></span>
+				<span class="search-trigger-label">Search</span>
+				<kbd class="search-trigger-kbd">⌘K</kbd>
+			</button>
 
 			<div class="theme-toggle">
 				<ThemeToggle />
@@ -140,6 +111,14 @@ const isCurrentPage = (href: string) => {
 		}
 	}
 	customElements.define('menu-button', MenuButton);
+
+		// Open the search overlay when the nav "Search" control is clicked.
+		// Delegated on document so it survives View Transition swaps.
+		document.addEventListener('click', (e) => {
+			if ((e.target as Element).closest('.search-trigger')) {
+				document.dispatchEvent(new CustomEvent('open-search'));
+			}
+		});
 </script>
 
 <style>
@@ -259,29 +238,63 @@ const isCurrentPage = (href: string) => {
 		box-shadow: var(--shadow-lg);
 	}
 
-	.socials {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.625rem;
-		font-size: var(--icon-size);
+	/* Labeled "Search" pill — its own distinct affordance on the right, matching
+	   the nav-pill treatment (gradient fill + stroke ring + shadow). */
+	.search-trigger {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.4rem 0.75rem;
+		font-family: var(--font-brand);
+		font-size: var(--text-sm);
+		color: var(--gray-300);
+		background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
+		border: 0;
+		border-radius: var(--radius-pill);
+		box-shadow: var(--shadow-md);
+		cursor: pointer;
+		transition:
+			color var(--theme-transition),
+			transform var(--theme-transition),
+			box-shadow var(--theme-transition);
 	}
 
-	/* Muted at rest, full strength on hover — the same direction as every
-	   other hover on the site (cards lift, buttons fill, links underline).
-	   Do NOT use --accent-text-over here: it is the colour for text sitting
-	   ON an accent fill, and it resolves to the page background, which makes
-	   the icon vanish. */
-	.social {
-		display: flex;
-		padding: var(--icon-padding);
-		text-decoration: none;
-		color: var(--gray-400);
-		transition: color var(--theme-transition);
+	.search-trigger::before {
+		position: absolute;
+		inset: -1px;
+		content: '';
+		background: var(--gradient-stroke);
+		border-radius: var(--radius-pill);
+		z-index: -1;
 	}
 
-	.social:hover,
-	.social:focus {
+	.search-trigger:hover,
+	.search-trigger:focus-visible {
 		color: var(--gray-0);
+		transform: translateY(var(--lift));
+		box-shadow: var(--shadow-lg);
+	}
+
+	.search-trigger-icon {
+		display: flex;
+		font-size: 1rem;
+	}
+
+	.search-trigger-kbd {
+		font-family: var(--font-brand);
+		font-size: var(--text-xs);
+		color: var(--gray-400);
+		padding: 0.05em 0.4em;
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-tag);
+	}
+
+	/* The keyboard hint is meaningless on touch. */
+	@media (max-width: 50em) {
+		.search-trigger-kbd {
+			display: none;
+		}
 	}
 
 	.theme-toggle {
@@ -293,9 +306,12 @@ const isCurrentPage = (href: string) => {
 	@media (min-width: 50em) {
 		nav {
 			display: grid;
-			grid-template-columns: 1fr auto 1fr;
+			/* Side columns hug their content; the centre nav pill takes the rest
+			   and is allowed to shrink (minmax floor of 0) so it wraps to two
+			   rows instead of shoving the right-hand cluster off-screen. */
+			grid-template-columns: auto minmax(0, 1fr) auto;
 			align-items: center;
-			padding: 2.5rem 5rem;
+			padding: 2.5rem clamp(1.5rem, 4vw, 5rem);
 			gap: 1rem;
 		}
 
@@ -314,6 +330,12 @@ const isCurrentPage = (href: string) => {
 		.nav-items {
 			position: relative;
 			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			/* Stay content-width and centred at wide viewports; when the centre
+			   column can no longer hold every link on one line, wrap within it. */
+			justify-self: center;
+			max-width: 100%;
 			font-size: var(--text-sm);
 			border-radius: var(--radius-pill);
 			border: 0;
@@ -369,19 +391,8 @@ const isCurrentPage = (href: string) => {
 			background-color: transparent;
 			box-shadow: none;
 		}
-
-		.socials {
-			display: none;
-		}
 	}
 
-	@media (min-width: 60em) {
-		.socials {
-			display: flex;
-			justify-content: flex-end;
-			gap: 0;
-		}
-	}
 	@media (forced-colors: active) {
 		.link[aria-current='page'] {
 			color: SelectedItem;

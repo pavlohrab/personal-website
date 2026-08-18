@@ -8,6 +8,7 @@ import MainHead from '../components/MainHead.astro';
 import Nav from '../components/Nav.astro';
 import Background from '../components/Background.astro';
 import BackToTop from '../components/BackToTop.astro';
+import SearchPalette from '../components/SearchPalette.astro';
 // Import shared component styles
 import '../styles/components.css';
 
@@ -31,6 +32,7 @@ const { title, description} = Astro.props;
 			<Footer />
 		</div>
 		<BackToTop />
+		<SearchPalette />
 
 		<script>
 			// Add "loaded" class once the document has completely loaded.

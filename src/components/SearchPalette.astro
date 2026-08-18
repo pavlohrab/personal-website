@@ -1,0 +1,479 @@
+---
+/**
+ * Site-wide search overlay, powered by Pagefind's JS API.
+ *
+ * Rendered once in BaseLayout. Opens via the labelled "Search" control in the
+ * nav (primary) or the ⌘K / Ctrl-K accelerator (bonus). Results are rendered
+ * with the site's own token vocabulary — we deliberately do NOT use Pagefind's
+ * default UI, so search matches the rest of the design in light and dark mode.
+ *
+ * Note: the Pagefind bundle only exists after a real build (`astro build` runs
+ * `pagefind --site dist`). In `astro dev` there is no index, so the palette
+ * degrades to a short "available on the deployed site" message.
+ */
+import Icon from './Icon.astro';
+---
+
+<search-palette data-pagefind-ignore>
+	<dialog class="search-dialog" aria-label="Search the site">
+		<form class="search-form" role="search" method="dialog">
+			<span class="search-icon"><Icon icon="search" /></span>
+			<input
+				type="search"
+				class="search-input"
+				placeholder="Search the site…"
+				aria-label="Search the site"
+				autocomplete="off"
+				autocapitalize="off"
+				spellcheck="false"
+				enterkeyhint="search"
+			/>
+			<button type="button" class="search-close" aria-label="Close search">Esc</button>
+		</form>
+
+		<p class="search-status" aria-live="polite"></p>
+		<ul class="search-results" role="listbox" aria-label="Search results"></ul>
+
+		<footer class="search-footer">
+			<span><kbd>↑</kbd><kbd>↓</kbd> to navigate</span>
+			<span><kbd>↵</kbd> to open</span>
+			<span><kbd>esc</kbd> to close</span>
+		</footer>
+	</dialog>
+</search-palette>
+
+<style is:global>
+	/* ---- Overlay surface ---------------------------------------------- */
+	.search-dialog {
+		box-sizing: border-box;
+		width: min(40rem, 92vw);
+		/* dvh (not vh) so the panel tracks mobile browser chrome and resizes
+		   cleanly; top-anchored like a command palette. */
+		max-height: 80dvh;
+		margin: 10dvh auto auto;
+		padding: 0;
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-surface);
+		background: var(--gray-999);
+		color: var(--gray-0);
+		/* A neutral, downward drop shadow that reads the same in both themes.
+		   The site's --shadow-* tokens glow WHITE in dark mode, which halos a
+		   large modal — so we use a flat dark shadow here instead. */
+		box-shadow: 0 1.5rem 3rem hsla(0, 0%, 0%, 0.4);
+		overflow: hidden;
+		flex-direction: column;
+	}
+
+	.search-dialog[open] {
+		display: flex;
+	}
+
+	.search-dialog::backdrop {
+		background: hsla(0, 0%, 0%, 0.45);
+		backdrop-filter: blur(2px);
+	}
+
+	/* ---- Input row ---------------------------------------------------- */
+	.search-form {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.75rem 1rem;
+		border-bottom: 1px solid var(--gray-800);
+	}
+
+	.search-icon {
+		display: flex;
+		font-size: 1.1rem;
+		color: var(--gray-400);
+	}
+
+	/* Same token vocabulary as the thoughts-page search box, minus the border
+	   (the dialog row owns the frame here). */
+	.search-input {
+		flex: 1;
+		min-width: 0;
+		padding: 0.25rem 0;
+		font-family: var(--font-body);
+		font-size: var(--text-base);
+		color: var(--gray-0);
+		background: transparent;
+		border: 0;
+	}
+
+	.search-input:focus {
+		outline: none;
+	}
+
+	.search-input::placeholder {
+		color: var(--gray-400);
+	}
+
+	/* Kill the native clear/search decorations so the field matches the site. */
+	.search-input::-webkit-search-decoration,
+	.search-input::-webkit-search-cancel-button {
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	.search-close {
+		flex: none;
+		padding: 0.25rem 0.5rem;
+		font-family: var(--font-brand);
+		font-size: var(--text-xs);
+		color: var(--gray-400);
+		background: var(--gray-999);
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-tag);
+		cursor: pointer;
+		transition:
+			color var(--theme-transition),
+			border-color var(--theme-transition);
+	}
+
+	.search-close:hover {
+		color: var(--gray-0);
+		border-color: var(--accent-regular);
+	}
+
+	/* ---- Status / empty state ---------------------------------------- */
+	.search-status {
+		margin: 0;
+		padding: 1rem;
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+	}
+
+	.search-status:empty {
+		display: none;
+	}
+
+	/* ---- Results ------------------------------------------------------ */
+	.search-results {
+		flex: 1;
+		margin: 0;
+		padding: 0.375rem;
+		list-style: none;
+		overflow-y: auto;
+	}
+
+	.search-results:empty {
+		display: none;
+	}
+
+	.search-result {
+		display: block;
+		padding: 0.75rem 0.875rem;
+		border-radius: var(--radius-tag);
+		text-decoration: none;
+		color: var(--gray-100);
+		transition: background-color var(--theme-transition);
+	}
+
+	.search-result:hover,
+	.search-result:focus-visible {
+		outline: none;
+		background: var(--gray-900);
+	}
+
+	.search-result-title {
+		display: block;
+		font-family: var(--font-brand);
+		font-size: var(--text-base);
+		font-weight: 600;
+		color: var(--gray-0);
+	}
+
+	/* The link "sweep" the rest of the site uses, drawn under the title. */
+	.search-result-title span {
+		background-image: linear-gradient(currentColor, currentColor);
+		background-repeat: no-repeat;
+		background-position: 0 100%;
+		background-size: 0% 2px;
+		transition: background-size var(--sweep);
+	}
+
+	.search-result:hover .search-result-title span,
+	.search-result:focus-visible .search-result-title span {
+		background-size: 100% 2px;
+	}
+
+	.search-result-excerpt {
+		display: block;
+		margin-top: 0.25rem;
+		font-family: var(--font-body);
+		font-size: var(--text-sm);
+		line-height: 1.5;
+		color: var(--gray-300);
+	}
+
+	.search-result-excerpt mark {
+		background: var(--accent-overlay);
+		color: inherit;
+		padding: 0 0.1em;
+		border-radius: 2px;
+	}
+
+	/* ---- Footer hints ------------------------------------------------- */
+	.search-footer {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		padding: 0.625rem 1rem;
+		border-top: 1px solid var(--gray-800);
+		font-family: var(--font-brand);
+		font-size: var(--text-xs);
+		color: var(--gray-400);
+	}
+
+	.search-footer kbd,
+	.search-close kbd {
+		font-family: var(--font-brand);
+	}
+
+	.search-footer kbd {
+		display: inline-block;
+		min-width: 1.25em;
+		margin-right: 0.15em;
+		padding: 0.1em 0.35em;
+		text-align: center;
+		color: var(--gray-300);
+		background: var(--gray-999);
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-tag);
+	}
+
+	/* ---- Motion: enter animation, gated on motion preference ---------- */
+	@media (prefers-reduced-motion: no-preference) {
+		.search-dialog,
+		.search-dialog::backdrop {
+			transition:
+				opacity var(--theme-transition),
+				transform var(--theme-transition),
+				overlay var(--theme-transition) allow-discrete,
+				display var(--theme-transition) allow-discrete;
+		}
+
+		.search-dialog {
+			opacity: 0;
+			transform: translateY(-0.5rem);
+		}
+
+		.search-dialog[open] {
+			opacity: 1;
+			transform: translateY(0);
+		}
+
+		.search-dialog::backdrop {
+			opacity: 0;
+		}
+
+		.search-dialog[open]::backdrop {
+			opacity: 1;
+		}
+
+		@starting-style {
+			.search-dialog[open] {
+				opacity: 0;
+				transform: translateY(-0.5rem);
+			}
+
+			.search-dialog[open]::backdrop {
+				opacity: 0;
+			}
+		}
+	}
+
+	@media (min-width: 50em) {
+		.search-footer {
+			gap: 1.5rem;
+		}
+	}
+
+	/* Narrow / short screens: sit nearer the top, use more of the width, and
+	   give results more room so the panel never feels cramped on resize. */
+	@media (max-width: 40em) {
+		.search-dialog {
+			width: 94vw;
+			max-height: 88dvh;
+			margin: 4dvh auto auto;
+		}
+	}
+
+	@media (max-height: 30em) {
+		.search-dialog {
+			max-height: 92dvh;
+			margin: 2dvh auto auto;
+		}
+	}
+</style>
+
+<script>
+	// Cached across page navigations: module scripts run once, so the Pagefind
+	// bundle is only ever fetched + initialised a single time per session.
+	type PagefindResult = {
+		url: string;
+		meta: { title?: string };
+		excerpt: string;
+	};
+	type PagefindModule = {
+		search: (q: string) => Promise<{ results: { data: () => Promise<PagefindResult> }[] }>;
+		options?: (o: Record<string, unknown>) => Promise<void>;
+	};
+
+	let pagefindPromise: Promise<PagefindModule | null> | null = null;
+
+	function loadPagefind(): Promise<PagefindModule | null> {
+		if (!pagefindPromise) {
+			const url = `${import.meta.env.BASE_URL}pagefind/pagefind.js`;
+			pagefindPromise = import(/* @vite-ignore */ url).catch(() => null);
+		}
+		return pagefindPromise;
+	}
+
+	class SearchPalette extends HTMLElement {
+		private dialog!: HTMLDialogElement;
+		private input!: HTMLInputElement;
+		private resultsEl!: HTMLUListElement;
+		private statusEl!: HTMLParagraphElement;
+		private debounce = 0;
+		private onDocKeydown = (e: KeyboardEvent) => this.handleShortcut(e);
+		private onOpenRequest = () => this.open();
+
+		connectedCallback() {
+			this.dialog = this.querySelector('dialog')!;
+			this.input = this.querySelector('.search-input')!;
+			this.resultsEl = this.querySelector('.search-results')!;
+			this.statusEl = this.querySelector('.search-status')!;
+
+			this.input.addEventListener('input', () => this.onInput());
+			this.querySelector('.search-close')!.addEventListener('click', () => this.close());
+			this.resultsEl.addEventListener('keydown', (e) => this.handleResultKeys(e as KeyboardEvent));
+			this.input.addEventListener('keydown', (e) => this.handleInputKeys(e as KeyboardEvent));
+
+			// Global entry points (balanced by disconnectedCallback so listeners
+			// never stack across View Transition swaps).
+			document.addEventListener('keydown', this.onDocKeydown);
+			document.addEventListener('open-search', this.onOpenRequest);
+		}
+
+		disconnectedCallback() {
+			document.removeEventListener('keydown', this.onDocKeydown);
+			document.removeEventListener('open-search', this.onOpenRequest);
+			window.clearTimeout(this.debounce);
+		}
+
+		private handleShortcut(e: KeyboardEvent) {
+			if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+				e.preventDefault();
+				this.dialog.open ? this.close() : this.open();
+			}
+		}
+
+		private open() {
+			if (this.dialog.open) return;
+			this.dialog.showModal();
+			this.input.value = '';
+			this.resultsEl.replaceChildren();
+			this.statusEl.textContent = '';
+			this.input.focus();
+		}
+
+		private close() {
+			if (this.dialog.open) this.dialog.close();
+		}
+
+		private onInput() {
+			window.clearTimeout(this.debounce);
+			this.debounce = window.setTimeout(() => this.runSearch(this.input.value.trim()), 150);
+		}
+
+		private async runSearch(query: string) {
+			if (!query) {
+				this.resultsEl.replaceChildren();
+				this.statusEl.textContent = '';
+				return;
+			}
+
+			const pagefind = await loadPagefind();
+			if (!pagefind) {
+				this.resultsEl.replaceChildren();
+				this.statusEl.textContent = 'Search is available on the deployed site.';
+				return;
+			}
+
+			// Ignore stale responses if the user kept typing.
+			if (this.input.value.trim() !== query) return;
+
+			const search = await pagefind.search(query);
+			if (this.input.value.trim() !== query) return;
+
+			const items = await Promise.all(search.results.slice(0, 6).map((r) => r.data()));
+			this.renderResults(items, query);
+		}
+
+		private renderResults(items: PagefindResult[], query: string) {
+			this.resultsEl.replaceChildren();
+
+			if (items.length === 0) {
+				this.statusEl.textContent = `No results for “${query}”.`;
+				return;
+			}
+
+			this.statusEl.textContent = '';
+			for (const item of items) {
+				const li = document.createElement('li');
+				li.setAttribute('role', 'option');
+
+				const a = document.createElement('a');
+				a.className = 'search-result';
+				a.href = item.url;
+
+				const title = document.createElement('span');
+				title.className = 'search-result-title';
+				const titleText = document.createElement('span');
+				titleText.textContent = item.meta.title || item.url;
+				title.appendChild(titleText);
+
+				const excerpt = document.createElement('span');
+				excerpt.className = 'search-result-excerpt';
+				// Pagefind returns excerpts with <mark> highlights; this is our own
+				// indexed content, so setting innerHTML here is safe.
+				excerpt.innerHTML = item.excerpt;
+
+				a.append(title, excerpt);
+				li.appendChild(a);
+				this.resultsEl.appendChild(li);
+			}
+		}
+
+		private handleInputKeys(e: KeyboardEvent) {
+			if (e.key === 'ArrowDown') {
+				const first = this.resultsEl.querySelector<HTMLAnchorElement>('.search-result');
+				if (first) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		}
+
+		private handleResultKeys(e: KeyboardEvent) {
+			const links = Array.from(this.resultsEl.querySelectorAll<HTMLAnchorElement>('.search-result'));
+			const current = document.activeElement as HTMLElement;
+			const idx = links.indexOf(current as HTMLAnchorElement);
+
+			if (e.key === 'ArrowDown') {
+				e.preventDefault();
+				(links[idx + 1] ?? links[0]).focus();
+			} else if (e.key === 'ArrowUp') {
+				e.preventDefault();
+				if (idx <= 0) this.input.focus();
+				else links[idx - 1].focus();
+			}
+		}
+	}
+
+	if (!customElements.get('search-palette')) {
+		customElements.define('search-palette', SearchPalette);
+	}
+</script>
