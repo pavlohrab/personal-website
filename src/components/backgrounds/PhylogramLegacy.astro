@@ -204,6 +204,22 @@
 		const targetFPS = isMobile ? 30 : 60; // Lower FPS on mobile for smoother performance
 		const frameInterval = 1000 / targetFPS;
 
+		/* The tip colour is the site accent, read off the document root rather
+		   than hardcoded, so the canvas follows the theme forever. draw() runs
+		   at 24fps and getComputedStyle forces a style recalc, so the value is
+		   memoised per theme and read at most twice in a session. */
+		const accentCache: Record<string, string> = {};
+		function accentColor(isDark: boolean) {
+			const key = isDark ? 'dark' : 'light';
+			if (!accentCache[key]) {
+				accentCache[key] =
+					getComputedStyle(document.documentElement)
+						.getPropertyValue('--accent-regular')
+						.trim() || (isDark ? '#8fbc9a' : '#3f7a52');
+			}
+			return accentCache[key];
+		}
+
 		function animate(currentTime: number) {
 			// Throttle frame rate on mobile
 			const elapsed = currentTime - lastFrameTime;
@@ -223,7 +239,7 @@
 			const isDark = document.documentElement.classList.contains('theme-dark');
 			const branchColor = isDark ? '#666666' : '#999999';
 			const nodeColor = isDark ? '#777777' : '#888888';
-			const terminalColor = isDark ? '#d4a574' : '#c9925e'; // Muted amber instead of bright yellow
+			const terminalColor = accentColor(isDark);
 
 			// Update and draw trees
 			trees.forEach((treeData, index) => {

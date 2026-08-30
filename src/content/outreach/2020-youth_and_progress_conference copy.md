@@ -1,12 +1,12 @@
 ---
-title: "Genome of landomycin producer Streptomyces cyanogenus S136"
+title: "Genome of landomycin producer <i class='taxon'>Streptomyces cyanogenus</i> S136"
 type: conference
 venue: 'YOUTH AND PROGRESS OF BIOLOGY.'
 location: "Lviv, Ukraine"
 date: "April 27-29, 2020"
 year: 2020
 publishedDate: 2020-04-29
-description: "Presented findings from our bioinformatics analysis and genome description of Streptomyces cyanogenus S136. Was awarded 1st place."
+description: "Presented findings from our bioinformatics analysis and genome description of <i class='taxon'>Streptomyces cyanogenus</i> S136. Was awarded 1st place."
 authors: "<strong>Pavlo Hrab</strong>, Bohdan Ostash"
 links:
   - label: "Abstract"

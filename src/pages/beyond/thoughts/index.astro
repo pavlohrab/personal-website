@@ -21,6 +21,7 @@ const allTags = [...new Set(allThoughts.flatMap(thought => thought.data.tags || 
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header">
 				<a href={`${import.meta.env.BASE_URL}beyond/`} class="back-link">← Back to Beyond Research</a>
+				<span class="eyebrow">Writing</span>
 				<h1 class="page-title">Thoughts</h1>
 				<p class="page-subtitle">Essays, reflections, and thoughts on science, life, and everything in between</p>
 			</header>
@@ -114,7 +115,7 @@ const allTags = [...new Set(allThoughts.flatMap(thought => thought.data.tags || 
 	.filter-tag {
 		display: inline-block;
 		padding: 0.5rem 1rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		color: var(--gray-300);
 		text-decoration: none;
 		border: 1px solid var(--gray-800);
@@ -137,12 +138,13 @@ const allTags = [...new Set(allThoughts.flatMap(thought => thought.data.tags || 
 	}
 
 	.filter-tag.active {
-		background: var(--accent-regular);
-		color: var(--gray-999);
-		border-color: var(--accent-regular);
+		background-color: var(--action);
+		color: var(--action-text);
+		border-color: var(--action);
 	}
 
 	.thoughts-content {
+		width: 100%;
 		max-width: var(--width-reading);
 		margin-inline: auto;
 	}
@@ -157,7 +159,7 @@ const allTags = [...new Set(allThoughts.flatMap(thought => thought.data.tags || 
 		width: 100%;
 		padding: 0.75rem 1rem;
 		font-size: var(--text-base);
-		background: var(--gray-999);
+		background-color: var(--surface);
 		color: var(--gray-0);
 		border: 2px solid var(--gray-800);
 		border-radius: var(--radius-tag);
@@ -192,7 +194,7 @@ const allTags = [...new Set(allThoughts.flatMap(thought => thought.data.tags || 
 	/* Coming Soon placeholder */
 	.coming-soon {
 		padding: 3rem 2rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		text-align: center;
 		border: 2px dashed var(--gray-800);

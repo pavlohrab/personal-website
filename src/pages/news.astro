@@ -25,6 +25,7 @@ const years = Object.keys(newsByYear).map(Number).sort((a, b) => b - a);
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header">
+				<span class="eyebrow">Latest</span>
 				<h1 class="page-title">News & Updates</h1>
 				<p class="page-subtitle">Recent activities, talks, and academic milestones</p>
 			</header>
@@ -68,6 +69,7 @@ const years = Object.keys(newsByYear).map(Number).sort((a, b) => b - a);
 
 <style>
 	.news-content {
+		width: 100%;
 		max-width: var(--width-reading);
 		margin-inline: auto;
 	}
@@ -87,7 +89,7 @@ const years = Object.keys(newsByYear).map(Number).sort((a, b) => b - a);
 
 	.news-card {
 		padding: 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
@@ -111,7 +113,7 @@ const years = Object.keys(newsByYear).map(Number).sort((a, b) => b - a);
 		font-size: var(--text-sm);
 		color: var(--accent-regular);
 		font-weight: 600;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		display: block;
 		margin-bottom: 0.5rem;
 	}

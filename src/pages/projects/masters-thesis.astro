@@ -1,5 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { tagValue } from '../../tags';
+
+/** Namespaced with the shared vocabulary, same as the projects collection. */
+const tags = [
+	'method:BGC mining',
+	'method:genome annotation',
+	'organism:Streptomyces',
+	'data:genomes',
+];
 ---
 
 <BaseLayout title="Master's Thesis Project | Pavlo Hrab" description="Computational analysis of marine bacterial communities">
@@ -189,18 +198,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 					</div>
 
 					<div class="tags">
-						<span class="tag">Metagenomics</span>
-						<span class="tag">Bioinformatics</span>
-						<span class="tag">Marine Biology</span>
-						<span class="tag">Python</span>
-						<span class="tag">Statistical Analysis</span>
-						<span class="tag">HPC</span>
+						{tags.map(tag => <span class="tag">{tagValue(tag)}</span>)}
 					</div>
 
 					<div class="project-links">
-						<a href="#" class="project-link-btn">Download Thesis PDF</a>
-						<a href="#" class="project-link-btn">View GitHub Repository</a>
-						<a href="#" class="project-link-btn">Read Publication</a>
+						<a href="#" class="btn btn-outline">Download Thesis PDF</a>
+						<a href="#" class="btn btn-outline">View GitHub Repository</a>
+						<a href="#" class="btn btn-outline">Read Publication</a>
 					</div>
 				</section>
 			</main>
@@ -235,7 +239,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 		font-size: var(--text-sm);
 		color: var(--accent-regular);
 		font-weight: 600;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		margin-bottom: 1rem;
 	}
 
@@ -254,6 +258,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 	}
 
 	.project-content {
+		width: 100%;
 		max-width: 50rem;
 		margin-inline: auto;
 	}
@@ -300,7 +305,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 	.project-info {
 		margin-bottom: 2rem;
 		padding: 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		border-radius: var(--radius-tag);
 	}
@@ -326,51 +331,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 		margin-bottom: 2rem;
 	}
 
-	.tag {
-		padding: 0.5rem 1rem;
-		background: var(--accent-regular);
-		color: var(--gray-999);
-		font-size: var(--text-sm);
-		border-radius: 0;
-		font-weight: 500;
-	}
-
 	.project-links {
 		display: flex;
 		gap: 1rem;
 		flex-wrap: wrap;
 	}
 
-	.project-link-btn {
-		display: inline-block;
-		padding: 0.75rem 1.5rem;
-		background: transparent;
-		color: var(--accent-regular);
-		text-decoration: none;
-		border: 2px solid var(--accent-regular);
-		border-radius: 0;
-		font-size: var(--text-base);
-		font-weight: 600;
-		transition:
-		transform var(--theme-transition),
-		box-shadow var(--theme-transition),
-		background-color var(--theme-transition),
-		color var(--theme-transition);
+	.project-links .btn {
 		text-align: center;
 		flex: 1;
 		min-width: 200px;
 	}
 
-	.project-link-btn:hover {
-		background: var(--accent-regular);
-		color: var(--gray-999);
-		transform: translateY(var(--lift));
-		box-shadow: var(--shadow-md);
-	}
-
 	@media (max-width: 50em) {
 		.project-title {
-			font-size: var(--text-3xl);
+			font-size: var(--text-xl);
 		}
 
 		.project-subtitle {
@@ -378,14 +353,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 		}
 
 		.content-section h2 {
-			font-size: var(--text-xl);
+			font-size: var(--text-lg);
 		}
 
 		.project-links {
 			flex-direction: column;
 		}
 
-		.project-link-btn {
+		.project-links .btn {
 			min-width: 100%;
 		}
 	}

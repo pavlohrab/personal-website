@@ -8,4 +8,5 @@ url: "https://academic.oup.com/nar/article/53/D1/D678/7919508?login=false"
 doi: "10.1093/nar/gkae1115"
 featured: true
 draft: false
+tags: ["method:BGC mining", "method:curation", "data:genomes"]
 ---

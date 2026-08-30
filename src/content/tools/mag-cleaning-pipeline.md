@@ -10,6 +10,7 @@ links:
 project: acido_biosynhtetic_potential
 year: "2026"
 order: 2
+tags: ["method:genome QC", "method:dereplication", "data:MAGs", "data:metagenomes"]
 ---
 
 `seqkit` statistics, mash-distance strain clustering with best-genome-per-cluster selection by N50, CheckM2 completeness and contamination filtering, GUNC chimerism removal, optional rRNA/tRNA filtering with Barrnap and tRNAscan-SE, dRep ANI dereplication, and GTDB-Tk classification.

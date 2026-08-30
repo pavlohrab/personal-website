@@ -10,6 +10,7 @@ links:
 project: acido_biosynhtetic_potential
 year: "2026"
 order: 1
+tags: ["method:BGC mining", "method:visualisation", "data:genomes"]
 ---
 
 Mapping biosynthetic gene clusters onto a tree is a routine step in genome mining, and it is routinely done by hand. `ashelper` takes an antiSMASH output directory, a BiG-SCAPE output directory and a Newick tree, and emits the iTOL dataset files needed to render BGC classes, counts and family membership as tree annotations.

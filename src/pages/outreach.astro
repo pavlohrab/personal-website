@@ -28,6 +28,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header">
+				<span class="eyebrow">Speaking</span>
 				<h1 class="page-title">Talks & Teaching</h1>
 				<p class="page-subtitle">Talks, workshops, hackathons, courses, and community engagement</p>
 			</header>
@@ -68,7 +69,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 								{eventsByYear[year].map((event) => (
 									<article class="event-card">
 										<div class="event-header">
-											<h3 class="event-title">{event.data.title}</h3>
+											<h3 class="event-title" set:html={event.data.title} />
 											<span class={`event-type ${event.data.type.replace(' ', '-')}`}>
 												{event.data.type === 'invited' ? 'Invited Talk' :
 												 event.data.type === 'conference' ? 'Conference Talk' :
@@ -85,13 +86,11 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 										)}
 										<p class="event-venue">{event.data.venue}</p>
 										<p class="event-location">{event.data.location} • {event.data.date}</p>
-										<p class="event-description">
-											{event.data.description}
-										</p>
+										<p class="event-description" set:html={event.data.description} />
 										{event.data.links && event.data.links.length > 0 && (
 											<div class="event-links">
 												{event.data.links.map((link) => (
-													<a href={link.href} class="event-link">{link.label}</a>
+													<a href={link.href} class="btn btn-outline btn-sm">{link.label}</a>
 												))}
 											</div>
 										)}
@@ -242,6 +241,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 
 <style>
 	.outreach-content {
+		width: 100%;
 		max-width: var(--width-reading);
 		margin-inline: auto;
 	}
@@ -274,10 +274,10 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 		gap: 1rem;
 		padding: 0.5rem 0.875rem;
 		font-size: var(--text-sm);
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-weight: 500;
 		color: var(--gray-300);
-		background-color: var(--gray-999);
+		background-color: var(--surface);
 		border: 1px solid var(--gray-700);
 		border-radius: 0;
 		cursor: pointer;
@@ -311,7 +311,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 		margin: 0;
 		padding: 0;
 		list-style: none;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border: 1px solid var(--gray-700);
 		border-radius: 0;
 		box-shadow: var(--shadow-md);
@@ -323,7 +323,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 	.select-option {
 		padding: 0.625rem 0.875rem;
 		font-size: var(--text-sm);
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-weight: 500;
 		color: var(--gray-300);
 		cursor: pointer;
@@ -340,8 +340,8 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 	}
 
 	.select-option.active {
-		background: var(--accent-regular);
-		color: var(--accent-text-over);
+		background-color: var(--gray-800);
+		color: var(--gray-0);
 	}
 
 	.timeline {
@@ -376,8 +376,8 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 		font-size: var(--text-2xl);
 		font-weight: 700;
 		color: var(--gray-0);
-		background: var(--accent-regular);
-		color: var(--accent-text-over);
+		background-color: var(--accent-tint);
+		color: var(--accent-dark);
 		padding: 0.5rem 1.5rem;
 		border-radius: 2rem;
 		box-shadow: var(--shadow-md);
@@ -392,7 +392,7 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 	.event-card {
 		position: relative;
 		padding: 1.75rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
@@ -441,49 +441,36 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 		display: inline-block;
 		padding: 0.25rem 0.75rem;
 		border-radius: var(--radius-tag);
-		font-size: var(--text-sm);
-		font-weight: 600;
+		font-family: var(--font-data);
+		font-size: var(--text-xs);
+		font-weight: 500;
+		line-height: var(--lh-snug);
+		text-transform: lowercase;
 		white-space: nowrap;
 	}
 
+	/* These were seven arbitrary hex hues (#7b9db5, #8b5cf6, #06b6d4 …)
+	   belonging to no palette on the site. They collapse onto the two hues
+	   the system has: accent for an invited talk, clay for the other spoken
+	   formats, neutral for everything else. Tinted, never solid. */
 	.event-type.invited {
-		background: var(--accent-regular);
-		color: var(--accent-text-over);
+		background-color: var(--accent-tint);
+		color: var(--accent-dark);
 	}
 
-	.event-type.conference {
-		background: #7b9db5;
-		color: var(--gray-999);
-	}
-
+	.event-type.conference,
+	.event-type.course,
 	.event-type.workshop {
-		background: var(--gray-600);
-		color: var(--gray-999);
+		background-color: var(--status-alt-tint);
+		color: var(--status-alt);
 	}
 
-	.event-type.poster {
-		background: #d4a574;
-		color: var(--gray-999);
-	}
-
-	.event-type.hackathon {
-		background: #8b5cf6;
-		color: var(--gray-999);
-	}
-
-	.event-type.course {
-		background: #06b6d4;
-		color: var(--gray-999);
-	}
-
-	.event-type.volunteering {
-		background: #10b981;
-		color: var(--gray-999);
-	}
-
+	.event-type.poster,
+	.event-type.hackathon,
+	.event-type.volunteering,
 	.event-type.PhD-trip {
-		background: var(--gray-500);
-		color: var(--gray-999);
+		background-color: var(--gray-800);
+		color: var(--gray-100);
 	}
 
 	.event-authors {
@@ -521,27 +508,6 @@ const years = Object.keys(eventsByYear).map(Number).sort((a, b) => b - a);
 		flex-wrap: wrap;
 	}
 
-	.event-link {
-		display: inline-block;
-		padding: 0.4rem 1rem;
-		background: transparent;
-		color: var(--accent-regular);
-		text-decoration: none;
-		border: 1px solid var(--accent-regular);
-		border-radius: 0;
-		font-size: var(--text-sm);
-		font-weight: 500;
-		transition:
-		transform var(--theme-transition),
-		box-shadow var(--theme-transition),
-		background-color var(--theme-transition),
-		color var(--theme-transition);
-	}
-
-	.event-link:hover {
-		background: var(--accent-regular);
-		color: var(--gray-999);
-	}
 
 	@media (max-width: 50em) {
 		.timeline {

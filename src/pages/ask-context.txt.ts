@@ -14,7 +14,13 @@ import { getCollection } from 'astro:content';
 
 const notDraft = (e: { data: { draft?: boolean } }) => !e.data.draft;
 
-const clean = (s: string | undefined) => (s ?? '').replace(/\s+/g, ' ').trim();
+// Also strips the <i class="taxon"> markup that frontmatter carries for
+// organism names — this bundle is plaintext handed to a model as context.
+const clean = (s: string | undefined) =>
+	(s ?? '')
+		.replace(/<[^>]+>/g, '')
+		.replace(/\s+/g, ' ')
+		.trim();
 
 export const GET: APIRoute = async () => {
 	const [publications, projects, tools, outreach, news, thoughts, adventures] = await Promise.all([

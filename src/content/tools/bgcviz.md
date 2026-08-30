@@ -13,6 +13,7 @@ links:
     href: "https://ostash-group.shinyapps.io/BGCViz"
 year: "2020"
 order: 3
+tags: ["method:BGC mining", "method:visualisation", "data:genomes"]
 ---
 
 BGCViz compares biosynthetic gene cluster annotations from antiSMASH, PRISM, SEMPI, DeepBGC, RRE-Finder and ARTS by their genomic coordinates, and renders the agreements and disagreements as an interactive BioCircos plot. Regions found by several tools and regions found by only one are both immediately visible.

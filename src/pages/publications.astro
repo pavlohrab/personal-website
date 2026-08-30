@@ -17,6 +17,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header">
+				<span class="eyebrow">Peer reviewed</span>
 				<h1 class="page-title">Publications</h1>
 				<p class="page-subtitle">Peer-reviewed research articles and conference papers</p>
 			</header>
@@ -29,9 +30,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 						<div class="publications-list stack gap-6">
 							{journalArticles.map(pub => (
 								<article class="publication-card">
-									<h3 class="pub-title">
-										{pub.data.title}
-									</h3>
+									<h3 class="pub-title" set:html={pub.data.title} />
 									<p class="pub-authors" set:html={pub.data.authors} />
 									<p class="pub-venue">
 										<em>{pub.data.venue}</em>, {pub.data.year}
@@ -44,13 +43,13 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 									{(pub.data.url || pub.data.doi || pub.data.links) && (
 										<div class="pub-links">
 											{pub.data.url && (
-												<a href={pub.data.url} class="pub-link" target="_blank" rel="noopener">Paper</a>
+												<a href={pub.data.url} class="btn btn-outline btn-sm" target="_blank" rel="noopener">Paper</a>
 											)}
 											{pub.data.doi && (
-												<a href={`https://doi.org/${pub.data.doi}`} class="pub-link" target="_blank" rel="noopener">DOI</a>
+												<a href={`https://doi.org/${pub.data.doi}`} class="btn btn-outline btn-sm" target="_blank" rel="noopener">DOI</a>
 											)}
 											{pub.data.links && pub.data.links.map(link => (
-												<a href={link.href} class="pub-link" target="_blank" rel="noopener">{link.label}</a>
+												<a href={link.href} class="btn btn-outline btn-sm" target="_blank" rel="noopener">{link.label}</a>
 											))}
 										</div>
 									)}
@@ -67,9 +66,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 						<div class="publications-list stack gap-6">
 							{conferencePapers.map(pub => (
 								<article class="publication-card">
-									<h3 class="pub-title">
-										{pub.data.title}
-									</h3>
+									<h3 class="pub-title" set:html={pub.data.title} />
 									<p class="pub-authors" set:html={pub.data.authors} />
 									<p class="pub-venue">
 										<em>{pub.data.venue}</em>, {pub.data.year}
@@ -82,13 +79,13 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 									{(pub.data.url || pub.data.doi || pub.data.links) && (
 										<div class="pub-links">
 											{pub.data.url && (
-												<a href={pub.data.url} class="pub-link" target="_blank" rel="noopener">Paper</a>
+												<a href={pub.data.url} class="btn btn-outline btn-sm" target="_blank" rel="noopener">Paper</a>
 											)}
 											{pub.data.doi && (
-												<a href={`https://doi.org/${pub.data.doi}`} class="pub-link" target="_blank" rel="noopener">DOI</a>
+												<a href={`https://doi.org/${pub.data.doi}`} class="btn btn-outline btn-sm" target="_blank" rel="noopener">DOI</a>
 											)}
 											{pub.data.links && pub.data.links.map(link => (
-												<a href={link.href} class="pub-link" target="_blank" rel="noopener">{link.label}</a>
+												<a href={link.href} class="btn btn-outline btn-sm" target="_blank" rel="noopener">{link.label}</a>
 											))}
 										</div>
 									)}
@@ -105,9 +102,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 						<div class="publications-list stack gap-6">
 							{preprints.map(pub => (
 								<article class="publication-card preprint">
-									<h3 class="pub-title">
-										{pub.data.title}
-									</h3>
+									<h3 class="pub-title" set:html={pub.data.title} />
 									<p class="pub-authors" set:html={pub.data.authors} />
 									<p class="pub-venue">
 										<em>{pub.data.venue}</em>, {pub.data.year}
@@ -120,10 +115,10 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 									{(pub.data.url || pub.data.links) && (
 										<div class="pub-links">
 											{pub.data.url && (
-												<a href={pub.data.url} class="pub-link" target="_blank" rel="noopener">Preprint</a>
+												<a href={pub.data.url} class="btn btn-outline btn-sm" target="_blank" rel="noopener">Preprint</a>
 											)}
 											{pub.data.links && pub.data.links.map(link => (
-												<a href={link.href} class="pub-link" target="_blank" rel="noopener">{link.label}</a>
+												<a href={link.href} class="btn btn-outline btn-sm" target="_blank" rel="noopener">{link.label}</a>
 											))}
 										</div>
 									)}
@@ -139,6 +134,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 
 <style>
 	.publications-content {
+		width: 100%;
 		max-width: var(--width-reading);
 		margin-inline: auto;
 	}
@@ -153,7 +149,7 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 
 	.publication-card {
 		padding: 2rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
@@ -220,27 +216,6 @@ const preprints = allPublications.filter(p => p.data.type === 'preprint');
 		flex-wrap: wrap;
 	}
 
-	.pub-link {
-		display: inline-block;
-		padding: 0.5rem 1rem;
-		background: var(--accent-regular);
-		color: var(--gray-999);
-		text-decoration: none;
-		border-radius: 0;
-		border: 1px solid var(--accent-regular);
-		font-size: var(--text-sm);
-		font-weight: 500;
-		transition:
-		transform var(--theme-transition),
-		box-shadow var(--theme-transition),
-		background-color var(--theme-transition),
-		color var(--theme-transition);
-	}
-
-	.pub-link:hover {
-		background: var(--accent-dark);
-		opacity: 0.9;
-	}
 
 	@media (max-width: 50em) {
 				.publication-card {

@@ -11,6 +11,7 @@ links:
     href: "https://github.com/pavlohrab/Arrower/commits?author=pavlohrab"
 year: "2026"
 order: 9
+tags: ["method:BGC mining", "method:visualisation", "data:genomes"]
 ---
 
 Arrower turns a GenBank file into a publication-ready SVG of a biosynthetic gene cluster — the arrow diagram every natural-product paper needs. The original had been untouched since 2016 and still ran on Python 2.

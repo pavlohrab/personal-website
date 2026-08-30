@@ -10,6 +10,7 @@ links:
 project: acido_biosynhtetic_potential
 year: "2026"
 order: 5
+tags: ["method:BGC mining", "method:comparative genomics", "data:genomes"]
 ---
 
 This app joins the region, GenBank, connected-component, family and domain-hit tables. It attemp to answer a one question: whether given a target Pfam domain, what else co-occurs with it, how often, and how does that pattern distribute across BiG-SCAPE families and connected components?

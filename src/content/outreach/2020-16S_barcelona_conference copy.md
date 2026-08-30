@@ -1,12 +1,12 @@
 ---
-title: "Illuminating the heterogeneity of 16S rRNA genes within genus Streptomyces"
+title: "Illuminating the heterogeneity of 16S rRNA genes within genus <i class='taxon'>Streptomyces</i>"
 type: poster
 venue: '6th European Student Council Symposium 2020'
 location: "Barcelona, Spain (online)"
 date: "September 6, 2020"
 year: 2020
 publishedDate: 2020-09-06
-description: "Presented findings about discrepancies of 16S rRNA genes in Streptomyces genus within single genomes"
+description: "Presented findings about discrepancies of 16S rRNA genes in <i class='taxon'>Streptomyces</i> genus within single genomes"
 authors: "<strong>Pavlo Hrab</strong>, Bohdan Ostash"
 links:
   - label: "Poster"

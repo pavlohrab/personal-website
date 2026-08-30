@@ -105,6 +105,7 @@ function relatedFor(key: string) {
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header with-action">
+				<span class="eyebrow">Computational biology</span>
 				<h1 class="page-title">Curriculum Vitae</h1>
 				<a href={`${import.meta.env.BASE_URL}pavlo-hrab-cv.pdf`} download class="btn btn-primary">Download CV (PDF)</a>
 			</header>
@@ -135,6 +136,7 @@ function relatedFor(key: string) {
 					<!-- Profile Section -->
 					<section id="profile" class="cv-section">
 						<h2 class="section-title">Profile</h2>
+						<div class="profile-panel">
 						<p class="lede">
 							Computational biologist with a PhD in bioinformatics and microbiology. I build pipelines
 							and open-source tools in Nextflow, Python and R, and use them on large sequencing datasets.
@@ -145,7 +147,8 @@ function relatedFor(key: string) {
 							with a pipeline I wrote and released, and ran a year-long cultivation study to isolate the
 							bacteria behind them.
 						</p>
-						<p class="availability">Available from 1 October 2026.</p>
+						<p class="availability">Available from 1 December 2026.</p>
+						</div>
 					</section>
 
 					<!-- Work Experience Section -->
@@ -160,7 +163,7 @@ function relatedFor(key: string) {
 							<p class="entry-location">Medema group, Bioinformatics group, Wageningen University & Research</p>
 							<div class="consortium-badge">
 								<span class="badge-label">Research Consortium:</span>
-								<a href="https://www.combo-eu.org" target="_blank" rel="noopener noreferrer" class="consortium-link combo">COMBO</a>
+								<a href="https://www.combo-eu.org" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">COMBO</a>
 							</div>
 							<ul class="entry-list">
 								<li>Mined marine sponge metagenomes for biosynthetic gene clusters, and selected candidates for downstream heterologous expression</li>
@@ -171,7 +174,7 @@ function relatedFor(key: string) {
 								{relatedFor('postdoc').map((item, i) => (
 									<>
 										{i > 0 && <span class="related-sep"> · </span>}
-										<a href={item.href}>{item.title}</a>
+										<a href={item.href} set:html={item.title} />
 									</>
 								))}
 							</p>
@@ -185,7 +188,7 @@ function relatedFor(key: string) {
 							<p class="entry-location">Medema group & Detmer Sipkema lab, Bioinformatics group & Molecular Ecology group, Wageningen University & Research</p>
 							<div class="consortium-badge">
 								<span class="badge-label">Research Consortium:</span>
-								<a href="https://marblesproject.eu/" target="_blank" rel="noopener noreferrer" class="consortium-link marbles">MARBLES</a>
+								<a href="https://marblesproject.eu/" target="_blank" rel="noopener noreferrer" class="btn btn-outline btn-sm">MARBLES</a>
 							</div>
 							<p class="entry-description">Project: Treasures of the deep — biosynthetic profiling and cultivation of marine host-associated Acidobacteriota</p>
 							<ul class="entry-list">
@@ -203,7 +206,7 @@ function relatedFor(key: string) {
 								{relatedFor('phd').map((item, i) => (
 									<>
 										{i > 0 && <span class="related-sep"> · </span>}
-										<a href={item.href}>{item.title}</a>
+										<a href={item.href} set:html={item.title} />
 									</>
 								))}
 							</p>
@@ -227,7 +230,7 @@ function relatedFor(key: string) {
 							</div>
 							<p class="entry-location">Ivan Franko National University of Lviv</p>
 							<ul class="entry-list">
-								<li>Sequenced, assembled and annotated the complete genome of <em>Streptomyces cyanogenus</em> S136, producer of the anticancer angucycline landomycin A (published in <em>3 Biotech</em>)</li>
+								<li>Sequenced, assembled and annotated the complete genome of <i class="taxon">Streptomyces cyanogenus</i> S136, producer of the anticancer angucycline landomycin A (published in <em>3 Biotech</em>)</li>
 								<li>Wrote two open-source tools during this period — rRNADif and BGCViz — and carried out the phylogenetics and BGC mining behind them</li>
 							</ul>
 						{relatedFor('labtech').length > 0 && (
@@ -236,7 +239,7 @@ function relatedFor(key: string) {
 								{relatedFor('labtech').map((item, i) => (
 									<>
 										{i > 0 && <span class="related-sep"> · </span>}
-										<a href={item.href}>{item.title}</a>
+										<a href={item.href} set:html={item.title} />
 									</>
 								))}
 							</p>
@@ -314,7 +317,7 @@ function relatedFor(key: string) {
 						</div>
 						<div class="skill-category">
 							<h3 class="skill-category-title">Laboratory</h3>
-							<p class="skill-items">Cultivation of slow-growing and marine bacteria, <em>E. coli</em> and <em>Streptomyces</em> work, heterologous expression, (q)PCR</p>
+							<p class="skill-items">Cultivation of slow-growing and marine bacteria, <i class="taxon">E. coli</i> and <i class="taxon">Streptomyces</i> work, heterologous expression, (q)PCR</p>
 						</div>
 					</div>
 				</section>
@@ -329,9 +332,9 @@ function relatedFor(key: string) {
 								<span class="entry-date">Sep 2019 - Dec 2020</span>
 							</div>
 							<p class="entry-location">Ivan Franko National University of Lviv</p>
-							<p class="entry-description">Diploma cum laude. Thesis: Genome of S.cyanogenus S136: secondary metabolism potential</p>
+							<p class="entry-description">Diploma cum laude. Thesis: Genome of <i class="taxon">S.cyanogenus</i> S136: secondary metabolism potential</p>
 							<ul class="entry-list">
-								<li>Performed biosynthetic gene cluster mining in S.cyanogenus S136 genome</li>
+								<li>Performed biosynthetic gene cluster mining in <i class="taxon">S.cyanogenus</i> S136 genome</li>
 								<li>Developed software to support the analysis</li>
 							</ul>
 						</div>
@@ -342,7 +345,7 @@ function relatedFor(key: string) {
 								<span class="entry-date">2015 - 2019</span>
 							</div>
 							<p class="entry-location">Ivan Franko National University of Lviv</p>
-							<p class="entry-description">Thesis: Genetical control of morphogenesis in S.cyanogenus S136</p>
+							<p class="entry-description">Thesis: Genetical control of morphogenesis in <i class="taxon">S.cyanogenus</i> S136</p>
 							<ul class="entry-list">
 								<li>Performed heterologous expression of selected gene clusters</li>
 								<li>Analysed phylogeny of rodlins and chaplins in Streptomycetaceae</li>
@@ -681,7 +684,7 @@ function relatedFor(key: string) {
 		top: 2rem;
 		width: 250px;
 		padding: 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
@@ -757,7 +760,7 @@ function relatedFor(key: string) {
 	}
 
 	.related-label {
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-xs);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;
@@ -773,8 +776,23 @@ function relatedFor(key: string) {
 		color: var(--gray-500);
 	}
 
+	/* The Profile was the one CV section whose prose sat directly on the page
+	   while every section under it was a white card. Same surface, same left
+	   rule, so the column reads as one thing from the top. */
+	.profile-panel {
+		padding: 1.5rem;
+		background-color: var(--surface);
+		border-left: var(--accent-bar) solid var(--accent-regular);
+		border-radius: var(--radius-surface);
+		box-shadow: var(--shadow-sm);
+	}
+
+	.profile-panel .lede + .lede {
+		margin-top: 0.75rem;
+	}
+
 	.availability {
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-sm);
 		color: var(--accent-regular);
 		margin-top: 0.75rem;
@@ -804,14 +822,14 @@ function relatedFor(key: string) {
 
 	.software-entry {
 		padding: 1.25rem 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		border-radius: var(--radius-surface);
 		box-shadow: var(--shadow-sm);
 	}
 
 	.mono {
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 	}
 
 	.software-meta {
@@ -823,7 +841,7 @@ function relatedFor(key: string) {
 	}
 
 	.software-stack {
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		color: var(--gray-400);
 	}
 
@@ -870,7 +888,7 @@ function relatedFor(key: string) {
 		position: relative;
 		padding: 1.5rem;
 		margin-bottom: 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-left: 1px solid var(--accent-regular);
 		border-radius: 0;
 	}
@@ -963,50 +981,6 @@ function relatedFor(key: string) {
 		font-weight: 500;
 	}
 
-	.consortium-link {
-		display: inline-flex;
-		align-items: center;
-		padding: 0.35rem 0.9rem;
-		font-size: var(--text-sm);
-		font-weight: 600;
-		text-decoration: none;
-		border-radius: var(--radius-tag);
-		transition:
-		transform var(--theme-transition),
-		box-shadow var(--theme-transition),
-		background-color var(--theme-transition),
-		color var(--theme-transition);
-		border: 1.5px solid;
-		position: relative;
-	}
-
-	/* MARBLES styling - inspired by their blue/cyan palette */
-	.consortium-link.marbles {
-		color: #5da3d5;
-		border-color: #5da3d5;
-		background: rgba(93, 163, 213, 0.1);
-	}
-
-	.consortium-link.marbles:hover {
-		background: rgba(93, 163, 213, 0.2);
-		border-color: #7ab8dd;
-		transform: translateY(var(--lift));
-		box-shadow: 0 2px 8px rgba(93, 163, 213, 0.3);
-	}
-
-	/* COMBO styling - clean professional look */
-	.consortium-link.combo {
-		color: #6bb8a7;
-		border-color: #6bb8a7;
-		background: rgba(107, 184, 167, 0.1);
-	}
-
-	.consortium-link.combo:hover {
-		background: rgba(107, 184, 167, 0.2);
-		border-color: #82c5b4;
-		transform: translateY(var(--lift));
-		box-shadow: 0 2px 8px rgba(107, 184, 167, 0.3);
-	}
 
 	.skills-grid {
 		display: grid;
@@ -1017,7 +991,7 @@ function relatedFor(key: string) {
 
 	.skill-category {
 		padding: 1.25rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-top: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
@@ -1055,11 +1029,6 @@ function relatedFor(key: string) {
 			font-size: var(--text-xs);
 		}
 
-		.consortium-link {
-			font-size: var(--text-xs);
-			padding: 0.3rem 0.75rem;
-		}
-
 		/* Collapsed on mobile — but ONLY once JS has taken over and added
 		   .is-collapsible. Collapsing in plain CSS meant that if the script
 		   failed, a phone visitor saw neither the content nor a button to
@@ -1086,8 +1055,8 @@ function relatedFor(key: string) {
 			justify-content: space-between;
 			width: 100%;
 			padding: 0.75rem 1rem;
-			background: var(--accent-regular);
-			color: var(--gray-999);
+			background-color: var(--action);
+			color: var(--action-text);
 			border: none;
 			border-radius: var(--radius-tag);
 			font-size: var(--text-base);
@@ -1102,7 +1071,7 @@ function relatedFor(key: string) {
 		}
 
 		.toc-toggle:hover {
-			background: var(--accent-dark);
+			background-color: var(--action-hover);
 		}
 
 		.toggle-icon {

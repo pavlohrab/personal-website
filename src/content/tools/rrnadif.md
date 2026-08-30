@@ -15,6 +15,7 @@ links:
     href: "https://doi.org/10.5281/zenodo.4390532"
 year: "2020"
 order: 6
+tags: ["method:phylogenetics", "data:genomes", "data:16S rRNA"]
 ---
 
 rRNADif extracts the 16S rRNA copies from a genome, builds a maximum likelihood tree from them, and uses branch length statistics as a variability measure — then compares that against a precomputed reference database of over 21,000 fully sequenced bacterial genomes. Custom reference databases can be built from any genome set.
