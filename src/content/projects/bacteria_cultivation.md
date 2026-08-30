@@ -15,7 +15,7 @@ order: 2
 
 ## The problem
 
-The interesting bacteria in a sponge are the ones nobody has grown. Standard marine media recover the same handful of fast-growing organisms every time, and the lineages that actually carry the biosynthetic potential — Acidobacteriota among them — never appear on a plate. Cultivation is usually treated as a matter of patience and luck. It doesn't have to be.
+The interesting bacteria in a sponge are the ones nobody has grown. Standard marine media recover the same handful of fast-growing organisms every time, and the lineages that actually carry the biosynthetic potential — <i class='taxon'>Acidobacteriota</i> among them — never appear on a plate. Cultivation is usually treated as a matter of patience and luck. It doesn't have to be.
 
 ## What I did
 

@@ -114,7 +114,13 @@ Drop Fira Code entirely.
 - **Body, lede, buttons, nav → `--font-body`.**
 - **→ `--font-data`:** all dates (`.blog-date`, `.project-date`, `.post-date`, CV years, news months), `.tag`, `.project-status`, `kbd`, counts, accession numbers, the hero eyebrow, the provenance strip.
 - **Eyebrow pattern** (above every page title): `--font-data`, 0.625rem, `letter-spacing .14em`, uppercase, `--accent-regular`.
-- **Taxon rule:** binomials italic (*Inflatella pellicula*, *Geodia barretti*, *Streptomyces cyanogenus*); phylum, class, family and order roman (Acidobacteriota, Streptomycetaceae). Add an `<i class="taxon">` convention plus a remark plugin or authoring rule so it applies in markdown too.
+- **Taxon rule:** **every organism name is italic, at every rank** — binomials
+  (*Inflatella pellicula*, *Geodia barretti*, *Streptomyces cyanogenus*), genera
+  (*Streptomyces*), and higher ranks too (*Acidobacteriota*, *Streptomycetaceae*).
+  Use the `<i class="taxon">` convention; it works in markdown bodies, in frontmatter
+  strings rendered with `set:html`, and in hand-written `.astro` prose. `organism:` tag
+  values stay plain text in the data and are italicised at render time by `isTaxon()`
+  in `src/tags.ts`, so the AI-context bundle and the Pagefind index stay clean.
 
 Never letterspace the serif positively. Never set a heading in mono.
 
@@ -318,9 +324,7 @@ cards stay level with the page and vanish in dark mode: `.interest-card`, `.pub-
 
 1. **Taxon italics** (§3) across projects, publications, tools and news — authored by hand as
    `<i class='taxon'>…</i>`, no remark plugin and no helper. 19 occurrences in 12 content files plus 4 lines of
-   CV prose. Standalone genus names are italic too (`Streptomyces`), since a genus is italic under ICNP;
-   `Acidobacteriota` and `Streptomycetaceae` stay roman as specified.
-
+   CV prose. 
    **Single quotes inside the attribute, always.** These strings live in YAML frontmatter, where an inner
    double quote terminates the value and breaks the build.
 
@@ -402,7 +406,7 @@ out of scope for this pass, but it is dead decoration and should be deleted or f
 - [ ] Green underline appears only under the current section; hover underlines are grey.
 - [ ] Canvas tips match `--accent-regular` in both themes, verified by toggling.
 - [ ] Cards are visibly above the page background in dark mode.
-- [ ] Every binomial on the site is italic; no phylum name is.
+- [ ] Every organism name on the site is italic, at every rank.
 - [ ] No `--gradient-*` variable remains in the codebase.
 - [ ] Contrast: body text ≥ 7:1, meta text ≥ 4.5:1, in both themes.
 
@@ -434,6 +438,8 @@ Recorded here so the doc and the site agree.
 | 18 | The provenance strip's first field is `focus`, not `clade`. | "Clade" is only true for the phylum-scoped projects; BGCViz's subject is bacterial BGCs and rRNADif's is a 21,000-genome reference set, neither of which is a clade in any scientific sense. |
 | 19 | The hero drops to one filled button plus two accent text links. | Three boxes of equal weight gave the eye nowhere to land. The arrow cue carries the secondary actions, and the accent budget is unchanged — text links were already allowed the accent. |
 | 20 | Fixed a pre-existing typo: *Streptomyces cyangenus* → *cyanogenus*, in the Master's thesis project's `focus` and body. | A misspelt species name on a microbial-genomics site. |
+| 21 | Taxonomy is italic at **every rank**, superseding decision 10 and §3's original "phylum, class, family and order roman". | Client's call. Consistency beats the typographic convention here: a reader scanning the site sees organism names as one visual class, and the mixed rule made *Acidobacteriota* look like an oversight beside *Geodia barretti*. 37 further names wrapped; `organism:` tag values are italicised at render time rather than in the data. |
+| 22 | The hero states the role in one green mono line above the name — "Computational biologist, PhD, Microbial genomics" — and the separate tagline below the name is gone. | Client's call. It matches the CV's `.availability` treatment, so both pages state the role in the same voice, and it removes a third near-repetition of "computational biologist" from the first viewport. |
 
 ## Appendix B · What was diagnosed
 

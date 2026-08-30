@@ -15,4 +15,4 @@ tags: ["method:functional annotation", "method:comparative genomics", "data:geno
 
 Four composable scripts. `run_hmmscan.py` scans protein FASTAs against a pressed Pfam-A database with pyhmmer, parallelised over genomes. `pfam_scan.py` applies e-value and coverage filtering, resolves overlapping domain hits, and writes a presence/absence matrix. `pfam_mapping.py` annotates Pfam IDs with GO and GO-Slim terms. `pfam_neighbourhood_extractor.py` pulls the genomic neighbourhood around a domain of interest back out as GenBank and FASTA.
 
-This is where the feature matrix for the marine Acidobacteriota host-adaptation work came from.
+This is where the feature matrix for the marine <i class='taxon'>Acidobacteriota</i> host-adaptation work came from.

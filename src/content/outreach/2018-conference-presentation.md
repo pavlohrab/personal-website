@@ -6,7 +6,7 @@ location: "Lviv, Ukraine"
 date: "November 24-28 2018"
 year: 2018
 publishedDate: 2018-11-28
-description: "Presented findings about morphogenic proteins in Streptomycetaceae and our road towards their functional characterization via genetic engineering"
+description: "Presented findings about morphogenic proteins in <i class='taxon'>Streptomycetaceae</i> and our road towards their functional characterization via genetic engineering"
 authors: "<strong>Pavlo Hrab</strong>, Oleksandr Yushchuk, Iryna Ostash, Bohdan Ostash"
 links:
   - label: "Abstract"

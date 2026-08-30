@@ -1,5 +1,5 @@
 ---
-title: "Biosynthetic potential of sponge-associated Acidobacteriota"
+title: "Biosynthetic potential of sponge-associated <i class='taxon'>Acidobacteriota</i>"
 type: conference
 venue: 'EPS Get2Gether'
 location: "Lunteren, the Netherlands"

@@ -1,5 +1,5 @@
 ---
-title: "Acidobacteriota and their genes: shedding light onto undercultivated phylum"
+title: "<i class='taxon'>Acidobacteriota</i> and their genes: shedding light onto undercultivated phylum"
 type: PhD trip
 venue: 'Kyoto University'
 location: "Kyoto, Japan"

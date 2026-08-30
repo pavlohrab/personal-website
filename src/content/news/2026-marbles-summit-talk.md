@@ -14,4 +14,4 @@ P.s. Please invite a cartoonist to your consortium meetings! It's fun, and a sur
 
 And mine:
 
-![Cartoon summary of my talk on Acidobacteriota](/assets/news/marbles-summit-cartoon-pavlo.jpeg)
+![Cartoon summary of my talk on <i class='taxon'>Acidobacteriota</i>](/assets/news/marbles-summit-cartoon-pavlo.jpeg)

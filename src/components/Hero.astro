@@ -1,15 +1,19 @@
 ---
 interface Props {
 	title: string;
+	/** Mono, accent, above the name — the same treatment as the CV's
+	    availability line, so the two pages state the role identically. */
+	eyebrow?: string;
 	tagline?: string;
 	align?: 'start' | 'center';
 }
 
-const { align = 'center', tagline, title } = Astro.props;
+const { align = 'center', eyebrow, tagline, title } = Astro.props;
 ---
 
 <div class:list={['hero stack gap-4', align]}>
 	<div class="stack gap-2">
+		{eyebrow && <p class="hero-eyebrow">{eyebrow}</p>}
 		<h1 class="title">{title}</h1>
 		{tagline && <p class="tagline">{tagline}</p>}
 	</div>
@@ -28,6 +32,25 @@ const { align = 'center', tagline, title } = Astro.props;
 		margin-inline: auto;
 	}
 
+	/* Not capped at the title's 37ch: this line is one continuous statement of
+	   the role and it should break only when the column genuinely cannot hold
+	   it, and then evenly rather than leaving one orphaned word. */
+	.hero-eyebrow {
+		max-width: 100%;
+		margin-inline: auto;
+		text-wrap: balance;
+	}
+
+	/* Deliberately NOT the .eyebrow utility: this is the same mono-accent
+	   line as .availability on the CV, at reading size, not a 10px label. */
+	.hero-eyebrow {
+		font-family: var(--font-data);
+		font-size: var(--text-sm);
+		line-height: var(--lh-snug);
+		color: var(--accent-regular);
+		margin: 0 0 0.25rem;
+	}
+
 	.title {
 		font-size: var(--text-3xl);
 		color: var(--gray-0);
@@ -42,6 +65,7 @@ const { align = 'center', tagline, title } = Astro.props;
 			text-align: start;
 		}
 
+		.start .hero-eyebrow,
 		.start .title,
 		.start .tagline {
 			margin-inline: unset;

@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { tagValue } from '../../tags';
+import { tagValue, isTaxon } from '../../tags';
 
 /** Namespaced with the shared vocabulary, same as the projects collection. */
 const tags = [
 	'method:BGC mining',
 	'method:genome annotation',
-	'organism:Streptomyces',
+	'organism:<i class="taxon">Streptomyces</i>',
 	'data:genomes',
 ];
 ---
@@ -198,7 +198,9 @@ const tags = [
 					</div>
 
 					<div class="tags">
-						{tags.map(tag => <span class="tag">{tagValue(tag)}</span>)}
+						{tags.map(tag => (
+							<span class="tag">{isTaxon(tag) ? <i class="taxon">{tagValue(tag)}</i> : tagValue(tag)}</span>
+						))}
 					</div>
 
 					<div class="project-links">

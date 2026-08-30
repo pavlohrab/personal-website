@@ -6,7 +6,7 @@ location: "Kyiv, Ukraine"
 date: "April 23-25, 2019"
 year: 2019
 publishedDate: 2019-04-25
-description: "Presented findings about morphogenic proteins in Streptomycetaceae and their phylogenetic spread in the family"
+description: "Presented findings about morphogenic proteins in <i class='taxon'>Streptomycetaceae</i> and their phylogenetic spread in the family"
 authors: "<strong>Pavlo Hrab</strong>, Oleksandr Yushchuk, Bohdan Ostash"
 links:
   - label: "Abstract"
