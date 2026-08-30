@@ -67,7 +67,7 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 		padding: 0;
 		border: 1px solid var(--gray-800);
 		border-radius: var(--radius-surface);
-		background: var(--gray-999);
+		background-color: var(--surface);
 		color: var(--gray-0);
 		/* A neutral, downward drop shadow that reads the same in both themes.
 		   The site's --shadow-* tokens glow WHITE in dark mode, which halos a
@@ -132,10 +132,10 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 	.search-close {
 		flex: none;
 		padding: 0.25rem 0.5rem;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-xs);
 		color: var(--gray-400);
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border: 1px solid var(--gray-800);
 		border-radius: var(--radius-tag);
 		cursor: pointer;
@@ -191,7 +191,7 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 
 	.search-result-title {
 		display: block;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-base);
 		font-weight: 600;
 		color: var(--gray-0);
@@ -234,14 +234,14 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 		gap: 1rem;
 		padding: 0.625rem 1rem;
 		border-top: 1px solid var(--gray-800);
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-xs);
 		color: var(--gray-400);
 	}
 
 	.search-footer kbd,
 	.search-close kbd {
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 	}
 
 	.search-footer kbd {
@@ -251,7 +251,7 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 		padding: 0.1em 0.35em;
 		text-align: center;
 		color: var(--gray-300);
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border: 1px solid var(--gray-800);
 		border-radius: var(--radius-tag);
 	}
@@ -266,10 +266,10 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 	.search-mode {
 		flex: 1;
 		padding: 0.35rem 0.5rem;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-sm);
 		color: var(--gray-400);
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border: 1px solid var(--gray-800);
 		border-radius: var(--radius-tag);
 		cursor: pointer;
@@ -284,9 +284,9 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 	}
 
 	.search-mode.is-active {
-		color: var(--gray-999);
-		background: var(--accent-regular);
-		border-color: var(--accent-regular);
+		color: var(--action-text);
+		background-color: var(--action);
+		border-color: var(--action);
 	}
 
 	/* ---- Ask answer panel -------------------------------------------- */
@@ -321,7 +321,7 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 	.ask-disclosure {
 		display: block;
 		margin-top: 0.5rem;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-xs);
 		color: var(--gray-400);
 	}
@@ -329,7 +329,7 @@ const askEnabled = ASK_ENDPOINT.trim() !== '';
 	/* "Sources" / "Here's what I found" heading above the results in Ask mode. */
 	.search-results-heading {
 		margin: 0.75rem 0.875rem 0;
-		font-family: var(--font-brand);
+		font-family: var(--font-data);
 		font-size: var(--text-xs);
 		text-transform: uppercase;
 		letter-spacing: 0.05em;

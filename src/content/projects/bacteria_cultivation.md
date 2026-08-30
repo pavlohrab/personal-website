@@ -1,9 +1,13 @@
 ---
-title: "Targeted bacteria isolation from the deep-sea sponge Geodia barretti"
+title: "Targeted bacteria isolation from the deep-sea sponge <i class='taxon'>Geodia barretti</i>"
 status: ongoing
 meta: "2022 - Present"
 description: "Planned and led a year-long isolation study of sponge-associated bacteria. Used metagenomics and metatranscriptomics to predict what the uncultured lineages needed, designed the media from those predictions, and ran the cultivation myself."
-tags: ["Cultivation", "Metagenomics", "Metatranscriptomics", "Functional annotation"]
+focus: "<i class='taxon'>Geodia barretti</i> microbiome"
+source: "deep-sea sponge, metagenomes + metatranscriptomes"
+stack: "functional annotation · media design · bench cultivation"
+output: "isolates, new physiological properties"
+tags: ["method:cultivation", "method:functional annotation", "organism:Geodia barretti", "data:metagenomes", "data:metatranscriptomes"]
 featured: true
 category: research
 order: 2
@@ -15,7 +19,7 @@ The interesting bacteria in a sponge are the ones nobody has grown. Standard mar
 
 ## What I did
 
-I sequenced and analysed the *Geodia barretti* microbiome with metagenomics and metatranscriptomics, then used functional annotation of the target genomes to ask a concrete question: which carbon sources, nitrogen sources and cofactors do these organisms have the pathways for, and which are they actually transcribing? Those predictions become media composition.
+I sequenced and analysed the <i class='taxon'>Geodia barretti</i> microbiome with metagenomics and metatranscriptomics, then used functional annotation of the target genomes to ask a concrete question: which carbon sources, nitrogen sources and cofactors do these organisms have the pathways for, and which are they actually transcribing? Those predictions become media composition.
 
 Then I ran the isolation experiments myself: a year-long, uninterrupted cultivation study under unconventional conditions — media preparation, long incubations for slow-growing organisms, screening and molecular identification of what came up. It surfaced new physiological properties in the isolates. 
 

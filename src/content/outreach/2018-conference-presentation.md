@@ -1,5 +1,5 @@
 ---
-title: "Genes for morphogenetic proteins of chaplin and rodlin families in landomycin producer Streptomyces cyanogenus S136"
+title: "Genes for morphogenetic proteins of chaplin and rodlin families in landomycin producer <i class='taxon'>Streptomyces cyanogenus</i> S136"
 type: poster
 venue: "Youth scientists towards the challenges of modern technology"
 location: "Lviv, Ukraine"

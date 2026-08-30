@@ -11,13 +11,15 @@ import Icon from './Icon.astro';
 </theme-toggle>
 
 <style>
+	/* Two cells, one sliding indicator. The indicator is --surface on a
+	   --gray-800 track: a theme switch is a utility, and a green fill is
+	   not spent on a utility. */
 	button {
 		display: flex;
 		border: 0;
 		border-radius: var(--radius-pill);
 		padding: 0;
-		background-color: var(--gray-999);
-		box-shadow: inset 0 0 0 1px var(--accent-overlay);
+		background-color: var(--gray-800);
 		cursor: pointer;
 	}
 
@@ -25,11 +27,14 @@ import Icon from './Icon.astro';
 		z-index: 1;
 		position: relative;
 		display: flex;
-		padding: 0.5rem;
-		width: 2rem;
-		height: 2rem;
-		font-size: 1rem;
-		color: var(--accent-overlay);
+		align-items: center;
+		justify-content: center;
+		padding: 0.3125rem;
+		width: 1.375rem;
+		height: 1.375rem;
+		font-size: 0.8125rem;
+		color: var(--gray-400);
+		box-sizing: content-box;
 	}
 
 	.icon.light::before {
@@ -37,18 +42,20 @@ import Icon from './Icon.astro';
 		z-index: -1;
 		position: absolute;
 		inset: 0;
-		background-color: var(--accent-regular);
+		background-color: var(--surface);
 		border-radius: var(--radius-pill);
+		box-shadow: var(--shadow-sm);
 	}
 
 	:global(.theme-dark) .icon.light::before {
 		transform: translateX(100%);
 	}
 
-	:global(.theme-dark) .icon.dark,
+	/* Whichever cell the indicator is under reads as ink; the other stays
+	   muted, so the current theme is legible without colour alone. */
 	:global(html:not(.theme-dark)) .icon.light,
-	button[aria-pressed='false'] .icon.light {
-		color: var(--accent-text-over);
+	:global(.theme-dark) .icon.dark {
+		color: var(--gray-0);
 	}
 
 	@media (prefers-reduced-motion: no-preference) {
@@ -57,6 +64,36 @@ import Icon from './Icon.astro';
 			transition:
 				transform var(--theme-transition),
 				color var(--theme-transition);
+		}
+	}
+
+	/* Below 50em the slider becomes a single 44px button showing the state
+	   it will switch TO — there is no room for two cells beside a wordmark,
+	   a search icon and a menu button. */
+	@media (max-width: 50em) {
+		button {
+			width: 44px;
+			height: 44px;
+			align-items: center;
+			justify-content: center;
+			background: none;
+		}
+
+		.icon {
+			width: 1.375rem;
+			height: 1.375rem;
+			padding: 0;
+			font-size: 1.125rem;
+			color: var(--gray-400);
+		}
+
+		.icon.light::before {
+			display: none;
+		}
+
+		:global(html:not(.theme-dark)) .icon.light,
+		:global(.theme-dark) .icon.dark {
+			display: none;
 		}
 	}
 

@@ -3,7 +3,11 @@ title: "Host adaptations of marine Acidobacteriota"
 status: ongoing
 meta: "2024 - Present"
 description: "Analysed 488 marine Acidobacteriota genomes across 16 families to separate genuine host adaptation from shared ancestry, using Pfam-based feature matrices, phylogenomics and machine learning."
-tags: ["Machine learning", "Phylogenomics", "Comparative genomics"]
+focus: "marine Acidobacteriota · 488 genomes, 16 families"
+source: "host-associated and free-living marine genomes"
+stack: "pyhmmer · Pfam-A · phylogenomics · random forest"
+output: "domain matrix, enrichment results, pfam_tools"
+tags: ["method:machine learning", "method:phylogenomics", "method:comparative genomics", "organism:Acidobacteriota", "data:genomes"]
 links:
   - label: "pfam_tools"
     href: "https://github.com/pavlohrab/pfam_tools"

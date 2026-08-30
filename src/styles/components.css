@@ -10,20 +10,26 @@
 .page-header {
 	padding-block: 2.5rem;
 	text-align: center;
+	width: 100%;
 	max-width: 50rem;
 	margin-inline: auto;
 }
 
 .page-title {
 	font-size: var(--text-4xl);
+	line-height: var(--lh-tight);
+	letter-spacing: -0.01em;
 	color: var(--gray-0);
 	margin: 0 0 0.5rem;
 }
 
 .page-subtitle {
 	font-size: var(--text-lg);
+	line-height: var(--lh-text);
 	color: var(--gray-300);
-	margin: 0;
+	max-width: 65ch;
+	margin-inline: auto;
+	margin-block: 0;
 }
 
 /* Page header that carries an action (CV download, Email me). */
@@ -36,7 +42,7 @@
 
 .back-link {
 	display: inline-block;
-	color: var(--accent-regular);
+	color: var(--gray-300);
 	text-decoration: none;
 	font-size: var(--text-sm);
 	font-weight: 500;
@@ -47,7 +53,7 @@
 }
 
 .back-link:hover {
-	color: var(--accent-dark);
+	color: var(--gray-0);
 }
 
 /* ============================================
@@ -56,6 +62,7 @@
 
 .section-title {
 	font-size: var(--text-2xl);
+	line-height: 1.2;
 	color: var(--gray-0);
 	margin: 0 0 1.5rem;
 	padding-bottom: 0.5rem;
@@ -75,8 +82,8 @@
 }
 
 .view-all-link {
-	font-size: var(--text-base);
-	color: var(--accent-regular);
+	font-size: var(--text-sm);
+	color: var(--gray-0);
 	text-decoration: none;
 	font-weight: 600;
 	transition:
@@ -87,7 +94,7 @@
 }
 
 .view-all-link:hover {
-	color: var(--accent-dark);
+	color: var(--gray-0);
 }
 
 /* ============================================
@@ -96,17 +103,21 @@
 
 /* ===================================================================
    Buttons — the only two. Both square, both lift on hover.
-   .btn-primary  filled accent, for the single main action on a view
-   .btn-outline  accent outline, for everything else
+   Both fill with INK, never with the accent: green is information,
+   ink is action.
+   .btn-primary  filled, for the single main action on a view
+   .btn-outline  outlined, for everything else
    =================================================================== */
 
 .btn {
 	display: inline-block;
 	padding: 0.75rem 2rem;
-	border: 1px solid var(--accent-regular);
+	border: 1px solid var(--gray-0);
 	border-radius: var(--radius-control);
+	font-family: var(--font-body);
 	font-size: var(--text-base);
 	font-weight: 600;
+	line-height: var(--lh-snug);
 	text-decoration: none;
 	cursor: pointer;
 	transition:
@@ -122,22 +133,25 @@
 }
 
 .btn-primary {
-	background: var(--accent-regular);
-	color: var(--accent-text-over);
+	background-color: var(--action);
+	border-color: var(--action);
+	color: var(--action-text);
 }
 
 .btn-primary:hover {
-	background: var(--accent-dark);
+	background-color: var(--action-hover);
+	border-color: var(--action-hover);
 }
 
 .btn-outline {
-	background: transparent;
-	color: var(--accent-regular);
+	background-color: transparent;
+	color: var(--gray-0);
 }
 
 .btn-outline:hover {
-	background: var(--accent-regular);
-	color: var(--accent-text-over);
+	background-color: var(--action);
+	border-color: var(--action);
+	color: var(--action-text);
 }
 
 /* Compact variant, for buttons sitting inside a card */
@@ -145,6 +159,15 @@
 	padding: 0.5rem 1rem;
 	font-size: var(--text-sm);
 	font-weight: 500;
+	color: var(--gray-0);
+}
+
+.btn-sm.btn-primary {
+	color: var(--action-text);
+}
+
+.btn-outline.btn-sm:hover {
+	color: var(--action-text);
 }
 
 /* ===================================================================
@@ -156,7 +179,7 @@
    =================================================================== */
 
 .surface {
-	background: var(--gray-999);
+	background-color: var(--surface);
 	border-radius: var(--radius-surface);
 	box-shadow: var(--shadow-sm);
 	transition:
@@ -179,6 +202,7 @@ a:hover > .surface-lift {
 }
 
 .projects-content {
+	width: 100%;
 	max-width: var(--width-content);
 	margin-inline: auto;
 }
@@ -198,16 +222,23 @@ a:hover > .surface-lift {
 	gap: 1.5rem;
 }
 
+/* The link is the grid item, so it stretches; the card inside has to be told
+   to fill it, or cards in the same row end at different heights. */
 .project-card-link {
 	text-decoration: none;
 	display: block;
+	height: 100%;
+}
+
+.project-card-link > .project-card {
+	height: 100%;
 }
 
 .project-card {
 	display: flex;
 	flex-direction: column;
 	padding: 2rem;
-	background: var(--gray-999);
+	background-color: var(--surface);
 	border-radius: var(--radius-surface);
 	border-top: var(--accent-bar) solid var(--accent-regular);
 	box-shadow: var(--shadow-sm);
@@ -239,48 +270,57 @@ a:hover > .surface-lift {
 }
 
 .project-card h3.project-title {
-	font-size: var(--text-lg) !important;
+	font-size: var(--text-lg);
 	color: var(--gray-0);
 	margin: 0;
 	flex: 1;
 	line-height: 1.3;
+	letter-spacing: 0;
 }
 
 .project-status {
 	display: inline-block;
 	padding: 0.25rem 0.75rem;
 	border-radius: var(--radius-tag);
-	font-size: var(--text-sm);
-	font-weight: 600;
+	font-family: var(--font-data);
+	font-size: var(--text-xs);
+	font-weight: 500;
+	line-height: var(--lh-snug);
+	text-transform: lowercase;
 	white-space: nowrap;
 	flex-shrink: 0;
 }
 
 .project-status.ongoing {
-	background: var(--accent-regular);
-	color: var(--accent-text-over);
+	background-color: var(--accent-tint);
+	color: var(--accent-dark);
 }
 
 .project-status.complete {
-	background: var(--gray-600);
-	color: var(--gray-999);
+	background-color: var(--gray-800);
+	color: var(--gray-100);
 }
 
 .project-status.released {
-	background: var(--accent-dark);
-	color: var(--gray-999);
+	background-color: var(--status-alt-tint);
+	color: var(--status-alt);
 }
 
+/* `meta` is a date range ("2023 - Present"), so it takes the data role. */
 .project-meta {
-	font-size: var(--text-sm);
-	color: var(--gray-400);
-	margin: 0 0 1rem;
+	font-family: var(--font-data);
+	font-size: var(--text-xs);
+	font-weight: 500;
+	line-height: 1.5;
+	color: var(--accent-regular);
+	margin: 0 0 0.75rem;
 }
 
 .project-description {
 	font-size: var(--text-base);
 	color: var(--gray-300);
-	line-height: 1.6;
+	line-height: var(--lh-text);
+	max-width: 50ch;
 	margin: 0 0 1.25rem;
 	flex-grow: 1;
 }
@@ -296,11 +336,13 @@ a:hover > .surface-lift {
 .tag {
 	display: inline-block;
 	padding: 0.25rem 0.75rem;
-	background: var(--gray-800);
-	color: var(--gray-200);
+	background-color: var(--gray-800);
+	color: var(--gray-100);
 	border-radius: var(--radius-tag);
-	font-size: var(--text-sm);
+	font-family: var(--font-data);
+	font-size: var(--text-xs);
 	font-weight: 500;
+	line-height: var(--lh-snug);
 }
 
 .project-links {
@@ -310,37 +352,14 @@ a:hover > .surface-lift {
 	margin-top: auto;
 }
 
-/* Deprecated: use .btn .btn-outline .btn-sm. Kept so old markup still renders. */
-.project-link {
-	display: inline-block;
-	padding: 0.5rem 1rem;
-	border: 1px solid var(--accent-regular);
-	border-radius: var(--radius-control);
-	background: transparent;
-	color: var(--accent-regular);
-	text-decoration: none;
-	font-size: var(--text-sm);
-	font-weight: 500;
-	transition:
-		transform var(--theme-transition),
-		box-shadow var(--theme-transition),
-		background-color var(--theme-transition),
-		color var(--theme-transition);
-}
-
-.project-link:hover {
-	background: var(--accent-regular);
-	color: var(--accent-text-over);
-	transform: translateY(var(--lift));
-	box-shadow: var(--shadow-md);
-}
-
 /* The clickable-surface cue. Present on every card/row that navigates,
    absent on every one that doesn't. The arrow is a pseudo-element so the
    markup stays "Read more" and screen readers don't announce an arrow. */
 .read-more {
 	display: inline-block;
+	font-family: var(--font-body);
 	font-size: var(--text-sm);
+	line-height: var(--lh-snug);
 	color: var(--accent-regular);
 	font-weight: 600;
 	margin-top: 0.75rem;
@@ -369,6 +388,7 @@ a:hover .read-more::after,
    ============================================ */
 
 .blog-list {
+	width: 100%;
 	max-width: var(--width-reading);
 	margin-inline: auto;
 }
@@ -380,7 +400,7 @@ a:hover .read-more::after,
 
 .blog-card {
 	padding: 1.5rem;
-	background: var(--gray-999);
+	background-color: var(--surface);
 	border-radius: var(--radius-surface);
 	border-left: var(--accent-bar) solid var(--accent-regular);
 	box-shadow: var(--shadow-sm);
@@ -402,16 +422,18 @@ a:hover .read-more::after,
 }
 
 .blog-date {
-	font-size: var(--text-sm);
-	color: var(--accent-regular);
-	font-weight: 600;
-	font-family: var(--font-brand);
 	display: block;
+	font-family: var(--font-data);
+	font-size: var(--text-xs);
+	font-weight: 500;
+	line-height: 1.5;
+	color: var(--accent-regular);
 	margin-bottom: 0.5rem;
 }
 
 .blog-card h3.blog-title {
-	font-size: var(--text-lg) !important;
+	font-size: var(--text-lg);
+	letter-spacing: 0;
 	color: var(--gray-0);
 	margin: 0 0 0.5rem;
 	line-height: 1.3;
@@ -420,7 +442,7 @@ a:hover .read-more::after,
 .blog-excerpt {
 	font-size: var(--text-base);
 	color: var(--gray-300);
-	line-height: 1.6;
+	line-height: var(--lh-text);
 	margin: 0 0 0.75rem;
 }
 
@@ -453,7 +475,7 @@ a:hover .read-more::after,
 
 .travel-card {
 	padding: 1.5rem;
-	background: var(--gray-999);
+	background-color: var(--surface);
 	border-radius: var(--radius-surface);
 	border-top: var(--accent-bar) solid var(--accent-regular);
 	box-shadow: var(--shadow-sm);
@@ -491,7 +513,7 @@ a:hover .read-more::after,
 
 .location {
 	font-size: var(--text-sm);
-	color: var(--accent-regular);
+	color: var(--gray-0);
 	font-style: italic;
 	margin: 0 0 0.75rem;
 }
@@ -499,7 +521,7 @@ a:hover .read-more::after,
 .travel-card p:last-of-type {
 	font-size: var(--text-base);
 	color: var(--gray-300);
-	line-height: 1.6;
+	line-height: var(--lh-text);
 	margin: 0 0 0.5rem;
 }
 
@@ -507,9 +529,10 @@ a:hover .read-more::after,
    DETAIL PAGE STYLES
    ============================================ */
 
-.project-header,
-.post-header {
+header.project-header,
+header.post-header {
 	padding-block: 2rem;
+	width: 100%;
 	max-width: 50rem;
 	margin-inline: auto;
 }
@@ -519,44 +542,48 @@ a:hover .read-more::after,
 }
 
 .breadcrumb a {
-	color: var(--accent-regular);
+	color: var(--gray-300);
 	text-decoration: none;
 	font-size: var(--text-sm);
 	transition: color var(--theme-transition);
 }
 
 .breadcrumb a:hover {
-	color: var(--accent-dark);
+	color: var(--gray-0);
 }
 
 .project-date,
 .post-date {
 	display: block;
-	font-size: var(--text-sm);
+	font-family: var(--font-data);
+	font-size: var(--text-xs);
+	font-weight: 500;
+	line-height: 1.5;
 	color: var(--accent-regular);
-	font-weight: 600;
-	font-family: var(--font-brand);
 	margin-bottom: 1rem;
 }
 
-.project-header .project-title,
-.post-header .post-title {
-	font-size: var(--text-4xl);
+header.project-header .project-title,
+header.post-header .post-title {
+	font-size: var(--text-3xl);
+	line-height: 1.15;
+	letter-spacing: -0.01em;
 	color: var(--gray-0);
 	margin: 0 0 1rem;
-	line-height: 1.2;
 }
 
-.project-header .project-subtitle,
-.post-header .post-subtitle {
+header.project-header .project-subtitle,
+header.post-header .post-subtitle {
 	font-size: var(--text-lg);
 	color: var(--gray-300);
-	line-height: 1.6;
+	line-height: var(--lh-text);
+	max-width: 65ch;
 	margin: 0;
 }
 
 .project-content,
 .post-content {
+	width: 100%;
 	max-width: 50rem;
 	margin-inline: auto;
 }
@@ -568,12 +595,12 @@ a:hover .read-more::after,
 .content-section p {
 	font-size: var(--text-base);
 	color: var(--gray-300);
-	line-height: 1.8;
+	line-height: var(--lh-long);
 	margin-bottom: 1.5rem;
 }
 
 .content-section h2 {
-	font-size: var(--text-2xl);
+	font-size: var(--text-xl);
 	color: var(--gray-0);
 	margin: 2.5rem 0 1rem;
 	border-bottom: 2px solid var(--accent-regular);
@@ -583,7 +610,7 @@ a:hover .read-more::after,
 .content-section ul {
 	margin: 1.5rem 0 1.5rem 2rem;
 	color: var(--gray-300);
-	line-height: 1.8;
+	line-height: var(--lh-long);
 }
 
 .content-section li {
@@ -603,14 +630,15 @@ a:hover .read-more::after,
 .project-info {
 	margin-bottom: 2rem;
 	padding: 1.5rem;
-	background: var(--gray-999);
+	background-color: var(--surface);
 	border-left: var(--accent-bar) solid var(--accent-regular);
 	border-radius: var(--radius-tag);
 }
 
 .info-item {
-	font-size: var(--text-base);
-	color: var(--gray-300);
+	font-size: var(--text-sm);
+	line-height: var(--lh-text);
+	color: var(--gray-400);
 	margin-bottom: 0.75rem;
 }
 
@@ -631,10 +659,10 @@ a:hover .read-more::after,
 
 .meta-section .tag {
 	padding: 0.5rem 1rem;
-	background: var(--accent-regular);
-	color: var(--gray-999);
-	font-size: var(--text-sm);
-	border-radius: 0;
+	background-color: var(--gray-800);
+	color: var(--gray-100);
+	font-size: var(--text-xs);
+	border-radius: var(--radius-tag);
 	font-weight: 500;
 }
 
@@ -644,40 +672,13 @@ a:hover .read-more::after,
 	flex-wrap: wrap;
 }
 
-.project-link-btn {
-	display: inline-block;
-	padding: 0.75rem 1.5rem;
-	background: transparent;
-	color: var(--accent-regular);
-	text-decoration: none;
-	border: 2px solid var(--accent-regular);
-	border-radius: 0;
-	font-size: var(--text-base);
-	font-weight: 600;
-	transition:
-		transform var(--theme-transition),
-		box-shadow var(--theme-transition),
-		background-color var(--theme-transition),
-		color var(--theme-transition);
-	text-align: center;
-	flex: 1;
-	min-width: 200px;
-}
-
-.project-link-btn:hover {
-	background: var(--accent-regular);
-	color: var(--gray-999);
-	transform: translateY(var(--lift));
-	box-shadow: var(--shadow-md);
-}
-
 /* ============================================
    RESPONSIVE BREAKPOINTS
    ============================================ */
 
 @media (max-width: 50em) {
 	.page-title {
-		font-size: var(--text-3xl);
+		font-size: var(--text-2xl);
 	}
 
 	.page-subtitle {
@@ -706,26 +707,26 @@ a:hover .read-more::after,
 		gap: 0.5rem;
 	}
 
-	.project-header .project-title,
-	.post-header .post-title {
-		font-size: var(--text-2xl);
+	header.project-header .project-title,
+	header.post-header .post-title {
+		font-size: var(--text-xl);
 	}
 
-	.project-header .project-subtitle,
-	.post-header .post-subtitle {
+	header.project-header .project-subtitle,
+	header.post-header .post-subtitle {
 		font-size: var(--text-base);
 	}
 
 	.content-section h2 {
-		font-size: var(--text-xl);
+		font-size: var(--text-lg);
+	}
+
+	.content-section p {
+		line-height: 1.7;
 	}
 
 	.project-links {
 		flex-direction: column;
-	}
-
-	.project-link-btn {
-		min-width: 100%;
 	}
 }
 
@@ -746,6 +747,7 @@ a:hover .read-more::after,
 	display: inline-block;
 	margin-top: 0.75rem;
 	color: var(--accent-regular);
+	font-family: var(--font-body);
 	font-size: var(--text-sm);
 	font-weight: 600;
 	cursor: pointer;
@@ -786,7 +788,7 @@ a:hover .read-more::after,
 .lede {
 	font-size: var(--text-lg);
 	color: var(--gray-300);
-	line-height: 1.6;
+	line-height: var(--lh-text);
 	max-width: 65ch;
 	margin: 0;
 }

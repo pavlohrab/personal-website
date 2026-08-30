@@ -1,5 +1,5 @@
 ---
-title: "Genomic potential of Streptomyces roseochromogenes NRRL 3504 for the production of specialized metabolites: analysis in silico"
+title: "Genomic potential of <i class='taxon'>Streptomyces roseochromogenes</i> NRRL 3504 for the production of specialized metabolites: analysis in silico"
 authors: "Sofiia Melnyk, <strong>Pavlo Hrab</strong>, Bohdan Ostash"
 venue: "Visnyk of Lviv University Biological series"
 year: 2022
@@ -8,5 +8,6 @@ url: "http://publications.lnu.edu.ua/bulletins/index.php/biology/article/view/11
 doi: "10.30970/vlubs.2022.87.04"
 featured: false
 draft: false
+tags: ["method:BGC mining", "organism:Streptomyces", "data:genomes"]
 ---
 

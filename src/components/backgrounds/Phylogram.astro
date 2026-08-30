@@ -10,7 +10,7 @@
 // overlapping, vary widely in depth, and are rooted from any of the four
 // directions — all of which are legitimate ways to draw a phylogram.
 //
-// Branches taper from root to tip. Tips are amber; branches are grey.
+// Branches taper from root to tip. Tips carry the site accent; branches are grey.
 // One animation only: fade in, hold, fade out.
 ---
 
@@ -157,11 +157,11 @@
 			ctx!.stroke();
 		}
 
-		function drawNode(t: Phylogram, node: PhyloNode, grey: string, amber: string) {
+		function drawNode(t: Phylogram, node: PhyloNode, grey: string, accent: string) {
 			if (node.children.length === 0) {
-				// Tip — amber, like a highlighted taxon.
+				// Tip — accent, like a highlighted taxon.
 				const [px, py] = project(t, node.x, node.y);
-				ctx!.fillStyle = amber;
+				ctx!.fillStyle = accent;
 				ctx!.beginPath();
 				ctx!.arc(px, py, 2.6, 0, Math.PI * 2);
 				ctx!.fill();
@@ -182,8 +182,24 @@
 			for (const child of node.children) {
 				ctx!.lineWidth = Math.max(1.3, 3.6 - child.depth * 0.55);
 				line(t, node.x, child.y, child.x, child.y);
-				drawNode(t, child, grey, amber);
+				drawNode(t, child, grey, accent);
 			}
+		}
+
+		/* The tip colour is the site accent, read off the document root rather
+		   than hardcoded, so the canvas follows the theme forever. draw() runs
+		   at 24fps and getComputedStyle forces a style recalc, so the value is
+		   memoised per theme and read at most twice in a session. */
+		const accentCache: Record<string, string> = {};
+		function accentColor(isDark: boolean) {
+			const key = isDark ? 'dark' : 'light';
+			if (!accentCache[key]) {
+				accentCache[key] =
+					getComputedStyle(document.documentElement)
+						.getPropertyValue('--accent-regular')
+						.trim() || (isDark ? '#8fbc9a' : '#3f7a52');
+			}
+			return accentCache[key];
 		}
 
 		const trees: Phylogram[] = [];
@@ -193,7 +209,7 @@
 
 			const isDark = document.documentElement.classList.contains('theme-dark');
 			const grey = '#8a8a8a';
-			const amber = isDark ? '#d4a574' : '#c9925e';
+			const accent = accentColor(isDark);
 
 			ctx!.lineCap = 'butt';
 			ctx!.lineJoin = 'miter';
@@ -214,7 +230,7 @@
 				else if (age > t.lifetime - FADE) alpha = (t.lifetime - age) / FADE;
 
 				ctx!.globalAlpha = Math.max(0, Math.min(1, alpha));
-				drawNode(t, t.root, grey, amber);
+				drawNode(t, t.root, grey, accent);
 			}
 
 			ctx!.globalAlpha = 1;

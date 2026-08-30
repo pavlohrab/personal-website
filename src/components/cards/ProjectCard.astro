@@ -17,6 +17,10 @@ interface Props {
 	meta: string;
 	description: string;
 	tags: string[];
+	focus?: string;
+	source?: string;
+	stack?: string;
+	output?: string;
 	links?: Array<{ label: string; href: string }>;
 	href?: string; // If provided, makes the entire card clickable
 	featured?: boolean;
@@ -27,11 +31,23 @@ const {
 	title,
 	meta,
 	description,
+	focus,
+	source,
+	stack,
+	output,
 	links,
 	href,
 	featured = false,
 	compact = false
 } = Astro.props;
+
+/** Provenance rows, in fixed order; a project may supply any subset. */
+const provenance = ([
+	['focus', focus],
+	['source', source],
+	['stack', stack],
+	['output', output],
+] as const).filter(([, value]) => Boolean(value));
 
 // If href is provided, wrap in link, otherwise use article
 const isClickable = !!href;
@@ -41,26 +57,70 @@ const isClickable = !!href;
 	<a href={href} class="project-card-link">
 		<article class:list={['project-card', { featured, compact }]}>
 			<div class="project-header">
-				<h3 class="project-title">{title}</h3>
+				<h3 class="project-title" set:html={title} />
 			</div>
 			<p class="project-meta">{meta}</p>
-			<p class="project-description">{description}</p>
+			<p class="project-description" set:html={description} />
+			{provenance.length > 0 && (
+				<dl class="provenance">
+					{provenance.map(([key, value]) => (
+						<>
+							<dt>{key}</dt>
+							<dd set:html={value} />
+						</>
+					))}
+				</dl>
+			)}
 			<span class="read-more">Read more</span>
 		</article>
 	</a>
 ) : (
 	<article class:list={['project-card', { featured, compact }]}>
 		<div class="project-header">
-			<h3 class="project-title">{title}</h3>
+			<h3 class="project-title" set:html={title} />
 		</div>
 		<p class="project-meta">{meta}</p>
-		<p class="project-description">{description}</p>
+		<p class="project-description" set:html={description} />
+		{provenance.length > 0 && (
+			<dl class="provenance">
+				{provenance.map(([key, value]) => (
+					<>
+						<dt>{key}</dt>
+						<dd set:html={value} />
+					</>
+				))}
+			</dl>
+		)}
 		{links && links.length > 0 && (
 			<div class="project-links">
 				{links.map(link => (
-					<a href={link.href} class="project-link">{link.label}</a>
+					<a href={link.href} class="btn btn-outline btn-sm">{link.label}</a>
 				))}
 			</div>
 		)}
 	</article>
 )}
+
+<style>
+	/* A sample-label strip, not prose: two mono columns, key and value.
+	   The facts were already in the description; this makes them scannable. */
+	.provenance {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.3rem 1rem;
+		font-family: var(--font-data);
+		font-size: var(--text-xs);
+		line-height: 1.5;
+		margin: 0 0 1.25rem;
+	}
+
+	.provenance dt {
+		color: var(--gray-400);
+	}
+
+	.provenance dd {
+		color: var(--gray-100);
+		margin: 0;
+		overflow-wrap: anywhere;
+	}
+</style>

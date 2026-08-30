@@ -22,6 +22,7 @@ const featuredProjects = allProjects
 	<div class="stack gap-20 lg:gap-48">
 		<div class="wrapper stack gap-8 lg:gap-20">
 			<header class="page-header">
+				<span class="eyebrow">Research</span>
 				<h1 class="page-title">Projects</h1>
 				<p class="page-subtitle">
 					What I'm working on, and what came out of it. The software is on the
@@ -40,6 +41,10 @@ const featuredProjects = allProjects
 								status={project.data.status}
 								meta={project.data.meta}
 								description={project.data.description}
+								focus={project.data.focus}
+								source={project.data.source}
+								stack={project.data.stack}
+								output={project.data.output}
 								tags={project.data.tags}
 								links={project.data.links}
 								href={`/projects/${project.id}/`}
@@ -55,7 +60,11 @@ const featuredProjects = allProjects
 
 <style>
 	/* Page-specific: Projects content width */
+	/* width:100% because this is a flex item of .wrapper.stack — without it,
+	   the auto inline margins make it shrink to fit-content and max-width
+	   never applies, collapsing the card grid to one column. */
 	.projects-content {
+		width: 100%;
 		max-width: var(--width-content);
 		margin-inline: auto;
 	}

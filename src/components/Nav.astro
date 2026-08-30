@@ -2,16 +2,28 @@
 import Icon from './Icon.astro';
 import ThemeToggle from './ThemeToggle.astro';
 
-/** Main menu items */
-const textLinks: { label: string; href: string }[] = [
-	{ label: 'Home', href: `${import.meta.env.BASE_URL}` },
-	{ label: 'Tools', href: `${import.meta.env.BASE_URL}tools/` },
-	{ label: 'Projects', href: `${import.meta.env.BASE_URL}projects/` },
-	{ label: 'CV', href: `${import.meta.env.BASE_URL}cv/` },
-	{ label: 'Publications', href: `${import.meta.env.BASE_URL}publications/` },
-	{ label: 'Talks & Teaching', href: `${import.meta.env.BASE_URL}outreach/` },
-	{ label: 'Beyond', href: `${import.meta.env.BASE_URL}beyond/` },
-	{ label: 'Contact', href: `${import.meta.env.BASE_URL}contact/` },
+/**
+ * Two tiers, no pills.
+ *
+ *   Tier 1 (54px)  wordmark + tagline, then search and theme controls.
+ *   Tier 2 (38px)  section links, left-aligned to the content column.
+ *
+ * Below 50em tier 2 collapses into the existing menu-button sheet and tier 1
+ * shrinks to 52px. The controls live in tier 1 at every width, so search and
+ * the theme toggle are reachable without opening the menu.
+ */
+
+/** Main menu items. `short` is what tier 2 shows; `label` is the full name,
+    used in the mobile sheet and by the no-JS list, where there is room. */
+const textLinks: { label: string; short: string; href: string }[] = [
+	{ label: 'Home', short: 'Home', href: `${import.meta.env.BASE_URL}` },
+	{ label: 'Tools', short: 'Tools', href: `${import.meta.env.BASE_URL}tools/` },
+	{ label: 'Projects', short: 'Projects', href: `${import.meta.env.BASE_URL}projects/` },
+	{ label: 'CV', short: 'CV', href: `${import.meta.env.BASE_URL}cv/` },
+	{ label: 'Publications', short: 'Publications', href: `${import.meta.env.BASE_URL}publications/` },
+	{ label: 'Outreach', short: 'Outreach', href: `${import.meta.env.BASE_URL}outreach/` },
+	{ label: 'Beyond', short: 'Beyond', href: `${import.meta.env.BASE_URL}beyond/` },
+	{ label: 'Contact', short: 'Contact', href: `${import.meta.env.BASE_URL}contact/` },
 ];
 
 /** Test if a link is pointing to the current page. */
@@ -24,19 +36,37 @@ const isCurrentPage = (href: string) => {
 ---
 
 <nav data-pagefind-ignore>
-	<div class="menu-header">
-		<a href={import.meta.env.BASE_URL} class="site-title">
-			<span>Pavlo Hrab</span>
-		</a>
-		<menu-button>
-			<template>
-				<button class="menu-button" aria-expanded="false">
-					<span class="sr-only">Menu</span>
-					<Icon icon="list" />
-				</button>
-			</template>
-		</menu-button>
+	<div class="tier-1">
+		<div class="brand">
+			<a href={import.meta.env.BASE_URL} class="site-title">pavlo<span>hrab</span></a>
+			<p class="tagline">Computational biology · Microbial genomics</p>
+		</div>
+
+		<div class="controls">
+			<button
+				type="button"
+				class="search-trigger"
+				aria-label="Search"
+				aria-keyshortcuts="Meta+K Control+K"
+			>
+				<span class="search-trigger-icon"><Icon icon="search" /></span>
+				<span class="search-trigger-label">Search</span>
+				<kbd class="search-trigger-kbd">⌘K</kbd>
+			</button>
+
+			<ThemeToggle />
+
+			<menu-button>
+				<template>
+					<button class="menu-button" aria-expanded="false">
+						<span class="sr-only">Menu</span>
+						<Icon icon="list" />
+					</button>
+				</template>
+			</menu-button>
+		</div>
 	</div>
+
 	<noscript>
 		<ul class="nav-items">
 			{
@@ -50,29 +80,20 @@ const isCurrentPage = (href: string) => {
 			}
 		</ul>
 	</noscript>
+
 	<div id="menu-content" hidden>
 		<ul class="nav-items">
 			{
-				textLinks.map(({ label, href }) => (
+				textLinks.map(({ label, short, href }) => (
 					<li>
 						<a aria-current={isCurrentPage(href) ? 'page' : null} class="link" href={href}>
-							{label}
+							<span class="link-short">{short}</span>
+							<span class="link-full">{label}</span>
 						</a>
 					</li>
 				))
 			}
 		</ul>
-		<div class="menu-footer">
-			<button type="button" class="search-trigger" aria-label="Search" aria-keyshortcuts="Meta+K Control+K">
-				<span class="search-trigger-icon"><Icon icon="search" /></span>
-				<span class="search-trigger-label">Search</span>
-				<kbd class="search-trigger-kbd">⌘K</kbd>
-			</button>
-
-			<div class="theme-toggle">
-				<ThemeToggle />
-			</div>
-		</div>
 	</div>
 </nav>
 
@@ -100,7 +121,7 @@ const isCurrentPage = (href: string) => {
 			// Toggle menu visibility when the menu button is clicked.
 			btn.addEventListener('click', () => setExpanded(menu.hidden));
 
-			// Hide menu button for large screens.
+			// Hide menu button for large screens, where tier 2 is always shown.
 			const handleViewports = (e: MediaQueryList | MediaQueryListEvent) => {
 				setExpanded(e.matches);
 				btn.hidden = e.matches;
@@ -112,43 +133,72 @@ const isCurrentPage = (href: string) => {
 	}
 	customElements.define('menu-button', MenuButton);
 
-		// Open the search overlay when the nav "Search" control is clicked.
-		// Delegated on document so it survives View Transition swaps.
-		document.addEventListener('click', (e) => {
-			if ((e.target as Element).closest('.search-trigger')) {
-				document.dispatchEvent(new CustomEvent('open-search'));
-			}
-		});
+	// Open the search overlay when the nav "Search" control is clicked.
+	// Delegated on document so it survives View Transition swaps.
+	document.addEventListener('click', (e) => {
+		if ((e.target as Element).closest('.search-trigger')) {
+			document.dispatchEvent(new CustomEvent('open-search'));
+		}
+	});
 </script>
 
 <style>
 	nav {
 		z-index: 9999;
 		position: relative;
-		font-family: var(--font-brand);
-		font-weight: 500;
+		font-family: var(--font-body);
+		background-color: var(--gray-999);
 		margin-bottom: 3.5rem;
 	}
 
-	.menu-header {
+	/* Tier 1 sits on the content column, so the wordmark lines up with the
+	   page below it. Tier 2 runs the full width instead: its hairline reads
+	   as the header's own edge rather than as a rule under the wordmark. */
+	.tier-1 {
+		width: 100%;
+		max-width: 83rem;
+		margin-inline: auto;
+		padding-inline: 1.5rem;
+	}
+
+	/* ---- Tier 1 ---------------------------------------------------- */
+
+	.tier-1 {
 		display: flex;
+		align-items: center;
 		justify-content: space-between;
-		gap: 0.5rem;
-		padding: 1.5rem;
+		gap: 1rem;
+		min-height: 52px;
+	}
+
+	.brand {
+		display: flex;
+		align-items: baseline;
+		gap: 0.875rem;
+		min-width: 0;
 	}
 
 	.site-title {
-		display: block;
-		line-height: 1.1;
+		flex-shrink: 0;
+		font-family: var(--font-brand);
+		font-size: 1.375rem;
+		font-weight: 600;
+		line-height: var(--lh-tight);
+		letter-spacing: -0.01em;
 		color: var(--gray-0);
 		text-decoration: none;
 	}
 
+	.site-title span {
+		color: var(--accent-regular);
+	}
+
 	/* The same sweep the nav links get from the global `a` rule, but drawn on
-	   the inner span: the anchor is a flex item of .menu-header, so its display
-	   is blockified and box-decoration-break can never fragment it. The span is
-	   inline, so each line of the wordmark gets its own underline when it wraps
-	   to two lines at narrow desktop widths. */
+	   the inner span: the anchor is a flex item, so its display is blockified
+	   and box-decoration-break can never fragment it.
+
+	   The gradient follows currentColor, so the rule under "hrab" is the same
+	   green as the word itself. */
 	.site-title span {
 		background-image: linear-gradient(currentColor, currentColor);
 		background-repeat: no-repeat;
@@ -164,37 +214,138 @@ const isCurrentPage = (href: string) => {
 		background-size: 100% 2px;
 	}
 
-	.menu-button {
-		position: relative;
+	.tagline {
+		display: none;
+		font-family: var(--font-data);
+		font-size: var(--text-2xs);
+		font-weight: 500;
+		line-height: var(--lh-snug);
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--gray-400);
+		white-space: nowrap;
+		margin: 0;
+	}
+
+	.controls {
 		display: flex;
-		border: 0;
-		border-radius: var(--radius-pill);
+		align-items: center;
+		gap: 0.25rem;
+		flex-shrink: 0;
+	}
+
+	/* ---- Search trigger: no pill, no border, no shadow -------------- */
+
+	.search-trigger {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		min-width: 44px;
+		min-height: 44px;
 		padding: 0.5rem;
+		font-family: var(--font-body);
+		font-size: var(--text-sm);
+		color: var(--gray-400);
+		background: none;
+		border: 0;
+		cursor: pointer;
+		transition: color var(--theme-transition);
+	}
+
+	.search-trigger:hover,
+	.search-trigger:focus-visible {
+		color: var(--gray-0);
+	}
+
+	.search-trigger-icon {
+		display: flex;
+		font-size: 1.125rem;
+	}
+
+	.search-trigger-kbd {
+		font-family: var(--font-data);
+		font-size: var(--text-2xs);
+		color: var(--gray-400);
+		padding: 0.15em 0.4em;
+		border: 1px solid var(--gray-800);
+		border-radius: var(--radius-tag);
+	}
+
+	/* Icon only, at every width — see the three header mockups. The control
+	   is named for assistive tech by aria-label on the button. Spelling
+	   "Search" out below 50em would push the four 44px targets in tier 1
+	   past the width of a phone. The keyboard hint is meaningless on touch. */
+	.search-trigger-label {
+		display: none;
+	}
+
+	@media (max-width: 50em) {
+		.search-trigger-kbd {
+			display: none;
+		}
+	}
+
+	/* ---- Menu button (below 50em only) ------------------------------ */
+
+	.menu-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		padding: 0;
+		border: 0;
+		background: none;
 		font-size: 1.5rem;
-		color: var(--gray-300);
-		background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
-		box-shadow: var(--shadow-md);
+		color: var(--gray-400);
+		cursor: pointer;
 	}
 
 	.menu-button[aria-expanded='true'] {
 		color: var(--gray-0);
-		background:
-			linear-gradient(180deg, var(--gray-600), transparent),
-			radial-gradient(var(--gray-900), var(--gray-800) 150%);
 	}
 
 	.menu-button[hidden] {
 		display: none;
 	}
 
-	.menu-button::before {
-		position: absolute;
-		inset: -1px;
-		content: '';
-		background: var(--gradient-stroke);
-		border-radius: var(--radius-pill);
-		z-index: -1;
+	/* ---- Tier 2: the section links --------------------------------- */
+
+	.nav-items {
+		width: 100%;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		list-style: none;
+		padding-inline: 1.5rem;
+		padding-block: 0.5rem;
+		background-color: var(--gray-999);
+		border-bottom: 1px solid var(--gray-800);
 	}
+
+	.link {
+		display: block;
+		color: var(--gray-300);
+		text-decoration: none;
+		transition:
+			color var(--theme-transition),
+			background-size var(--sweep);
+	}
+
+	/* Tier 2 shows the short label; the sheet and the no-JS list show the
+	   full one. Only one of the two is ever in the box. */
+	.link-short {
+		display: none;
+	}
+
+	.link[aria-current='page'] {
+		color: var(--gray-0);
+		font-weight: 600;
+	}
+
+	/* ---- Mobile sheet (below 50em) --------------------------------- */
 
 	.menu-content {
 		position: absolute;
@@ -202,194 +353,123 @@ const isCurrentPage = (href: string) => {
 		right: 0;
 	}
 
-	.nav-items {
-		margin: 0;
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-		font-size: var(--text-md);
-		line-height: 1.2;
-		list-style: none;
-		padding: 2rem;
-		background-color: var(--gray-999);
-		border-bottom: 1px solid var(--gray-800);
-	}
-
-	.link {
-		display: inline-block;
-		color: var(--gray-300);
-		text-decoration: none;
-	}
-
-	.link[aria-current] {
-		color: var(--gray-0);
-	}
-
-	.menu-footer {
-		--icon-size: var(--text-xl);
-		--icon-padding: 0.5rem;
-
-		display: flex;
-		justify-content: space-between;
-		gap: 0.75rem;
-		padding: 1.5rem 2rem 1.5rem 1.5rem;
-		background-color: var(--gray-999);
-		border-radius: 0 0 0.75rem 0.75rem;
-		box-shadow: var(--shadow-lg);
-	}
-
-	/* Labeled "Search" pill — its own distinct affordance on the right, matching
-	   the nav-pill treatment (gradient fill + stroke ring + shadow). */
-	.search-trigger {
-		position: relative;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.4rem 0.75rem;
-		font-family: var(--font-brand);
-		font-size: var(--text-sm);
-		color: var(--gray-300);
-		background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
-		border: 0;
-		border-radius: var(--radius-pill);
-		box-shadow: var(--shadow-md);
-		cursor: pointer;
-		transition:
-			color var(--theme-transition),
-			transform var(--theme-transition),
-			box-shadow var(--theme-transition);
-	}
-
-	.search-trigger::before {
-		position: absolute;
-		inset: -1px;
-		content: '';
-		background: var(--gradient-stroke);
-		border-radius: var(--radius-pill);
-		z-index: -1;
-	}
-
-	.search-trigger:hover,
-	.search-trigger:focus-visible {
-		color: var(--gray-0);
-		transform: translateY(var(--lift));
-		box-shadow: var(--shadow-lg);
-	}
-
-	.search-trigger-icon {
-		display: flex;
-		font-size: 1rem;
-	}
-
-	.search-trigger-kbd {
-		font-family: var(--font-brand);
-		font-size: var(--text-xs);
-		color: var(--gray-400);
-		padding: 0.05em 0.4em;
-		border: 1px solid var(--gray-800);
-		border-radius: var(--radius-tag);
-	}
-
-	/* The keyboard hint is meaningless on touch. */
 	@media (max-width: 50em) {
-		.search-trigger-kbd {
+		/* The wordmark is a link like any other control in tier 1, so it gets
+		   the same 44px tap height. Padding, not height, so the text stays on
+		   the same baseline as the icons beside it. */
+		.site-title {
+			display: flex;
+			align-items: center;
+			min-height: 44px;
+		}
+
+		.nav-items {
+			padding-block: 0.5rem 1rem;
+			box-shadow: var(--shadow-lg);
+			border-radius: 0 0 0.75rem 0.75rem;
+		}
+
+		.link {
+			display: flex;
+			align-items: center;
+			min-height: 44px;
+			font-size: var(--text-md);
+			padding-inline-start: 1rem;
+			/* An underline does not read as "here" in a vertical list, so the
+			   3px accent bar takes over — the same bar used on list rows. */
+			border-left: var(--accent-bar) solid transparent;
+		}
+
+		.link[aria-current='page'] {
+			border-left-color: var(--accent-regular);
+			background-image: none;
+		}
+	}
+
+	/* ---- Desktop and tablet (50em and up) --------------------------- */
+
+	@media (min-width: 50em) {
+		nav {
+			min-height: var(--header-height);
+		}
+
+		.tier-1 {
+			min-height: 54px;
+		}
+
+		/* The sheet's absolute positioning is a mobile-only device. */
+		.menu-content {
+			position: static;
+		}
+
+		.nav-items {
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			gap: 1.75rem;
+			min-height: 42px;
+			font-size: var(--text-base);
+			border-top: 1px solid var(--gray-800);
+			/* Never wrap to a third row. */
+			flex-wrap: nowrap;
+		}
+
+		.nav-items li {
+			flex-shrink: 0;
+		}
+
+		.link-short {
+			display: inline;
+		}
+
+		.link-full {
+			display: none;
+		}
+
+		.link {
+			/* The underline below is a box-shadow, whose size is derived from
+			   this box: a shadow inset by S and pushed down Y is (H − 2S) tall
+			   and sits (S + Y − H) below the box. Pinning the line box at 18px
+			   with S = 8 and Y = 17 gives exactly 2px, exactly 7px below —
+			   at any font size the browser resolves. */
+			line-height: 18px;
+			/* Hover is the global sweep, but in grey. Green underline = you are
+			   here; grey underline = interactive. Never both on one element. */
+			background-image: linear-gradient(var(--gray-400), var(--gray-400));
+			background-repeat: no-repeat;
+			background-position: 0 100%;
+			background-size: 0% 2px;
+		}
+
+		.link:hover,
+		.link:focus-visible {
+			color: var(--gray-0);
+			background-size: 100% 2px;
+		}
+
+		/* No pill, no background — a 2px rule that never affects layout. */
+		.link[aria-current='page'] {
+			background-image: none;
+			box-shadow: 0 17px 0 -8px var(--accent-regular);
+		}
+	}
+
+	@media (min-width: 50em) and (max-width: 62em) {
+		.nav-items {
+			justify-content: flex-start;
+			overflow-x: auto;
+			scrollbar-width: none;
+			-ms-overflow-style: none;
+		}
+
+		.nav-items::-webkit-scrollbar {
 			display: none;
 		}
 	}
 
-	.theme-toggle {
-		display: flex;
-		align-items: center;
-		height: calc(var(--icon-size) + 2 * var(--icon-padding));
-	}
-
-	@media (min-width: 50em) {
-		nav {
-			display: grid;
-			/* Side columns hug their content; the centre nav pill takes the rest
-			   and is allowed to shrink (minmax floor of 0) so it wraps to two
-			   rows instead of shoving the right-hand cluster off-screen. */
-			grid-template-columns: auto minmax(0, 1fr) auto;
-			align-items: center;
-			padding: 2.5rem clamp(1.5rem, 4vw, 5rem);
-			gap: 1rem;
-		}
-
-		.menu-header {
-			padding: 0;
-		}
-
-		.site-title {
-			font-size: var(--text-lg);
-		}
-
-		.menu-content {
-			display: contents;
-		}
-
-		.nav-items {
-			position: relative;
-			flex-direction: row;
-			flex-wrap: wrap;
-			justify-content: center;
-			/* Stay content-width and centred at wide viewports; when the centre
-			   column can no longer hold every link on one line, wrap within it. */
-			justify-self: center;
-			max-width: 100%;
-			font-size: var(--text-sm);
-			border-radius: var(--radius-pill);
-			border: 0;
-			padding: 0.5rem 0.5625rem;
-			background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
-			box-shadow: var(--shadow-md);
-		}
-
-		.nav-items::before {
-			position: absolute;
-			inset: -1px;
-			content: '';
-			background: var(--gradient-stroke);
-			border-radius: var(--radius-pill);
-			z-index: -1;
-		}
-
-		.link {
-			padding: 0.5rem 1rem;
-			border-radius: var(--radius-pill);
-			/* Anchor the sweep to the text, not the padding box, or it floats
-			   below the label and overhangs it on both sides. */
-			background-origin: content-box;
-			transition:
-				color var(--theme-transition),
-				background-color var(--theme-transition),
-				background-size var(--sweep);
-		}
-
-		/* Hover is the sweep underline (see global.css) — no background pill,
-		   or the two affordances fight. The pill is reserved for "you are here". */
-		.link:hover,
-		.link:focus {
-			color: var(--gray-100);
-		}
-
-		.link[aria-current='page'] {
-			color: var(--accent-text-over);
-			background-color: var(--accent-regular);
-		}
-
-		/* The current page is already marked by the pill; it needs no underline. */
-		.link[aria-current='page'] {
-			background-image: none;
-		}
-
-		.menu-footer {
-			--icon-padding: 0.375rem;
-
-			justify-self: flex-end;
-			align-items: center;
-			padding: 0;
-			background-color: transparent;
-			box-shadow: none;
+	@media (min-width: 62em) {
+		.tagline {
+			display: block;
 		}
 	}
 

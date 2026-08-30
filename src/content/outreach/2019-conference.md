@@ -1,5 +1,5 @@
 ---
-title: "Analysis of chaplin and rodlin genes in genus Streptomyces"
+title: "Analysis of chaplin and rodlin genes in genus <i class='taxon'>Streptomyces</i>"
 type: poster
 venue: 'XVII International Conference of Students and Young Scientists "Shevchenkivska Vesna: Bioscience Advances"'
 location: "Kyiv, Ukraine"

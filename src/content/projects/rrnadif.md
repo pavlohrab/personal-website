@@ -3,7 +3,11 @@ title: "rRNADif"
 status: complete
 meta: "Open Source • 2020"
 description: "Phylogenetic tool for measuring intragenomic 16S rRNA variability by calculating ML trees and branch length statistics across bacterial genomes."
-tags: ["Shell", "Python", "R", "Phylogenetics", "16S rRNA"]
+focus: "bacteria · 21,000+ reference genomes"
+source: "fully sequenced bacterial genomes"
+stack: "Shell · Python · R · maximum likelihood phylogenetics"
+output: "variability statistics, custom databases"
+tags: ["method:phylogenetics", "data:genomes", "data:16S rRNA"]
 links:
   - label: "GitHub"
     href: "https://github.com/ostash-group/rRNADif"

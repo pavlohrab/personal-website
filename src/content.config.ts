@@ -1,6 +1,20 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+/**
+ * One tag vocabulary, shared by projects, tools and publications, so a tag
+ * can become a cross-collection filter later. Three namespaces:
+ *
+ *   method:    how the work was done   (method:BGC mining)
+ *   organism:  what it was done on     (organism:Acidobacteriota)
+ *   data:      what it was done to     (data:metagenomes)
+ *
+ * Only the value is rendered — see tagValue() in src/tags.ts. Languages
+ * and frameworks are NOT tags; they live in the `stack` field.
+ *
+ * `thoughts` keeps its own un-namespaced vocabulary: it is personal writing
+ * with a live filter UI, not research metadata.
+ */
 export const collections = {
 	projects: defineCollection({
 		loader: glob({ base: './src/content/projects', pattern: '**/*.md' }),
@@ -9,6 +23,13 @@ export const collections = {
 			status: z.enum(['ongoing', 'complete', 'released']),
 			meta: z.string(),
 			description: z.string(),
+			// Provenance — the four facts a reader of a project card actually
+			// wants: what organism, what data, what was run, what came out.
+			// All optional so a project can omit any of them.
+			focus: z.string().optional(),
+			source: z.string().optional(),
+			stack: z.string().optional(),
+			output: z.string().optional(),
 			tags: z.array(z.string()),
 			links: z.array(
 				z.object({
@@ -43,6 +64,12 @@ export const collections = {
 					href: z.string(),
 				})
 			),
+			// Namespaced tags — see the vocabulary note above.
+			tags: z.array(z.string()).default([]),
+			// The shared, namespaced vocabulary (method: / organism: / data:),
+			// same as projects and publications. Distinct from `stack`, which
+			// is what the tool is built with rather than what it is about.
+			tags: z.array(z.string()).default([]),
 			// Slug of a project in the `projects` collection this tool came out of.
 			project: z.string().optional(),
 			year: z.string(),
@@ -101,6 +128,10 @@ export const collections = {
 					href: z.string(),
 				})
 			).optional(),
+			// Namespaced tags — see the vocabulary note above.
+			tags: z.array(z.string()).default([]),
+			// The shared, namespaced vocabulary (method: / organism: / data:).
+			tags: z.array(z.string()).default([]),
 			featured: z.boolean().default(false), // Show on homepage
 			draft: z.boolean().default(false),
 		}),

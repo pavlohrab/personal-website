@@ -13,6 +13,7 @@ links:
     href: "https://doi.org/10.5281/zenodo.4491296"
 year: "2021"
 order: 7
+tags: ["method:statistics", "data:qPCR"]
 ---
 
 hrmR takes RFU melting data straight out of a Bio-Rad CFX machine (tested on the CFX96) and produces melting and derivative curves, plus genotype clustering with several algorithms to choose from — k-means, model-based clustering with mclust, and DBSCAN.

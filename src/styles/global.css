@@ -1,40 +1,47 @@
 /* Global variables */
 :root {
-	/* Colors */
-	/* Minimal coder palette - light mode */
-	--gray-0: #2a2a2a;
-	--gray-50: #3a3a3a;
-	--gray-100: #4a4a4a;
-	--gray-200: #5a5a5a;
-	--gray-300: #707070;
-	--gray-400: #909090;
-	--gray-500: #a0a0a0;
-	--gray-600: #b8b8b8;
-	--gray-700: #d0d0d0;
-	--gray-800: #e5e5e0;
-	--gray-900: #f0f0e8;
-	--gray-999-basis: 48, 20%, 97%;
-	--gray-999_40: hsla(var(--gray-999-basis), 0.4);
-	--gray-999: #f8f8f0;
+	/* ---------------------------------------------------------------
+	   Colour — "Herbarium".
+	   Green is information; ink is action. The accent marks what is
+	   current, live, dated or linked. Filled controls use ink.
+	   No pure greys: every neutral carries a constant hue and a trace
+	   of chroma, so the page reads as warm paper rather than screen.
+	   --------------------------------------------------------------- */
 
-	/* Minimal accent - no bright colors, just darker gray */
-	--accent-light: #6a6a6a;
-	--accent-regular: #4a4a4a;
-	--accent-dark: #2a2a2a;
-	--accent-overlay: hsla(0, 0%, 29%, 0.1);
-	--accent-subtle-overlay: hsla(0, 0%, 29%, 0.05);
+	/* Neutrals — warm paper, hue 85 light / 60 ink. */
+	--gray-999: oklch(0.977 0.009 85); /* page background */
+	--gray-900: oklch(0.955 0.010 85);
+	--gray-800: oklch(0.930 0.012 85); /* rules, tag bg */
+	--gray-700: oklch(0.880 0.012 85);
+	--gray-600: oklch(0.760 0.012 70);
+	--gray-500: oklch(0.690 0.012 65);
+	--gray-400: oklch(0.620 0.012 60); /* meta text */
+	--gray-300: oklch(0.450 0.012 60); /* body text */
+	--gray-200: oklch(0.400 0.013 60);
+	--gray-100: oklch(0.360 0.014 60);
+	--gray-50: oklch(0.310 0.015 60);
+	--gray-0: oklch(0.270 0.015 60); /* headings, ink */
+	--surface: #ffffff; /* cards sit above the page */
+
+	/* Accent — information only. Never a fill on a control. */
+	--accent-light: oklch(0.60 0.09 148);
+	--accent-regular: oklch(0.50 0.10 148);
+	--accent-dark: oklch(0.42 0.10 148);
+	--accent-tint: oklch(0.93 0.035 148); /* status pill bg */
+	--accent-overlay: oklch(0.50 0.10 148 / 0.1);
+	--accent-subtle-overlay: oklch(0.50 0.10 148 / 0.05);
 	--accent-text-over: var(--gray-999);
 
-	--link-color: var(--accent-regular);
+	/* Second hue — status pills ONLY, never UI. */
+	--status-alt: oklch(0.50 0.10 58);
+	--status-alt-tint: oklch(0.93 0.035 58);
 
-	/* No gradients - flat design */
-	--gradient-stop-1: var(--gray-800);
-	--gradient-stop-2: var(--gray-800);
-	--gradient-stop-3: var(--gray-800);
-	--gradient-subtle: var(--gray-900);
-	--gradient-accent: var(--accent-regular);
-	--gradient-accent-orange: var(--accent-regular);
-	--gradient-stroke: var(--gray-800);
+	/* Action — filled controls. Ink, not accent. */
+	--action: var(--gray-0);
+	--action-hover: var(--gray-50);
+	--action-text: var(--gray-999);
+
+	--link-color: var(--accent-dark);
 
 	/* Shadows */
 	--shadow-sm:
@@ -47,23 +54,45 @@
 		0px 62px 25px rgba(9, 11, 17, 0.01), 0px 35px 21px rgba(9, 11, 17, 0.05),
 		0px 16px 16px rgba(9, 11, 17, 0.1), 0px 4px 9px rgba(9, 11, 17, 0.12);
 
-	/* Text Sizes */
-	--text-sm: 0.875rem;
-	--text-base: 1rem;
-	--text-md: 1.125rem;
-	--text-lg: 1.25rem;
-	--text-xl: 1.625rem;
-	--text-2xl: 2.125rem;
-	--text-3xl: 2.625rem;
-	--text-4xl: 3.5rem;
-	--text-5xl: 4.5rem;
+	/* ---------------------------------------------------------------
+	   Type scale. Root stays 16px and every step is in rem, so the
+	   browser's text-size setting still works. No clamp() anywhere:
+	   two fixed steps are easier to reason about and never produce a
+	   47.3px heading.
+	   --------------------------------------------------------------- */
+	--text-2xs: 0.625rem; /* 10px — eyebrow, kbd */
+	--text-xs: 0.6875rem; /* 11px — tags, status, dates */
+	--text-sm: 0.875rem; /* 14px — meta, small buttons */
+	--text-base: 1rem; /* 16px — body */
+	--text-md: 1.125rem; /* 18px — nav in mobile sheet */
+	--text-lg: 1.25rem; /* 20px — lede, card titles */
+	--text-xl: 1.625rem; /* 26px — h5, section titles (mobile) */
+	--text-2xl: 2.125rem; /* 34px — h4, section titles */
+	--text-3xl: 2.625rem; /* 42px — h3, page titles (mobile) */
+	--text-4xl: 3.5rem; /* 56px — h2, page titles */
+	--text-5xl: 4.5rem; /* 72px — h1, home hero only */
 
-	/* Fonts */
+	/* Line heights — three named steps, not a continuum. */
+	--lh-tight: 1.1; /* all headings */
+	--lh-snug: 1.4; /* card titles, nav, buttons */
+	--lh-text: 1.6; /* body, lede, descriptions */
+	--lh-long: 1.8; /* long-form article body */
+
+	/* ---------------------------------------------------------------
+	   Fonts — three roles, never four.
+	   brand  display: headings and the wordmark. Never sets a date.
+	   body   prose, UI, buttons, nav.
+	   data   dates, tags, counts, accession numbers, kbd. Never a heading.
+	   --------------------------------------------------------------- */
 	--font-system:
 		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell,
 		"Open Sans", "Helvetica Neue", sans-serif;
+	--font-brand: "Source Serif 4", Georgia, "Times New Roman", serif;
 	--font-body: "Public Sans", var(--font-system);
-	--font-brand: "Fira Code", monospace;
+	--font-data: "IBM Plex Mono", ui-monospace, monospace;
+
+	/* Two tiers: 54px wordmark row + 42px section links. */
+	--header-height: 96px;
 
 	/* ---------------------------------------------------------------
 	   Design system
@@ -107,35 +136,38 @@
 }
 
 :root.theme-dark {
-	/* Minimal coder palette - dark mode */
-	--gray-0: #e8e8e8;
-	--gray-50: #d0d0d0;
-	--gray-100: #b8b8b8;
-	--gray-200: #a0a0a0;
-	--gray-300: #909090;
-	--gray-400: #707070;
-	--gray-500: #5a5a5a;
-	--gray-600: #4a4a4a;
-	--gray-700: #3a3a3a;
-	--gray-800: #2a2a2a;
-	--gray-900: #1e1e1e;
-	--gray-999-basis: 0, 0%, 10%;
-	--gray-999: #181818;
+	/* Same ramp inverted. The hue stays warm so dark mode reads as ink
+	   on paper rather than as a cold terminal. */
+	--gray-999: oklch(0.190 0.010 80);
+	--gray-900: oklch(0.215 0.010 80);
+	--gray-800: oklch(0.300 0.010 80);
+	--gray-700: oklch(0.360 0.010 80);
+	--gray-600: oklch(0.450 0.009 82);
+	--gray-500: oklch(0.540 0.009 84);
+	--gray-400: oklch(0.620 0.008 85);
+	--gray-300: oklch(0.740 0.008 85);
+	--gray-200: oklch(0.810 0.008 85);
+	--gray-100: oklch(0.880 0.008 85);
+	--gray-50: oklch(0.920 0.008 85);
+	--gray-0: oklch(0.950 0.008 85);
+	--surface: oklch(0.235 0.010 80);
 
-	/* Minimal accent - dark mode */
-	--accent-light: #b8b8b8;
-	--accent-regular: #a0a0a0;
-	--accent-dark: #707070;
-	--accent-overlay: hsla(0, 0%, 63%, 0.15);
-	--accent-subtle-overlay: hsla(0, 0%, 63%, 0.08);
+	--accent-light: oklch(0.80 0.08 148);
+	--accent-regular: oklch(0.72 0.09 148);
+	--accent-dark: oklch(0.62 0.10 148);
+	--accent-tint: oklch(0.30 0.045 148);
+	--accent-overlay: oklch(0.72 0.09 148 / 0.15);
+	--accent-subtle-overlay: oklch(0.72 0.09 148 / 0.08);
 	--accent-text-over: var(--gray-999);
 
-	--link-color: var(--accent-light);
+	--status-alt: oklch(0.70 0.09 58);
+	--status-alt-tint: oklch(0.30 0.045 58);
 
-	--gradient-stop-1: var(--gray-800);
-	--gradient-subtle: var(--gray-900);
-	--gradient-accent-orange: var(--accent-regular);
-	--gradient-stroke: var(--gray-800);
+	--action: var(--gray-0);
+	--action-hover: var(--gray-50);
+	--action-text: var(--gray-999);
+
+	--link-color: var(--accent-light);
 
 	--shadow-sm:
 		0px 6px 3px rgba(255, 255, 255, 0.01), 0px 4px 2px rgba(255, 255, 255, 0.01),
@@ -252,15 +284,24 @@ a:has(> .travel-card) {
 	background-image: none;
 }
 
+/* ---------------------------------------------------------------
+   Three type roles, never four.
+     display (serif)  headings and the wordmark
+     body (sans)      prose, UI, buttons, nav
+     data (mono)      dates, tags, counts, IDs, kbd
+
+   Two hard rules: display never sets a date or a count, and data
+   never sets a heading.
+   --------------------------------------------------------------- */
 h1,
 h2,
 h3,
 h4,
 h5 {
-	line-height: 1.1;
+	line-height: var(--lh-tight);
 	font-family: var(--font-brand);
 	font-weight: 600;
-	color: var(--gray-100);
+	color: var(--gray-0);
 	/* Long taxonomic names (Acidobacteriota, metatranscriptomics) are single
 	   unbreakable words. Without this, a heading's min-content width can exceed
 	   the phone column and force the whole page to overflow sideways.
@@ -271,24 +312,132 @@ h5 {
 	overflow-wrap: anywhere;
 }
 
+/* Tracking tightens as the size grows — a 72px serif needs negative
+   tracking to hold together, a 26px one does not. Never letterspace
+   the serif positively. */
 h1 {
 	font-size: var(--text-5xl);
+	line-height: 1.05;
+	letter-spacing: -0.015em;
 }
 
 h2 {
 	font-size: var(--text-4xl);
+	letter-spacing: -0.01em;
 }
 
 h3 {
 	font-size: var(--text-3xl);
+	line-height: 1.15;
+	letter-spacing: -0.01em;
 }
 
 h4 {
 	font-size: var(--text-2xl);
+	line-height: 1.2;
 }
 
 h5 {
 	font-size: var(--text-xl);
+	line-height: 1.25;
+}
+
+/* ---------------------------------------------------------------
+   The data role, applied by name.
+
+   .eyebrow   the mono label above a page title
+   .taxon     organism names. Binomials are italic (Geodia barretti);
+              phylum, class, family and order are roman
+              (Acidobacteriota, Streptomycetaceae).
+   --------------------------------------------------------------- */
+.eyebrow {
+	display: block;
+	font-family: var(--font-data);
+	font-size: var(--text-2xs);
+	font-weight: 500;
+	line-height: var(--lh-snug);
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--accent-regular);
+	margin-bottom: 0.75rem;
+}
+
+.taxon {
+	font-style: italic;
+}
+
+kbd {
+	font-family: var(--font-data);
+	font-size: var(--text-2xs);
+	font-weight: 400;
+	line-height: 1;
+	color: var(--gray-400);
+}
+
+code,
+pre {
+	font-family: var(--font-data);
+	font-size: var(--text-sm);
+	line-height: 1.7;
+	color: var(--gray-100);
+}
+
+code {
+	background-color: var(--gray-800);
+	padding: 0.1em 0.35em;
+	border-radius: var(--radius-tag);
+}
+
+pre {
+	background-color: var(--gray-800);
+	padding: 1rem 1.25rem;
+	border-radius: var(--radius-surface);
+	overflow-x: auto;
+}
+
+pre code {
+	background: none;
+	padding: 0;
+}
+
+/* ---------------------------------------------------------------
+   Responsive type. Only headings and the lede change; everything
+   else is already small enough to stay fixed. Nothing goes below
+   11px on mobile.
+   --------------------------------------------------------------- */
+@media (max-width: 50em) {
+	h1 {
+		font-size: var(--text-3xl);
+	}
+
+	h2 {
+		font-size: var(--text-2xl);
+	}
+
+	h3 {
+		font-size: var(--text-xl);
+	}
+
+	h4 {
+		font-size: var(--text-xl);
+	}
+
+	h5 {
+		font-size: var(--text-lg);
+	}
+
+	.eyebrow {
+		font-size: var(--text-xs);
+	}
+}
+
+/* ---------------------------------------------------------------
+   Focus ring — ink, never accent. A green ring would read as
+   "you are here", which is the accent's one job in the nav.
+   --------------------------------------------------------------- */
+:focus-visible {
+	outline: 2px solid var(--gray-0);
+	outline-offset: 2px;
 }
 
 /* Utilities */

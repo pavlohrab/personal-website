@@ -10,6 +10,7 @@ links:
 project: marine-acido-host
 year: "2026"
 order: 4
+tags: ["method:functional annotation", "method:comparative genomics", "data:genomes"]
 ---
 
 Four composable scripts. `run_hmmscan.py` scans protein FASTAs against a pressed Pfam-A database with pyhmmer, parallelised over genomes. `pfam_scan.py` applies e-value and coverage filtering, resolves overlapping domain hits, and writes a presence/absence matrix. `pfam_mapping.py` annotates Pfam IDs with GO and GO-Slim terms. `pfam_neighbourhood_extractor.py` pulls the genomic neighbourhood around a domain of interest back out as GenBank and FASTA.

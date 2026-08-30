@@ -3,7 +3,11 @@ title: "Global biosynthetic potential of Acidobacteriota"
 status: ongoing
 meta: "2023 - Present"
 description: "Built a Nextflow pipeline to clean and dereplicate 19,720 Acidobacteriota MAGs from public data, and mined the result for biosynthetic gene clusters across every biome the phylum occupies."
-tags: ["BGC mining", "Metagenomics", "Nextflow"]
+focus: "Acidobacteriota · 19,720 MAGs"
+source: "public metagenomes, all biomes"
+stack: "Nextflow · CheckM2 · GUNC · dRep · GTDB-Tk · antiSMASH · BiG-SCAPE"
+output: "BGC catalogue, 2 released tools"
+tags: ["method:BGC mining", "organism:Acidobacteriota", "data:metagenomes", "data:MAGs"]
 links:
   - label: "MAG Cleaning Pipeline"
     href: "https://github.com/pavlohrab/Mag_cleaning_pipeline"

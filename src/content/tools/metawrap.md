@@ -11,6 +11,7 @@ links:
     href: "https://github.com/bxlab/metaWRAP/commits?author=pavlohrab"
 year: "2023"
 order: 8
+tags: ["method:binning", "data:metagenomes"]
 ---
 
 metaWRAP is a community pipeline for metagenomic assembly, binning, bin refinement and reassembly. I added a nanopore reads mapping at the reassembly step

@@ -45,8 +45,8 @@ const latestNews = (await getCollection('news'))
 					</div>
 					<div class="hero-cta">
 						<a href={`${import.meta.env.BASE_URL}tools/`} class="btn btn-primary">View Tools</a>
-						<a href={`${import.meta.env.BASE_URL}cv/`} class="btn btn-outline">View CV</a>
-						<a href={`${import.meta.env.BASE_URL}contact/`} class="btn btn-outline">Get in Touch</a>
+						<a href={`${import.meta.env.BASE_URL}cv/`} class="hero-link">View CV</a>
+						<a href={`${import.meta.env.BASE_URL}contact/`} class="hero-link">Get in touch</a>
 					</div>
 				</Hero>
 
@@ -93,6 +93,10 @@ const latestNews = (await getCollection('news'))
 									status={project.data.status}
 									meta={project.data.meta}
 									description={project.data.description}
+									focus={project.data.focus}
+									source={project.data.source}
+									stack={project.data.stack}
+									output={project.data.output}
 									tags={project.data.tags}
 									links={project.data.links}
 									href={`/projects/${project.id}/`}
@@ -121,7 +125,7 @@ const latestNews = (await getCollection('news'))
 				<div class="recent-publications">
 					{featuredPublications.map(pub => (
 						<article class="pub-preview">
-							<h4>{pub.data.title}</h4>
+							<h4 set:html={pub.data.title} />
 							<p class="pub-authors" set:html={pub.data.authors} />
 							<p class="pub-venue"><em>{pub.data.venue}</em>, {pub.data.year}</p>
 						</article>
@@ -208,11 +212,34 @@ const latestNews = (await getCollection('news'))
 		max-width: 50ch;
 	}
 
+	/* One filled button, then two text links. Three boxes of equal weight gave
+	   the eye nowhere to land; the arrow cue carries the other two. */
 	.hero-cta {
 		display: flex;
-		gap: 1rem;
+		align-items: center;
+		gap: 1rem 1.75rem;
 		margin-top: 1.5rem;
 		flex-wrap: wrap;
+	}
+
+	.hero-link {
+		font-size: var(--text-sm);
+		font-weight: 600;
+		line-height: var(--lh-snug);
+		color: var(--accent-regular);
+		/* Anchor the global sweep to the label, not to the arrow. */
+		background-origin: content-box;
+	}
+
+	.hero-link::after {
+		content: '→';
+		display: inline-block;
+		margin-left: 0.4em;
+		transition: transform var(--sweep);
+	}
+
+	.hero-link:hover::after {
+		transform: translateX(var(--nudge));
 	}
 
 	.hero-image {
@@ -239,7 +266,7 @@ const latestNews = (await getCollection('news'))
 
 	.interest-card {
 		padding: 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);
@@ -379,7 +406,7 @@ const latestNews = (await getCollection('news'))
 
 	.pub-preview {
 		padding: 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		border-radius: var(--radius-surface);
 		box-shadow: var(--shadow-sm);
@@ -440,7 +467,7 @@ const latestNews = (await getCollection('news'))
 
 	.news-item {
 		padding: 1rem 1.5rem;
-		background: var(--gray-999);
+		background-color: var(--surface);
 		border-radius: var(--radius-surface);
 		border-left: var(--accent-bar) solid var(--accent-regular);
 		box-shadow: var(--shadow-sm);

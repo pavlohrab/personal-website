@@ -26,6 +26,7 @@ const { title, viewAllLink } = Astro.props;
 	   left aligned, accent rule underneath. */
 	.section-title {
 		font-size: var(--text-2xl);
+		line-height: 1.2;
 		color: var(--gray-0);
 		margin: 0;
 		padding-bottom: 0.5rem;
@@ -34,22 +35,22 @@ const { title, viewAllLink } = Astro.props;
 	}
 
 	.view-all-link {
-		color: var(--accent-regular);
+		color: var(--gray-0);
 		text-decoration: none;
-		font-size: var(--text-base);
-		font-weight: 500;
+		font-size: var(--text-sm);
+		font-weight: 600;
 		transition:
 			color var(--theme-transition),
 			background-size var(--sweep);
 	}
 
 	.view-all-link:hover {
-		color: var(--accent-dark);
+		color: var(--gray-0);
 	}
 
-	@media (min-width: 50em) {
+	@media (max-width: 50em) {
 		.section-title {
-			font-size: var(--text-3xl);
+			font-size: var(--text-xl);
 		}
 	}
 </style>

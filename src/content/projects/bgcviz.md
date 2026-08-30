@@ -3,7 +3,11 @@ title: "BGCViz"
 status: complete
 meta: "Open Source • 2020"
 description: "Interactive Shiny web application for comprehensive comparison of biosynthetic gene cluster annotations from multiple prediction tools using circular visualization."
-tags: ["R", "Shiny", "Visualization", "BGC mining"]
+focus: "bacterial BGCs"
+source: "annotations from 6 BGC prediction tools"
+stack: "R · Shiny · BioCircos"
+output: "web app, local deployment"
+tags: ["method:BGC mining", "method:visualisation", "data:genomes"]
 links:
   - label: "GitHub"
     href: "https://github.com/ostash-group/BGCViz"
